@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Businesses - Admin | Dvary Business</title>
+
+    <style>
+        /* ===== CSS ZOTE ZA ADMIN BUSINESSES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .sidebar .logo span {
+            color: #60a5fa;
+        }
+
+        .sidebar .admin-badge {
+            background: #2563eb;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .sidebar nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+        .sidebar nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+        .sidebar nav a .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar .logout-btn {
+            margin-top: auto;
+            padding: 12px 16px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sidebar .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: calc(100% - 250px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #0f172a;
+        }
+        .page-header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-actions .btn-refresh {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .admin-actions .btn-refresh:hover {
+            background: #1d4ed8;
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px 18px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .stat-card .stat-number {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .stat-card .stat-label {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        .stat-card .stat-icon {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+        .stat-card.pro .stat-number {
+            color: #2563eb;
+        }
+        .stat-card.active .stat-number {
+            color: #22c55e;
+        }
+        .stat-card.inactive .stat-number {
+            color: #b91c1c;
+        }
+
+        /* ===== FILTERS & SEARCH ===== */
+        .filter-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 22px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .filter-bar input,
+        .filter-bar select {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            background: #f8fafc;
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-bar input:focus,
+        .filter-bar select:focus {
+            border-color: #2563eb;
+            background: white;
+        }
+        .filter-bar .filter-label {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 13px;
+        }
+
+        /* ===== BUSINESS TABLE ===== */
+        .business-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .business-table-wrap {
+            overflow-x: auto;
+        }
+        .business-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .business-table th {
+            text-align: left;
+            padding: 12px 10px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .business-table td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+            vertical-align: middle;
+        }
+        .business-table tr:hover td {
+            background: #f8fafc;
+        }
+        .business-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .business-table .pro-badge {
+            background: #2563eb;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-badge.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-badge.inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .action-btns button {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .action-btns .btn-edit {
+            background: #2563eb;
+            color: white;
+        }
+        .action-btns .btn-edit:hover {
+            background: #1d4ed8;
+        }
+        .action-btns .btn-delete {
+            background: #b91c1c;
+            color: white;
+        }
+        .action-btns .btn-delete:hover {
+            background: #991b1b;
+        }
+        .action-btns .btn-toggle {
+            background: #eab308;
+            color: white;
+        }
+        .action-btns .btn-toggle:hover {
+            background: #ca8a04;
+        }
+        .action-btns .btn-pro {
+            background: #8b5cf6;
+            color: white;
+        }
+        .action-btns .btn-pro:hover {
+            background: #7c3aed;
+        }
+        .action-btns .btn-pro.active {
+            background: #22c55e;
+        }
+        .action-btns button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .msg {
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        .msg.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .msg.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 15px 10px;
+                align-items: center;
+            }
+            .sidebar .logo {
+                font-size: 16px;
+                text-align: center;
+            }
+            .sidebar .logo span {
+                display: none;
+            }
+            .sidebar .admin-badge {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+            .sidebar nav a span {
+                display: none;
+            }
+            .sidebar nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar nav a .icon {
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            .main-content {
+                padding: 20px 15px;
+                max-width: calc(100% - 70px);
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-bar input,
+            .filter-bar select {
+                min-width: auto;
+            }
+            .page-header h1 {
+                font-size: 22px;
+            }
+            .action-btns {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .business-table {
+                font-size: 12px;
+            }
+            .business-table th,
+            .business-table td {
+                padding: 8px 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    SIDEBAR
+    ============================================ -->
+    <aside class="sidebar">
+        <div class="logo">Dvary<span>Business</span></div>
+        <div class="admin-badge">🔐 ADMIN ACCESS 100%</div>
+
+        <nav>
+            <a href="/admin/">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/businesses.html" class="active">
+                <span class="icon">🏢</span>
+                <span>Businesses</span>
+            </a>
+            <a href="/admin/claims.html">
+                <span class="icon">🎁</span>
+                <span>Claims</span>
+            </a>
+            <a href="/admin/reviews.html">
+                <span class="icon">⭐</span>
+                <span>Reviews</span>
+            </a>
+            <a href="/admin/settings.html">
+                <span class="icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn" id="logoutBtn">
+            <span>🚪</span>
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <div class="page-header">
+            <h1>🏢 Manage Businesses <small>— Biashara zote za users</small></h1>
+            <div class="admin-actions">
+                <button class="btn-refresh" id="refreshBtn">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-number" id="totalBusinesses">0</div>
+                <div class="stat-label">Jumla ya Biashara</div>
+            </div>
+            <div class="stat-card pro">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-number" id="totalPro">0</div>
+                <div class="stat-label">PRO+ Biashara</div>
+            </div>
+            <div class="stat-card active">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number" id="totalActive">0</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="stat-card inactive">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-number" id="totalInactive">0</div>
+                <div class="stat-label">Inactive</div>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filter-bar">
+            <span class="filter-label">🔍 Tafuta:</span>
+            <input type="text" id="searchInput" placeholder="Jina, kategoria, au mmiliki..." />
+
+            <span class="filter-label">📂 Kategoria:</span>
+            <select id="categoryFilter">
+                <option value="">Zote</option>
+                <option value="Ujenzi">Ujenzi</option>
+                <option value="Teknolojia">Teknolojia</option>
+                <option value="Masoko">Masoko</option>
+                <option value="Chakula">Chakula</option>
+                <option value="Mitindo">Mitindo</option>
+                <option value="Elimu">Elimu</option>
+                <option value="Afya">Afya</option>
+                <option value="Usafiri">Usafiri</option>
+                <option value="Nyingine">Nyingine</option>
+            </select>
+
+            <span class="filter-label">📊 Hali:</span>
+            <select id="statusFilter">
+                <option value="">Zote</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="pro">PRO+</option>
+            </select>
+        </div>
+
+        <!-- MESSAGE -->
+        <div id="messageBox" class="msg"></div>
+
+        <!-- BUSINESS TABLE -->
+        <div class="business-section">
+            <div class="business-table-wrap">
+                <div id="businessTableContainer">
+                    <div class="loading-state">⏳ Inapakia biashara...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        // ============================================
+        // INGIZA SUAPBASE CLIENT
+        // ============================================
+        import { supabase } from '/assets/js/supabase.js';
+
+        // ============================================
+        // VITAMBULISHO VYA ELEMENTS
+        // ============================================
+        const logoutBtn = document.getElementById('logoutBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const statusFilter = document.getElementById('statusFilter');
+
+        const totalBusinessesEl = document.getElementById('totalBusinesses');
+        const totalProEl = document.getElementById('totalPro');
+        const totalActiveEl = document.getElementById('totalActive');
+        const totalInactiveEl = document.getElementById('totalInactive');
+        const businessTableContainer = document.getElementById('businessTableContainer');
+        const messageBox = document.getElementById('messageBox');
+
+        let allBusinesses = [];
+        let allUsers = [];
+
+        // ============================================
+        // FUNCTIONS: CHECK ADMIN SESSION
+        // ============================================
+        async function checkAdminSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = '/auth/login.html';
+                return null;
+            }
+
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (userError || !userData || userData.role !== 'admin') {
+                window.location.href = '/dashboard/';
+                return null;
+            }
+
+            return session.user;
+        }
+
+        // ============================================
+        // FUNCTIONS: SHOW MESSAGE
+        // ============================================
+        function showMessage(type, text) {
+            messageBox.className = `msg ${type}`;
+            messageBox.textContent = text;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 4000);
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD DATA
+        // ============================================
+        async function loadData() {
+            try {
+                // Load businesses
+                const { data: businesses, error: bizError } = await supabase
+                    .from('businesses')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (bizError) throw bizError;
+                allBusinesses = businesses || [];
+
+                // Load users (kwa ajili ya majina)
+                const { data: users, error: userError } = await supabase
+                    .from('users')
+                    .select('id, full_name, email');
+
+                if (userError) throw userError;
+                allUsers = users || [];
+
+                return { businesses: allBusinesses, users: allUsers };
+
+            } catch (err) {
+                console.error('Error loading data:', err);
+                showMessage('error', 'Kuna tatizo la kupakia data. Jaribu tena.');
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: GET USER NAME BY ID
+        // ============================================
+        function getUserName(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            return user ? user.full_name || user.email : '—';
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER STATS
+        // ============================================
+        function renderStats(businesses) {
+            const total = businesses.length;
+            const pro = businesses.filter(b => b.is_pro === true).length;
+            const active = businesses.filter(b => b.is_active === true).length;
+            const inactive = businesses.filter(b => b.is_active === false).length;
+
+            totalBusinessesEl.textContent = total;
+            totalProEl.textContent = pro;
+            totalActiveEl.textContent = active;
+            totalInactiveEl.textContent = inactive;
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER BUSINESS TABLE
+        // ============================================
+        function renderBusinessTable(businesses) {
+            if (!businesses || businesses.length === 0) {
+                businessTableContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <h3>Hakuna biashara zilizopo</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="business-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jina</th>
+                            <th>Mmiliki</th>
+                            <th>Kategoria</th>
+                            <th>Views</th>
+                            <th>Likes</th>
+                            <th>PRO+</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            businesses.forEach((biz, index) => {
+                const ownerName = getUserName(biz.user_id);
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${biz.name}</strong></td>
+                        <td style="font-size:12px; color:#2563eb;">${ownerName}</td>
+                        <td>${biz.category || '—'}</td>
+                        <td>${biz.views || 0}</td>
+                        <td>${biz.likes || 0}</td>
+                        <td>${biz.is_pro ? '<span class="pro-badge">⭐ PRO+</span>' : '—'}</td>
+                        <td>
+                            <span class="status-badge ${biz.is_active ? 'active' : 'inactive'}">
+                                ${biz.is_active ? '✅ Active' : '⏳ Inactive'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-toggle" onclick="window.adminToggleStatus('${biz.id}')">
+                                    ${biz.is_active ? '📴 Deactivate' : '✅ Activate'}
+                                </button>
+                                <button class="btn-pro ${biz.is_pro ? 'active' : ''}" onclick="window.adminTogglePro('${biz.id}')">
+                                    ${biz.is_pro ? '⭐ Remove PRO' : '⭐ Make PRO+'}
+                                </button>
+                                <button class="btn-edit" onclick="window.adminEditBusiness('${biz.id}')">✏️ Edit</button>
+                                <button class="btn-delete" onclick="window.adminDeleteBusiness('${biz.id}')">🗑️ Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            businessTableContainer.innerHTML = html;
+
+            // Weka functions kwenye global scope
+            window.adminToggleStatus = adminToggleStatus;
+            window.adminTogglePro = adminTogglePro;
+            window.adminEditBusiness = adminEditBusiness;
+            window.adminDeleteBusiness = adminDeleteBusiness;
+        }
+
+        // ============================================
+        // FUNCTIONS: FILTER BUSINESSES
+        // ============================================
+        function filterBusinesses() {
+            const search = searchInput.value.toLowerCase().trim();
+            const category = categoryFilter.value;
+            const status = statusFilter.value;
+
+            let filtered = allBusinesses;
+
+            // Search filter
+            if (search) {
+                filtered = filtered.filter(biz => {
+                    const ownerName = getUserName(biz.user_id).toLowerCase();
+                    return (
+                        biz.name?.toLowerCase().includes(search) ||
+                        biz.category?.toLowerCase().includes(search) ||
+                        ownerName.includes(search)
+                    );
+                });
+            }
+
+            // Category filter
+            if (category) {
+                filtered = filtered.filter(biz => biz.category === category);
+            }
+
+            // Status filter
+            if (status === 'active') {
+                filtered = filtered.filter(biz => biz.is_active === true);
+            } else if (status === 'inactive') {
+                filtered = filtered.filter(biz => biz.is_active === false);
+            } else if (status === 'pro') {
+                filtered = filtered.filter(biz => biz.is_pro === true);
+            }
+
+            renderBusinessTable(filtered);
+        }
+
+        // ============================================
+        // FUNCTIONS: ADMIN ACTIONS
+        // ============================================
+
+        // 1. Toggle Active/Inactive
+        async function adminToggleStatus(businessId) {
+            const biz = allBusinesses.find(b => b.id === businessId);
+            if (!biz) return;
+
+            const newStatus = !biz.is_active;
+            const action = newStatus ? 'activate' : 'deactivate';
+
+            if (!confirm(`Je, una uhakika unataka ${action} biashara hii?`)) return;
+
+            try {
+                const { error } = await supabase
+                    .from('businesses')
+                    .update({ is_active: newStatus, updated_at: new Date().toISOString() })
+                    .eq('id', businessId);
+
+                if (error) throw error;
+
+                showMessage('success', `✅ Biashara ime${action} kikamilifu!`);
+                await refreshAllData();
+            } catch (err) {
+                console.error('Toggle status error:', err);
+                showMessage('error', 'Kuna tatizo la kubadilisha status. Jaribu tena.');
+            }
+        }
+
+        // 2. Toggle PRO+
+        async function adminTogglePro(businessId) {
+            const biz = allBusinesses.find(b => b.id === businessId);
+            if (!biz) return;
+
+            const newPro = !biz.is_pro;
+            const action = newPro ? 'kuweka PRO+' : 'kuondoa PRO+';
+
+            if (!confirm(`Je, una uhakika unataka ${action} biashara hii?`)) return;
+
+            try {
+                const { error } = await supabase
+                    .from('businesses')
+                    .update({ is_pro: newPro, updated_at: new Date().toISOString() })
+                    .eq('id', businessId);
+
+                if (error) throw error;
+
+                showMessage('success', `✅ Biashara ime${action} kikamilifu!`);
+                await refreshAllData();
+            } catch (err) {
+                console.error('Toggle pro error:', err);
+                showMessage('error', 'Kuna tatizo la kubadilisha PRO+ status. Jaribu tena.');
+            }
+        }
+
+        // 3. Edit Business (Redirect)
+        function adminEditBusiness(businessId) {
+            window.location.href = `/dashboard/edit-business.html?id=${businessId}`;
+        }
+
+        // 4. Delete Business
+        async function adminDeleteBusiness(businessId) {
+            if (!confirm('⚠️ Je, una uhakika unataka kufuta biashara hii? Hatua hii haiwezi kurejeshwa!')) return;
+
+            try {
+                // Pata image_url kwanza ili kufuta picha
+                const biz = allBusinesses.find(b => b.id === businessId);
+                if (biz && biz.image_url) {
+                    const path = biz.image_url.split('/').slice(-2).join('/');
+                    await supabase.storage.from('business-images').remove([path]);
+                }
+
+                const { error } = await supabase
+                    .from('businesses')
+                    .delete()
+                    .eq('id', businessId);
+
+                if (error) throw error;
+
+                showMessage('success', '✅ Biashara imefutwa kikamilifu!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Delete error:', err);
+                showMessage('error', 'Kuna tatizo la kufuta biashara. Jaribu tena.');
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: REFRESH ALL DATA
+        // ============================================
+        async function refreshAllData() {
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = '⏳ Inapakia...';
+
+            const data = await loadData();
+            if (data) {
+                renderStats(data.businesses);
+                filterBusinesses();
+            }
+
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = '🔄 Refresh';
+        }
+
+        // ============================================
+        // FUNCTIONS: LOGOUT
+        // ============================================
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                alert('Kuna tatizo la kufunga akaunti. Jaribu tena.');
+            } else {
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+                window.location.href = '/auth/login.html';
+            }
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        logoutBtn.addEventListener('click', handleLogout);
+        refreshBtn.addEventListener('click', refreshAllData);
+        searchInput.addEventListener('input', filterBusinesses);
+        categoryFilter.addEventListener('change', filterBusinesses);
+        statusFilter.addEventListener('change', filterBusinesses);
+
+        // ============================================
+        // INIT - ANZA ADMIN BUSINESSES
+        // ============================================
+        async function initAdminBusinesses() {
+            const user = await checkAdminSession();
+            if (!user) return;
+
+            const data = await loadData();
+            if (data) {
+                renderStats(data.businesses);
+                renderBusinessTable(data.businesses);
+            }
+
+            localStorage.setItem('dvary_user_id', user.id);
+        }
+
+        // ============================================
+        // ANZA
+        // ============================================
+        initAdminBusinesses();
+    </script>
+</body>
+                  </html>
