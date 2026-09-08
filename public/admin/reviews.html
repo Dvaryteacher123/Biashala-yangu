@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Reviews - Admin | Dvary Business</title>
+
+    <style>
+        /* ===== CSS ZOTE ZA ADMIN REVIEWS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .sidebar .logo span {
+            color: #60a5fa;
+        }
+
+        .sidebar .admin-badge {
+            background: #2563eb;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .sidebar nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+        .sidebar nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+        .sidebar nav a .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar .logout-btn {
+            margin-top: auto;
+            padding: 12px 16px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sidebar .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: calc(100% - 250px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #0f172a;
+        }
+        .page-header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-actions .btn-refresh {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .admin-actions .btn-refresh:hover {
+            background: #1d4ed8;
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px 18px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .stat-card .stat-number {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .stat-card .stat-label {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        .stat-card .stat-icon {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+        .stat-card.avg .stat-number {
+            color: #eab308;
+        }
+
+        /* ===== FILTERS & SEARCH ===== */
+        .filter-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 22px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .filter-bar input,
+        .filter-bar select {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            background: #f8fafc;
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-bar input:focus,
+        .filter-bar select:focus {
+            border-color: #2563eb;
+            background: white;
+        }
+        .filter-bar .filter-label {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 13px;
+        }
+
+        /* ===== REVIEWS TABLE ===== */
+        .reviews-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .reviews-table-wrap {
+            overflow-x: auto;
+        }
+        .reviews-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .reviews-table th {
+            text-align: left;
+            padding: 12px 10px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .reviews-table td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+            vertical-align: middle;
+        }
+        .reviews-table tr:hover td {
+            background: #f8fafc;
+        }
+        .reviews-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rating-stars {
+            color: #eab308;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-badge.approved {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-badge.pending {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .status-badge.rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .action-btns button {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .action-btns .btn-approve {
+            background: #22c55e;
+            color: white;
+        }
+        .action-btns .btn-approve:hover {
+            background: #16a34a;
+        }
+        .action-btns .btn-reject {
+            background: #b91c1c;
+            color: white;
+        }
+        .action-btns .btn-reject:hover {
+            background: #991b1b;
+        }
+        .action-btns .btn-delete {
+            background: #eab308;
+            color: white;
+        }
+        .action-btns .btn-delete:hover {
+            background: #ca8a04;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .msg {
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        .msg.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .msg.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 15px 10px;
+                align-items: center;
+            }
+            .sidebar .logo {
+                font-size: 16px;
+                text-align: center;
+            }
+            .sidebar .logo span {
+                display: none;
+            }
+            .sidebar .admin-badge {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+            .sidebar nav a span {
+                display: none;
+            }
+            .sidebar nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar nav a .icon {
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            .main-content {
+                padding: 20px 15px;
+                max-width: calc(100% - 70px);
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-bar input,
+            .filter-bar select {
+                min-width: auto;
+            }
+            .page-header h1 {
+                font-size: 22px;
+            }
+            .action-btns {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .reviews-table {
+                font-size: 12px;
+            }
+            .reviews-table th,
+            .reviews-table td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    SIDEBAR
+    ============================================ -->
+    <aside class="sidebar">
+        <div class="logo">Dvary<span>Business</span></div>
+        <div class="admin-badge">🔐 ADMIN ACCESS 100%</div>
+
+        <nav>
+            <a href="/admin/">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/businesses.html">
+                <span class="icon">🏢</span>
+                <span>Businesses</span>
+            </a>
+            <a href="/admin/claims.html">
+                <span class="icon">🎁</span>
+                <span>Claims</span>
+            </a>
+            <a href="/admin/reviews.html" class="active">
+                <span class="icon">⭐</span>
+                <span>Reviews</span>
+            </a>
+            <a href="/admin/settings.html">
+                <span class="icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn" id="logoutBtn">
+            <span>🚪</span>
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <div class="page-header">
+            <h1>⭐ Manage Reviews <small>— Reviews zote za biashara</small></h1>
+            <div class="admin-actions">
+                <button class="btn-refresh" id="refreshBtn">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-number" id="totalReviews">0</div>
+                <div class="stat-label">Jumla ya Reviews</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number" id="totalApproved">0</div>
+                <div class="stat-label">Approved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-number" id="totalPending">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card avg">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-number" id="avgRating">0.0</div>
+                <div class="stat-label">Wastani wa Rating</div>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filter-bar">
+            <span class="filter-label">🔍 Tafuta:</span>
+            <input type="text" id="searchInput" placeholder="Jina la biashara, mteja, au maoni..." />
+
+            <span class="filter-label">⭐ Rating:</span>
+            <select id="ratingFilter">
+                <option value="">Zote</option>
+                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                <option value="4">⭐⭐⭐⭐ (4)</option>
+                <option value="3">⭐⭐⭐ (3)</option>
+                <option value="2">⭐⭐ (2)</option>
+                <option value="1">⭐ (1)</option>
+            </select>
+
+            <span class="filter-label">📊 Status:</span>
+            <select id="statusFilter">
+                <option value="">Zote</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+
+        <!-- MESSAGE -->
+        <div id="messageBox" class="msg"></div>
+
+        <!-- REVIEWS TABLE -->
+        <div class="reviews-section">
+            <div class="reviews-table-wrap">
+                <div id="reviewsTableContainer">
+                    <div class="loading-state">⏳ Inapakia reviews...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        // ============================================
+        // INGIZA SUAPBASE CLIENT
+        // ============================================
+        import { supabase } from '/assets/js/supabase.js';
+
+        // ============================================
+        // VITAMBULISHO VYA ELEMENTS
+        // ============================================
+        const logoutBtn = document.getElementById('logoutBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const searchInput = document.getElementById('searchInput');
+        const ratingFilter = document.getElementById('ratingFilter');
+        const statusFilter = document.getElementById('statusFilter');
+
+        const totalReviewsEl = document.getElementById('totalReviews');
+        const totalApprovedEl = document.getElementById('totalApproved');
+        const totalPendingEl = document.getElementById('totalPending');
+        const avgRatingEl = document.getElementById('avgRating');
+        const reviewsTableContainer = document.getElementById('reviewsTableContainer');
+        const messageBox = document.getElementById('messageBox');
+
+        let allReviews = [];
+        let allBusinesses = [];
+        let allUsers = [];
+
+        // ============================================
+        // FUNCTIONS: CHECK ADMIN SESSION
+        // ============================================
+        async function checkAdminSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = '/auth/login.html';
+                return null;
+            }
+
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (userError || !userData || userData.role !== 'admin') {
+                window.location.href = '/dashboard/';
+                return null;
+            }
+
+            return session.user;
+        }
+
+        // ============================================
+        // FUNCTIONS: SHOW MESSAGE
+        // ============================================
+        function showMessage(type, text) {
+            messageBox.className = `msg ${type}`;
+            messageBox.textContent = text;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 4000);
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD DATA
+        // ============================================
+        async function loadData() {
+            try {
+                // Load reviews
+                const { data: reviews, error: reviewsError } = await supabase
+                    .from('reviews')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (reviewsError) throw reviewsError;
+                allReviews = reviews || [];
+
+                // Load businesses
+                const { data: businesses, error: bizError } = await supabase
+                    .from('businesses')
+                    .select('id, name');
+
+                if (bizError) throw bizError;
+                allBusinesses = businesses || [];
+
+                // Load users
+                const { data: users, error: userError } = await supabase
+                    .from('users')
+                    .select('id, full_name, email');
+
+                if (userError) throw userError;
+                allUsers = users || [];
+
+                return { reviews: allReviews, businesses: allBusinesses, users: allUsers };
+
+            } catch (err) {
+                console.error('Error loading data:', err);
+                showMessage('error', 'Kuna tatizo la kupakia data. Jaribu tena.');
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: GET BUSINESS NAME BY ID
+        // ============================================
+        function getBusinessName(businessId) {
+            const biz = allBusinesses.find(b => b.id === businessId);
+            return biz ? biz.name : '—';
+        }
+
+        // ============================================
+        // FUNCTIONS: GET USER NAME BY ID
+        // ============================================
+        function getUserName(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            return user ? user.full_name || user.email : '—';
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER STARS
+        // ============================================
+        function renderStars(rating) {
+            return '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER STATS
+        // ============================================
+        function renderStats(reviews) {
+            const total = reviews.length;
+            const approved = reviews.filter(r => r.status === 'approved').length;
+            const pending = reviews.filter(r => r.status === 'pending').length;
+            const avg = total > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / total) : 0;
+
+            totalReviewsEl.textContent = total;
+            totalApprovedEl.textContent = approved;
+            totalPendingEl.textContent = pending;
+            avgRatingEl.textContent = avg.toFixed(1);
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER REVIEWS TABLE
+        // ============================================
+        function renderReviewsTable(reviews) {
+            if (!reviews || reviews.length === 0) {
+                reviewsTableContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <h3>Hakuna reviews zilizopo</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="reviews-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Biashara</th>
+                            <th>Mteja</th>
+                            <th>Rating</th>
+                            <th>Maoni</th>
+                            <th>Tarehe</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            reviews.forEach((review, index) => {
+                const bizName = getBusinessName(review.business_id);
+                const userName = getUserName(review.user_id);
+                const date = review.created_at ? new Date(review.created_at).toLocaleDateString('sw-TZ') : '—';
+                const statusClass = review.status === 'approved' ? 'approved' : review.status === 'pending' ? 'pending' : 'rejected';
+                const statusLabel = review.status === 'approved' ? '✅ Approved' : review.status === 'pending' ? '⏳ Pending' : '❌ Rejected';
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${bizName}</strong></td>
+                        <td style="font-size:12px; color:#2563eb;">${userName}</td>
+                        <td><span class="rating-stars">${renderStars(review.rating)}</span></td>
+                        <td style="max-width:200px; word-wrap:break-word;">${review.comment || '—'}</td>
+                        <td style="font-size:12px;">${date}</td>
+                        <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                ${review.status !== 'approved' ? `
+                                    <button class="btn-approve" onclick="window.adminApproveReview('${review.id}')">✅ Approve</button>
+                                ` : ''}
+                                ${review.status !== 'rejected' ? `
+                                    <button class="btn-reject" onclick="window.adminRejectReview('${review.id}')">❌ Reject</button>
+                                ` : ''}
+                                <button class="btn-delete" onclick="window.adminDeleteReview('${review.id}')">🗑️ Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            reviewsTableContainer.innerHTML = html;
+
+            // Weka functions kwenye global scope
+            window.adminApproveReview = adminApproveReview;
+            window.adminRejectReview = adminRejectReview;
+            window.adminDeleteReview = adminDeleteReview;
+        }
+
+        // ============================================
+        // FUNCTIONS: FILTER REVIEWS
+        // ============================================
+        function filterReviews() {
+            const search = searchInput.value.toLowerCase().trim();
+            const rating = parseInt(ratingFilter.value);
+            const status = statusFilter.value;
+
+            let filtered = allReviews;
+
+            // Search filter
+            if (search) {
+                filtered = filtered.filter(review => {
+                    const bizName = getBusinessName(review.business_id).toLowerCase();
+                    const userName = getUserName(review.user_id).toLowerCase();
+                    return (
+                        bizName.includes(search) ||
+                        userName.includes(search) ||
+                        (review.comment && review.comment.toLowerCase().includes(search))
+                    );
+                });
+            }
+
+            // Rating filter
+            if (rating) {
+                filtered = filtered.filter(review => review.rating === rating);
+            }
+
+            // Status filter
+            if (status) {
+                filtered = filtered.filter(review => review.status === status);
+            }
+
+            renderReviewsTable(filtered);
+        }
+
+        // ============================================
+        // FUNCTIONS: ADMIN ACTIONS
+        // ============================================
+
+        // 1. Approve Review
+        async function adminApproveReview(reviewId) {
+            if (!confirm('Je, una uhakika unataka ku-approve review hii?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('reviews')
+                    .update({ status: 'approved' })
+                    .eq('id', reviewId);
+
+                if (error) throw error;
+
+                showMessage('success', '✅ Review imeapprove kikamilifu!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Approve error:', err);
+                showMessage('error', 'Kuna tatizo la ku-approve review. Jaribu tena.');
+            }
+        }
+
+        // 2. Reject Review
+        async function adminRejectReview(reviewId) {
+            if (!confirm('Je, una uhakika unataka ku-reject review hii?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('reviews')
+                    .update({ status: 'rejected' })
+                    .eq('id', reviewId);
+
+                if (error) throw error;
+
+                showMessage('success', '✅ Review imereject kikamilifu!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Reject error:', err);
+                showMessage('error', 'Kuna tatizo la ku-reject review. Jaribu tena.');
+            }
+        }
+
+        // 3. Delete Review
+        async function adminDeleteReview(reviewId) {
+            if (!confirm('⚠️ Je, una uhakika unataka kufuta review hii? Hatua hii haiwezi kurejeshwa!')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('reviews')
+                    .delete()
+                    .eq('id', reviewId);
+
+                if (error) throw error;
+
+                showMessage('success', '✅ Review imefutwa kikamilifu!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Delete error:', err);
+                showMessage('error', 'Kuna tatizo la kufuta review. Jaribu tena.');
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: REFRESH ALL DATA
+        // ============================================
+        async function refreshAllData() {
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = '⏳ Inapakia...';
+
+            const data = await loadData();
+            if (data) {
+                renderStats(data.reviews);
+                filterReviews();
+            }
+
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = '🔄 Refresh';
+        }
+
+        // ============================================
+        // FUNCTIONS: LOGOUT
+        // ============================================
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                alert('Kuna tatizo la kufunga akaunti. Jaribu tena.');
+            } else {
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+                window.location.href = '/auth/login.html';
+            }
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        logoutBtn.addEventListener('click', handleLogout);
+        refreshBtn.addEventListener('click', refreshAllData);
+        searchInput.addEventListener('input', filterReviews);
+        ratingFilter.addEventListener('change', filterReviews);
+        statusFilter.addEventListener('change', filterReviews);
+
+        // ============================================
+        // INIT - ANZA ADMIN REVIEWS
+        // ============================================
+        async function initAdminReviews() {
+            const user = await checkAdminSession();
+            if (!user) return;
+
+            const data = await loadData();
+            if (data) {
+                renderStats(data.reviews);
+                renderReviewsTable(data.reviews);
+            }
+
+            localStorage.setItem('dvary_user_id', user.id);
+        }
+
+        // ============================================
+        // ANZA
+        // ============================================
+        initAdminReviews();
+
+        // ============================================
+        // MUUNDO WA DATABASE
+        // ============================================
+        /*
+        -- TABLE: reviews (Unda kama haipo)
+        CREATE TABLE reviews (
+          id BIGSERIAL PRIMARY KEY,
+          business_id BIGINT NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
+          user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+          comment TEXT,
+          status VARCHAR(20) DEFAULT 'pending',
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        -- RLS (Row Level Security)
+        ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
+
+        -- Policy: Wote wanaweza kuona reviews zilizoapproved
+        CREATE POLICY "Anyone can view approved reviews" ON reviews
+          FOR SELECT USING (status = 'approved' OR auth.uid() = user_id);
+
+        -- Policy: Mtumiaji anaweza kuweka review
+        CREATE POLICY "Users can insert reviews" ON reviews
+          FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+        -- Policy: Admin anaweza kufanya chochote
+        CREATE POLICY "Admin can do anything" ON reviews
+          FOR ALL USING (EXISTS (
+            SELECT 1 FROM users WHERE id = auth.uid() AND role = 'admin'
+          ));
+        */
+    </script>
+</body>
+</html>
