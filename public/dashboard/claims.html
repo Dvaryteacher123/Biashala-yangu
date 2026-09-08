@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claims - Dvary Business</title>
+  
+  <style>
+    /* ============================================
+       CSS ZOTE ZA CLAIMS HAPA (Self-contained)
+       ============================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f1f5f9;
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* BACK LINK */
+    .back-link {
+      display: inline-block;
+      margin-bottom: 25px;
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+    .back-link:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      color: #64748b;
+      font-size: 16px;
+    }
+
+    /* ===== FREE TRIAL SECTION ===== */
+    .trial-section {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+      border-left: 6px solid #22c55e;
+    }
+    .trial-section h2 {
+      color: #0f172a;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .trial-section .sub {
+      color: #475569;
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+
+    .code-box {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      padding: 20px 25px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 15px;
+      transition: 0.3s;
+    }
+    .code-box.has-code {
+      border-color: #22c55e;
+      background: #f0fdf4;
+    }
+
+    .code-box .code {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #0f172a;
+      font-family: 'Courier New', monospace;
+    }
+    .code-box .expiry {
+      color: #64748b;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    .code-box .expiry strong {
+      color: #0f172a;
+    }
+
+    .btn-generate {
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      white-space: nowrap;
+    }
+    .btn-generate:hover {
+      background: #16a34a;
+      transform: scale(1.02);
+    }
+    .btn-generate:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .msg {
+      padding: 12px 20px;
+      border-radius: 10px;
+      margin-top: 15px;
+      display: none;
+      font-size: 14px;
+    }
+    .msg.success {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+    .msg.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    .msg.info {
+      display: block;
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+
+    .trial-note {
+      font-size: 14px;
+      color: #64748b;
+      margin-top: 10px;
+    }
+    .trial-note strong {
+      color: #0f172a;
+    }
+
+    /* ===== PLANS SECTION ===== */
+    .plans-header {
+      margin: 40px 0 10px;
+    }
+    .plans-header h2 {
+      font-size: 28px;
+      color: #0f172a;
+    }
+    .plans-header p {
+      color: #64748b;
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .plan-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px 22px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      border: 2px solid #e2e8f0;
+      transition: 0.3s;
+      text-align: center;
+      position: relative;
+    }
+    .plan-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    .plan-card.popular {
+      border-color: #2563eb;
+    }
+    .plan-card.popular::before {
+      content: "🔥 POPULAR";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2563eb;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 20px;
+      border-radius: 30px;
+      letter-spacing: 0.5px;
+    }
+
+    .plan-card .plan-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    .plan-card .plan-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .plan-card .plan-price {
+      font-size: 32px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 10px 0 5px;
+    }
+    .plan-card .plan-price span {
+      font-size: 16px;
+      font-weight: 400;
+      color: #64748b;
+    }
+    .plan-card .plan-duration {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .plan-card ul {
+      list-style: none;
+      margin: 20px 0 25px;
+      text-align: left;
+      padding: 0;
+    }
+    .plan-card ul li {
+      padding: 8px 0;
+      color: #475569;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .plan-card ul li::before {
+      content: "✅";
+      font-size: 14px;
+    }
+    .plan-card ul li:last-child {
+      border-bottom: none;
+    }
+
+    .btn-upgrade {
+      background: #e2e8f0;
+      color: #475569;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-weight: 600;
+      width: 100%;
+      cursor: not-allowed;
+      transition: 0.3s;
+      font-size: 15px;
+    }
+    .btn-upgrade.active {
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+    .btn-upgrade.active:hover {
+      background: #1d4ed8;
+    }
+
+    .contact-note {
+      margin-top: 30px;
+      background: #fef9c3;
+      padding: 18px;
+      border-radius: 12px;
+      color: #854d0e;
+      border: 1px solid #fde68a;
+      font-size: 14px;
+      text-align: center;
+    }
+    .contact-note strong {
+      color: #78350f;
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 40px;
+      color: #64748b;
+      font-size: 16px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      body {
+        padding: 15px 10px;
+      }
+      .code-box {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+      }
+      .btn-generate {
+        width: 100%;
+        justify-content: center;
+      }
+      .page-header h1 {
+        font-size: 24px;
+      }
+      .trial-section h2 {
+        font-size: 20px;
+      }
+      .plans-grid {
+        grid-template-columns: 1fr;
+      }
+      .plan-card .plan-price {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- BACK LINK -->
+    <a href="/dashboard/" class="back-link">← Back to Dashboard</a>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <h1>📋 Manage Your Claim</h1>
+      <p>Pata code yako ya bure ya miezi 3, au chagua plan ya kuendelea baada ya muda.</p>
+    </div>
+
+    <!-- ============================================
+    FREE TRIAL SECTION
+    ============================================ -->
+    <div class="trial-section" id="trialSection">
+      <h2>🎁 Free Trial (Miezi 3)</h2>
+      <p class="sub">Bonyeza kitufe hapa chini ili kupata code yako ya kipekee ya kujaribu biashara yako bure kwa miezi 3.</p>
+
+      <div class="code-box" id="codeBox">
+        <div>
+          <div class="code" id="claimCodeDisplay">—</div>
+          <div class="expiry" id="expiryDisplay">Expiry: <strong>—</strong></div>
+        </div>
+        <button class="btn-generate" id="generateBtn">🔑 Generate Free Code</button>
+      </div>
+
+      <div id="messageBox" class="msg"></div>
+
+      <div class="trial-note">
+        ⚡ Baada ya miezi 3, utahitaji kuchagua plan ya kulipia ili kuendelea kuonekana kwenye directory.
+        <br />
+        <strong>Kumbuka:</strong> Code ni ya kipekee na inatumika kwa biashara yako moja tu.
+      </div>
+    </div>
+
+    <!-- ============================================
+    PLANS SECTION (Inasoma kutoka Supabase)
+    ============================================ -->
+    <div class="plans-header">
+      <h2>💎 Upgrade Plans (Baada ya Free Trial)</h2>
+      <p>Chagua plan inayokufaa. Kwa sasa, wasiliana nasi kupitia simu/email ili kulipa.</p>
+    </div>
+
+    <div id="plansContainer" class="plans-grid">
+      <!-- Plans zitaonekana hapa kupitia JavaScript kutoka Supabase -->
+      <div class="loading-spinner">⏳ Inapakia plans...</div>
+    </div>
+
+    <div class="contact-note">
+      📞 Kwa sasa, malipo yanafanyika kwa kuwasiliana nasi moja kwa moja.
+      <strong>Wasiliana nasi</strong> kupitia namba yetu au email ili kuchagua plan yako.
+    </div>
+  </div>
+
+  <!-- ============================================
+  JAVASCRIPT - Inasoma Supabase Halisi
+  ============================================ -->
+  <script type="module">
+    // ============================================
+    // INGIZA SUAPBASE CLIENT KUTOKA FAILI YETU
+    // ============================================
+    import { supabase } from '/assets/js/supabase.js';
+
+    // ============================================
+    // VITAMBULISHO VYA ELEMENTS
+    // ============================================
+    const codeDisplay = document.getElementById('claimCodeDisplay');
+    const expiryDisplay = document.getElementById('expiryDisplay');
+    const generateBtn = document.getElementById('generateBtn');
+    const messageBox = document.getElementById('messageBox');
+    const codeBox = document.getElementById('codeBox');
+    const plansContainer = document.getElementById('plansContainer');
+
+    // ============================================
+    // FUNCTIONS: KUSOMA PLANS KUTOKA SUPABASE
+    // ============================================
+    async function loadPlans() {
+      try {
+        // Soma plans zote ambazo ni active kutoka Supabase
+        const { data: plans, error } = await supabase
+          .from('claim_plans')
+          .select('*')
+          .eq('is_active', true)
+          .order('price', { ascending: true });
+
+        if (error) {
+          console.error('Supabase error (plans):', error);
+          plansContainer.innerHTML = `
+            <div class="loading-spinner" style="color:#b91c1c;">
+              ⚠️ Kuna tatizo la kupakia plans. Jaribu tena.
+            </div>
+          `;
+          return;
+        }
+
+        if (!plans || plans.length === 0) {
+          plansContainer.innerHTML = `
+            <div class="loading-spinner">
+              😅 Hakuna plans zilizopo kwa sasa. Wasiliana nasi.
+            </div>
+          `;
+          return;
+        }
+
+        // Onyesha plans kwenye gridi
+        plansContainer.innerHTML = plans.map((plan, index) => {
+          const isPopular = index === 1; // Ya pili iwe popular (kwa mfano)
+          const features = plan.features || ['Huduma bora', 'Msaada wa haraka'];
+
+          return `
+            <div class="plan-card ${isPopular ? 'popular' : ''}">
+              <div class="plan-icon">${getPlanIcon(plan.name)}</div>
+              <div class="plan-name">${plan.name}</div>
+              <div class="plan-price">$${plan.price} <span>/ mwezi</span></div>
+              <div class="plan-duration">Miezi ${plan.duration_months || 1}</div>
+              <ul>
+                ${features.map(f => `<li>${f}</li>`).join('')}
+              </ul>
+              <button class="btn-upgrade" onclick="alert('Wasiliana nasi kupitia simu/email ili kulipa plan hii.')">
+                Wasiliana Nasi
+              </button>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('Error loading plans:', err);
+        plansContainer.innerHTML = `
+          <div class="loading-spinner" style="color:#b91c1c;">
+            ⚠️ Kuna hitilafu ya mfumo. Jaribu ku-refresh ukurasa.
+          </div>
+        `;
+      }
+    }
+
+    // ============================================
+    // HELPER: Get icon based on plan name
+    // ============================================
+    function getPlanIcon(name) {
+      const lower = name.toLowerCase();
+      if (lower.includes('bronze')) return '🥉';
+      if (lower.includes('silver')) return '🥈';
+      if (lower.includes('gold')) return '🥇';
+      if (lower.includes('platinum')) return '💎';
+      if (lower.includes('basic')) return '📦';
+      if (lower.includes('pro')) return '🚀';
+      return '⭐';
+    }
+
+    // ============================================
+    // FUNCTIONS: KUUNDA CLAIM CODE (FREE TRIAL)
+    // ============================================
+    async function generateClaimCode() {
+      // Zima kitufe
+      generateBtn.disabled = true;
+      generateBtn.textContent = '⏳ Generating...';
+      hideMessage();
+
+      try {
+        // ============================================
+        // HAPA NDIPO TUNAWEKA DATA KWENYE SUAPBASE
+        // ============================================
+
+        // 1. Tengeneza code ya kipekee
+        const claimCode = `FREE-3M-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+        // 2. Tarehe ya mwisho (siku 90 kutoka leo)
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 90);
+
+        // 3. DATA YA MTUMIAJI (Kwa sasa tunatumia userId = 1 na businessId = 1
+        //    BAADAE utabadilisha hii kuwa ID halisi kutoka login)
+        const userId = 1; // TODO: Badilisha na ID halisi ya user aliyeingia
+        const businessId = 1; // TODO: Badilisha na ID halisi ya biashara yake
+
+        // ============================================
+        // WEKA CLAIM KWENYE SUAPBASE (Table 'claims')
+        // ============================================
+        const { data: claimData, error: insertError } = await supabase
+          .from('claims')
+          .insert([
+            {
+              user_id: userId,
+              business_id: businessId,
+              claim_code: claimCode,
+              expiry_date: expiryDate.toISOString(),
+              status: 'active', // active, expired, used
+              created_at: new Date().toISOString()
+            }
+          ])
+          .select();
+
+        if (insertError) {
+          console.error('Error inserting claim:', insertError);
+          showMessage('error', '❌ Kuna tatizo la kuweka claim kwenye database. Jaribu tena.');
+          return;
+        }
+
+        // ============================================
+        // ONYESHA CODE KWENYE UI
+        // ============================================
+        codeDisplay.textContent = claimCode;
+        expiryDisplay.innerHTML = `Expiry: <strong>${expiryDate.toLocaleDateString('sw-TZ', { day: '2-digit', month: 'long', year: 'numeric' })}</strong>`;
+        codeBox.classList.add('has-code');
+
+        showMessage('success', '✅ Code imeundwa na kuhifadhiwa kwenye database! Nakili code hii ili uihifadhi. Inakufaa kwa miezi 3.');
+
+        // Hifadhi kwenye localStorage kwa ajili ya kuonyesha baada ya refresh
+        localStorage.setItem('dvary_claim_code', claimCode);
+        localStorage.setItem('dvary_claim_expiry', expiryDate.toISOString());
+
+      } catch (error) {
+        console.error('Error generating claim:', error);
+        showMessage('error', '❌ Kuna hitilafu ya mfumo. Jaribu tena baada ya muda.');
+      } finally {
+        // Rudisha kitufe
+        generateBtn.disabled = false;
+        generateBtn.textContent = '🔑 Generate Free Code';
+      }
+    }
+
+    // ============================================
+    // FUNCTIONS: ANGALIA CLAIM ILIYOPO KWENYE SUAPBASE
+    // ============================================
+    async function checkExistingClaim() {
+      try {
+        // Kwa sasa tunaangalia kwa userId = 1 (baadae badilisha kuwa halisi)
+        const userId = 1;
+
+        const { data: existing, error } = await supabase
+          .from('claims')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (error) {
+          console.error('Error checking existing claim:', error);
+          return;
+        }
+
+        if (existing && existing.length > 0) {
+          const claim = existing[0];
+          const expiryDate = new Date(claim.expiry_date);
+          const now = new Date();
+
+          // Angalia kama code bado ni valid (sijamaliza muda)
+          if (expiryDate > now) {
+            // Onyesha code iliyopo
+            codeDisplay.textContent = claim.claim_code;
+            expiryDisplay.innerHTML = `Expiry: <strong>${expiryDate.toLocaleDateString('sw-TZ', { day: '2-digit', month: 'long', year: 'numeric' })}</strong>`;
+            codeBox.classList.add('has-code');
+            showMessage('info', 'ℹ️ Tayari una code ya miezi 3. Endelea kuitumia.');
+            generateBtn.disabled = true;
+            generateBtn.textContent = '✅ Code Inatumika';
+          } else {
+            // Code imeisha muda
+            showMessage('error', '⏳ Code yako imeisha muda. Tafadhali chagua plan ya kulipia ili kuendelea.');
+            // Badilisha status kuwa expired kwenye database
+            await supabase
+              .from('claims')
+              .update({ status: 'expired' })
+              .eq('id', claim.id);
+          }
+        }
+      } catch (err) {
+        console.error('Error checking existing claim:', err);
+      }
+    }
+
+    // ============================================
+    // UI HELPERS
+    // ============================================
+    function showMessage(type, text) {
+      messageBox.className = `msg ${type}`;
+      messageBox.textContent = text;
+      messageBox.style.display = 'block';
+    }
+
+    function hideMessage() {
+      messageBox.className = 'msg';
+      messageBox.style.display = 'none';
+    }
+
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+    generateBtn.addEventListener('click', generateClaimCode);
+
+    // ============================================
+    // INITIALIZE - Pakia Plans na Angalia Claim Iliyopo
+    // ============================================
+    async function init() {
+      // Load plans kutoka Supabase
+      await loadPlans();
+
+      // Angalia kama mtumiaji tayari ana claim
+      await checkExistingClaim();
+
+      // Ikiwa kuna code kwenye localStorage (kwa ajili ya UI tu), ionyeshe
+      const savedCode = localStorage.getItem('dvary_claim_code');
+      const savedExpiry = localStorage.getItem('dvary_claim_expiry');
+      if (savedCode && !codeDisplay.textContent.includes('FREE')) {
+        codeDisplay.textContent = savedCode;
+        if (savedExpiry) {
+          const expDate = new Date(savedExpiry);
+          expiryDisplay.innerHTML = `Expiry: <strong>${expDate.toLocaleDateString('sw-TZ', { day: '2-digit', month: 'long', year: 'numeric' })}</strong>`;
+          codeBox.classList.add('has-code');
+        }
+      }
+    }
+
+    // Anzisha
+    init();
+
+    // ============================================
+    // MUUNDO WA TABLES ZA SUAPABASE (Kwa kumbukumbu)
+    // ============================================
+    /*
+    -- TABLE: claim_plans
+    CREATE TABLE claim_plans (
+      id BIGSERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      price DECIMAL(10,2) NOT NULL,
+      duration_months INT NOT NULL DEFAULT 1,
+      features TEXT[] DEFAULT '{}',
+      is_active BOOLEAN DEFAULT true,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    -- SAMPLE DATA (Ingiza hii kupitia SQL Editor)
+    INSERT INTO claim_plans (name, price, duration_months, features, is_active) VALUES
+    ('🥉 Bronze', 5.00, 1, ARRAY['Picha 1', 'Kutajwa kwenye directory', 'Msaada wa kawaida'], true),
+    ('🥈 Silver', 15.00, 1, ARRAY['Picha 5', 'Video 1', 'Nafasi ya Juu', 'Msaada wa haraka'], true),
+    ('🥇 Gold', 35.00, 1, ARRAY['Picha 10', 'Video 3', 'Nafasi ya Kwanza', 'Social Media Promotion', 'Meneja maalum'], true);
+
+    -- TABLE: claims
+    CREATE TABLE claims (
+      id BIGSERIAL PRIMARY KEY,
+      user_id INT NOT NULL,
+      business_id INT NOT NULL,
+      claim_code VARCHAR(50) UNIQUE NOT NULL,
+      expiry_date TIMESTAMPTZ NOT NULL,
+      status VARCHAR(20) DEFAULT 'active', -- active, expired, used
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    */
+  </script>
+</body>
+</html>
