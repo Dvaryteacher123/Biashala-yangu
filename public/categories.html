@@ -1,0 +1,2686 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>Categories - Dvary Business</title>
+
+
+    <!-- =========================================
+         GOOGLE FONTS
+    ========================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    />
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    />
+
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ====================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* =====================================================
+           VARIABLES
+        ====================================================== */
+
+        :root {
+
+            --black: #211a16;
+
+            --dark: #30251f;
+
+            --brown: #80604a;
+
+            --brown-light: #a98469;
+
+            --brown-soft: #c6a589;
+
+            --cream: #f4eee6;
+
+            --cream-light: #fbf8f3;
+
+            --white: #ffffff;
+
+            --gray: #766f68;
+
+            --gray-light: #a39b93;
+
+            --border: #ded5ca;
+
+            --green: #34734d;
+
+        }
+
+
+        /* =====================================================
+           BODY
+        ====================================================== */
+
+        body {
+
+            min-height: 100vh;
+
+            font-family: "DM Sans", sans-serif;
+
+            color: var(--black);
+
+            background:
+
+                radial-gradient(
+                    circle at 10% 5%,
+                    rgba(150, 112, 81, 0.12),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 90% 30%,
+                    rgba(150, 112, 81, 0.08),
+                    transparent 28%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #eee7de,
+                    #f9f6f1
+                );
+
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ====================================================== */
+
+        nav {
+
+            height: 82px;
+
+            width: 100%;
+
+            background: rgba(255, 253, 249, 0.92);
+
+            backdrop-filter: blur(15px);
+
+            -webkit-backdrop-filter: blur(15px);
+
+            border-bottom: 1px solid rgba(60, 45, 34, 0.08);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 55px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+        }
+
+
+        /* =====================================================
+           LOGO
+        ====================================================== */
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            text-decoration: none;
+
+            color: var(--black);
+
+        }
+
+
+        .logo-icon {
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 12px;
+
+            background: var(--black);
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 21px;
+
+            font-weight: 800;
+
+        }
+
+
+        .logo-text {
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            letter-spacing: -0.5px;
+
+        }
+
+
+        .logo-text span {
+
+            color: #817970;
+
+            font-weight: 400;
+
+        }
+
+
+        /* =====================================================
+           NAV LINKS
+        ====================================================== */
+
+        .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 29px;
+
+        }
+
+
+        .nav-links a {
+
+            text-decoration: none;
+
+            color: #514a44;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: 0.25s ease;
+
+        }
+
+
+        .nav-links a:hover {
+
+            color: var(--brown);
+
+        }
+
+
+        .nav-links a.active {
+
+            color: var(--black);
+
+            position: relative;
+
+        }
+
+
+        .nav-links a.active::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 100%;
+
+            height: 2px;
+
+            background: var(--brown);
+
+            bottom: -9px;
+
+            left: 0;
+
+        }
+
+
+        /* =====================================================
+           NAV BUTTON
+        ====================================================== */
+
+        .post-business {
+
+            background: var(--black) !important;
+
+            color: white !important;
+
+            padding: 11px 18px;
+
+            border-radius: 30px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .post-business span {
+
+            width: 22px;
+
+            height: 22px;
+
+            background: white;
+
+            color: var(--black);
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================================
+           MAIN
+        ====================================================== */
+
+        .main-content {
+
+            width: 100%;
+
+            max-width: 1380px;
+
+            margin: auto;
+
+            padding: 75px 50px 90px;
+
+        }
+
+
+        /* =====================================================
+           PAGE HERO
+        ====================================================== */
+
+        .page-hero {
+
+            display: grid;
+
+            grid-template-columns: 1.1fr 0.9fr;
+
+            gap: 50px;
+
+            align-items: end;
+
+            margin-bottom: 65px;
+
+        }
+
+
+        .hero-label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            color: var(--brown);
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 4px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .hero-label::before {
+
+            content: "";
+
+            width: 48px;
+
+            height: 1px;
+
+            background: var(--brown);
+
+        }
+
+
+        .page-hero h1 {
+
+            font-family: "Playfair Display", serif;
+
+            font-size: clamp(
+                55px,
+                7vw,
+                92px
+            );
+
+            line-height: 0.91;
+
+            letter-spacing: -4px;
+
+            font-weight: 600;
+
+            color: var(--black);
+
+        }
+
+
+        .page-hero h1 span {
+
+            color: var(--brown);
+
+        }
+
+
+        .hero-description {
+
+            max-width: 470px;
+
+            justify-self: end;
+
+            padding-bottom: 8px;
+
+        }
+
+
+        .hero-description p {
+
+            color: var(--gray);
+
+            font-size: 15px;
+
+            line-height: 1.8;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .hero-count {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 9px 15px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 30px;
+
+            background: rgba(255,255,255,0.45);
+
+            font-size: 12px;
+
+            color: var(--gray);
+
+        }
+
+
+        .hero-count strong {
+
+            color: var(--black);
+
+        }
+
+
+        /* =====================================================
+           SECTION TITLE
+        ====================================================== */
+
+        .section-title {
+
+            display: flex;
+
+            align-items: end;
+
+            justify-content: space-between;
+
+            margin-bottom: 27px;
+
+        }
+
+
+        .section-title-left .small {
+
+            color: var(--brown);
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 3px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .section-title-left h2 {
+
+            font-family: "Playfair Display", serif;
+
+            font-size: 35px;
+
+            font-weight: 600;
+
+            letter-spacing: -1px;
+
+        }
+
+
+        .view-all {
+
+            color: var(--brown);
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            text-decoration: none;
+
+        }
+
+
+        /* =====================================================
+           CATEGORY GRID
+        ====================================================== */
+
+        .categories-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(0, 1fr)
+                );
+
+            gap: 25px;
+
+            margin-bottom: 80px;
+
+        }
+
+
+        /* =====================================================
+           CATEGORY CARD
+        ====================================================== */
+
+        .category-card {
+
+            min-height: 310px;
+
+            padding: 30px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            text-decoration: none;
+
+            color: inherit;
+
+            cursor: pointer;
+
+            border-radius: 27px;
+
+            border: 1px solid rgba(
+                90,
+                67,
+                48,
+                0.12
+            );
+
+            background:
+
+                linear-gradient(
+                    145deg,
+                    #fffdfa,
+                    #f1ebe3
+                );
+
+            box-shadow:
+
+                0 12px 35px
+                rgba(
+                    49,
+                    36,
+                    27,
+                    0.06
+                );
+
+            transition:
+
+                transform 0.4s
+                cubic-bezier(
+                    .25,
+                    .46,
+                    .45,
+                    .94
+                ),
+
+                box-shadow 0.4s ease,
+
+                border-color 0.4s ease;
+
+        }
+
+
+        /* =====================================================
+           CARD DECORATIVE CIRCLE
+        ====================================================== */
+
+        .category-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 220px;
+
+            height: 220px;
+
+            border-radius: 50%;
+
+            right: -90px;
+
+            top: -90px;
+
+            background:
+
+                rgba(
+                    128,
+                    96,
+                    74,
+                    0.08
+                );
+
+            transition: 0.5s ease;
+
+        }
+
+
+        .category-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 150px;
+
+            height: 150px;
+
+            border-radius: 50%;
+
+            left: -80px;
+
+            bottom: -80px;
+
+            border: 1px solid rgba(
+                128,
+                96,
+                74,
+                0.10
+            );
+
+            transition: 0.5s ease;
+
+        }
+
+
+        .category-card:hover {
+
+            transform:
+                translateY(-10px);
+
+            border-color:
+                rgba(
+                    128,
+                    96,
+                    74,
+                    0.28
+                );
+
+            box-shadow:
+
+                0 25px 55px
+                rgba(
+                    49,
+                    36,
+                    27,
+                    0.13
+                );
+
+        }
+
+
+        .category-card:hover::before {
+
+            transform: scale(1.4);
+
+            background:
+                rgba(
+                    128,
+                    96,
+                    74,
+                    0.12
+                );
+
+        }
+
+
+        .category-card:hover::after {
+
+            transform: scale(1.2);
+
+        }
+
+
+        /* =====================================================
+           CATEGORY TOP
+        ====================================================== */
+
+        .category-top {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+        }
+
+
+        .category-icon {
+
+            width: 68px;
+
+            height: 68px;
+
+            border-radius: 19px;
+
+            background: var(--black);
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 31px;
+
+            box-shadow:
+                0 10px 22px
+                rgba(
+                    33,
+                    26,
+                    22,
+                    0.15
+                );
+
+            transition: 0.35s ease;
+
+        }
+
+
+        .category-card:hover
+        .category-icon {
+
+            transform:
+                rotate(-5deg)
+                scale(1.08);
+
+        }
+
+
+        .category-arrow {
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 50%;
+
+            border: 1px solid var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 17px;
+
+            color: var(--brown);
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.5
+                );
+
+            transition: 0.3s ease;
+
+        }
+
+
+        .category-card:hover
+        .category-arrow {
+
+            background: var(--black);
+
+            color: white;
+
+            border-color: var(--black);
+
+            transform:
+                rotate(-45deg);
+
+        }
+
+
+        /* =====================================================
+           CATEGORY BOTTOM
+        ====================================================== */
+
+        .category-bottom {
+
+            position: relative;
+
+            z-index: 2;
+
+        }
+
+
+        .category-number {
+
+            color: var(--brown-light);
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .category-name {
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size: 34px;
+
+            font-weight: 600;
+
+            letter-spacing: -1px;
+
+            margin-bottom: 8px;
+
+            color: var(--black);
+
+        }
+
+
+        .category-count {
+
+            color: var(--gray);
+
+            font-size: 13px;
+
+        }
+
+
+        .category-count strong {
+
+            color: var(--brown);
+
+            font-size: 16px;
+
+        }
+
+
+        /* =====================================================
+           LOADING
+        ====================================================== */
+
+        .loading-state {
+
+            grid-column: 1 / -1;
+
+            min-height: 250px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: var(--gray);
+
+            font-size: 14px;
+
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ====================================================== */
+
+        .empty-state {
+
+            grid-column: 1 / -1;
+
+            text-align: center;
+
+            padding: 70px 20px;
+
+            color: var(--gray);
+
+        }
+
+
+        .empty-state .icon {
+
+            font-size: 50px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .empty-state h3 {
+
+            color: var(--black);
+
+            font-size: 20px;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        /* =====================================================
+           BUSINESS SECTION
+        ====================================================== */
+
+        .business-section {
+
+            margin-top: 20px;
+
+            padding-top: 55px;
+
+            border-top:
+                1px solid
+                rgba(
+                    80,
+                    60,
+                    45,
+                    0.16
+                );
+
+        }
+
+
+        .business-header {
+
+            display: flex;
+
+            align-items: end;
+
+            justify-content: space-between;
+
+            margin-bottom: 28px;
+
+        }
+
+
+        .business-header .small {
+
+            color: var(--brown);
+
+            font-size: 10px;
+
+            letter-spacing: 3px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .business-header h2 {
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size: 38px;
+
+            letter-spacing: -1px;
+
+            font-weight: 600;
+
+        }
+
+
+        .business-header h2 span {
+
+            color: var(--brown);
+
+        }
+
+
+        .back-button {
+
+            text-decoration: none;
+
+            color: var(--black);
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            padding: 11px 17px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 30px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.5
+                );
+
+        }
+
+
+        .back-button:hover {
+
+            background: var(--black);
+
+            color: white;
+
+        }
+
+
+        /* =====================================================
+           BUSINESS GRID
+        ====================================================== */
+
+        .business-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(0, 1fr)
+                );
+
+            gap: 25px;
+
+        }
+
+
+        /* =====================================================
+           BUSINESS CARD
+        ====================================================== */
+
+        .business-card {
+
+            min-height: 240px;
+
+            padding: 27px;
+
+            border-radius: 23px;
+
+            border:
+                1px solid
+                rgba(
+                    90,
+                    67,
+                    48,
+                    0.11
+                );
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #ffffff,
+                    #f4eee7
+                );
+
+            text-decoration: none;
+
+            color: inherit;
+
+            position: relative;
+
+            overflow: hidden;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            transition: 0.35s ease;
+
+        }
+
+
+        .business-card:hover {
+
+            transform:
+                translateY(-7px);
+
+            box-shadow:
+                0 20px 45px
+                rgba(
+                    50,
+                    37,
+                    27,
+                    0.11
+                );
+
+            border-color:
+                rgba(
+                    128,
+                    96,
+                    74,
+                    0.25
+                );
+
+        }
+
+
+        .business-top {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+        }
+
+
+        .business-icon {
+
+            width: 52px;
+
+            height: 52px;
+
+            border-radius: 16px;
+
+            background: var(--black);
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 22px;
+
+        }
+
+
+        .badge-pro {
+
+            background:
+                var(--brown);
+
+            color: white;
+
+            padding: 6px 11px;
+
+            border-radius: 30px;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .biz-name {
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size: 25px;
+
+            font-weight: 600;
+
+            color: var(--black);
+
+            margin-bottom: 5px;
+
+            letter-spacing: -0.5px;
+
+        }
+
+
+        .biz-category {
+
+            color: var(--brown);
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .biz-stats {
+
+            padding-top: 17px;
+
+            border-top:
+                1px solid
+                var(--border);
+
+            display: flex;
+
+            gap: 25px;
+
+            color: var(--gray);
+
+            font-size: 11px;
+
+        }
+
+
+        .biz-stats span {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ====================================================== */
+
+        footer {
+
+            background: var(--black);
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.55
+                );
+
+            padding: 45px 30px;
+
+            text-align: center;
+
+            font-size: 12px;
+
+        }
+
+
+        footer p {
+
+            margin: 7px 0;
+
+        }
+
+
+        footer a {
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.55
+                );
+
+            text-decoration: none;
+
+            margin: 0 9px;
+
+        }
+
+
+        footer a:hover {
+
+            color: white;
+
+        }
+
+
+        /* =====================================================
+           TABLET
+        ====================================================== */
+
+        @media (max-width: 1000px) {
+
+            nav {
+
+                padding: 0 30px;
+
+            }
+
+
+            .main-content {
+
+                padding:
+                    55px 30px
+                    70px;
+
+            }
+
+
+            .page-hero {
+
+                grid-template-columns: 1fr;
+
+                gap: 25px;
+
+            }
+
+
+            .hero-description {
+
+                justify-self: start;
+
+            }
+
+
+            .categories-grid {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(0, 1fr)
+                    );
+
+            }
+
+
+            .business-grid {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(0, 1fr)
+                    );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        @media (max-width: 700px) {
+
+            nav {
+
+                height: auto;
+
+                min-height: 70px;
+
+                padding: 14px 18px;
+
+                gap: 15px;
+
+                flex-wrap: wrap;
+
+            }
+
+
+            .nav-links {
+
+                width: 100%;
+
+                overflow-x: auto;
+
+                justify-content: flex-start;
+
+                gap: 19px;
+
+                padding-bottom: 4px;
+
+            }
+
+
+            .nav-links a {
+
+                white-space: nowrap;
+
+                font-size: 11px;
+
+            }
+
+
+            .post-business {
+
+                padding:
+                    9px 13px !important;
+
+            }
+
+
+            .main-content {
+
+                padding:
+                    45px 17px
+                    60px;
+
+            }
+
+
+            .page-hero {
+
+                margin-bottom: 45px;
+
+            }
+
+
+            .page-hero h1 {
+
+                font-size: 57px;
+
+                letter-spacing: -3px;
+
+            }
+
+
+            .hero-description p {
+
+                font-size: 13px;
+
+            }
+
+
+            .section-title {
+
+                align-items: flex-start;
+
+                gap: 15px;
+
+            }
+
+
+            .section-title-left h2 {
+
+                font-size: 29px;
+
+            }
+
+
+            .categories-grid {
+
+                grid-template-columns: 1fr;
+
+                gap: 18px;
+
+            }
+
+
+            .category-card {
+
+                min-height: 280px;
+
+                padding: 26px;
+
+            }
+
+
+            .category-name {
+
+                font-size: 31px;
+
+            }
+
+
+            .business-header {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 17px;
+
+            }
+
+
+            .business-header h2 {
+
+                font-size: 31px;
+
+            }
+
+
+            .business-grid {
+
+                grid-template-columns: 1fr;
+
+                gap: 18px;
+
+            }
+
+
+            .business-card {
+
+                min-height: 220px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           SMALL MOBILE
+        ====================================================== */
+
+        @media (max-width: 420px) {
+
+            .logo-text {
+
+                font-size: 17px;
+
+            }
+
+
+            .logo-icon {
+
+                width: 37px;
+
+                height: 37px;
+
+                font-size: 19px;
+
+            }
+
+
+            .page-hero h1 {
+
+                font-size: 48px;
+
+            }
+
+
+            .category-card {
+
+                min-height: 260px;
+
+            }
+
+
+            .category-icon {
+
+                width: 60px;
+
+                height: 60px;
+
+                font-size: 27px;
+
+            }
+
+
+            .category-name {
+
+                font-size: 28px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
+
+    <nav>
+
+
+        <!-- LOGO -->
+
+        <a href="/" class="logo">
+
+            <div class="logo-icon">
+                D
+            </div>
+
+            <div class="logo-text">
+                DVARY <span>BUSINESS</span>
+            </div>
+
+        </a>
+
+
+        <!-- NAV LINKS -->
+
+        <div class="nav-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a
+                href="/categories.html"
+                class="active"
+            >
+                Categories
+            </a>
+
+            <a href="/about.html">
+                About
+            </a>
+
+            <a href="/contact.html">
+                Contact
+            </a>
+
+            <a
+                href="/auth/login.html"
+            >
+                Login
+            </a>
+
+            <a
+                href="/auth/signup.html"
+                class="post-business"
+            >
+
+                Post Business
+
+                <span>
+                    +
+                </span>
+
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             PAGE HERO
+        ================================================== -->
+
+        <section class="page-hero">
+
+
+            <div>
+
+                <div class="hero-label">
+                    DISCOVER
+                </div>
+
+
+                <h1>
+                    Explore<br>
+                    <span>Categories.</span>
+                </h1>
+
+            </div>
+
+
+            <div class="hero-description">
+
+                <p>
+                    Gundua biashara, huduma na wataalamu
+                    kutoka kwenye kategoria mbalimbali.
+                    Chagua eneo unalohitaji na pata biashara
+                    inayokufaa kwa urahisi.
+                </p>
+
+
+                <div class="hero-count">
+
+                    <strong id="totalBusinesses">
+                        0
+                    </strong>
+
+                    biashara zimeorodheshwa
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CATEGORY SECTION HEADER
+        ================================================== -->
+
+        <div class="section-title">
+
+            <div class="section-title-left">
+
+                <div class="small">
+                    BROWSE BY TYPE
+                </div>
+
+                <h2>
+                    Chagua Kategoria
+                </h2>
+
+            </div>
+
+
+            <a
+                href="/"
+                class="view-all"
+            >
+                View all →
+            </a>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CATEGORIES
+        ================================================== -->
+
+        <div
+            id="categoriesGrid"
+            class="categories-grid"
+        >
+
+            <div class="loading-state">
+
+                ⏳ Inapakia kategoria...
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             BUSINESS SECTION
+        ================================================== -->
+
+        <section
+            id="businessSection"
+            class="business-section"
+            style="display:none;"
+        >
+
+
+            <div class="business-header">
+
+
+                <div>
+
+                    <div class="small">
+                        BUSINESSES
+                    </div>
+
+                    <h2>
+                        Biashara katika
+                        <span id="categoryName"></span>
+                    </h2>
+
+                </div>
+
+
+                <a
+                    href="/categories.html"
+                    class="back-button"
+                >
+                    ← Rudi Categories
+                </a>
+
+            </div>
+
+
+            <div
+                id="businessGrid"
+                class="business-grid"
+            >
+
+                <div class="loading-state">
+
+                    ⏳ Inapakia biashara...
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Dvary Business.
+            All rights reserved.
+        </p>
+
+
+        <p>
+
+            <a href="/privacy.html">
+                Privacy
+            </a>
+
+            |
+
+            <a href="/terms.html">
+                Terms
+            </a>
+
+            |
+
+            <a href="/contact.html">
+                Contact
+            </a>
+
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         SUPABASE
+    ====================================================== -->
+
+    <script type="module">
+
+
+        /* =====================================================
+           IMPORT SUPABASE
+        ====================================================== */
+
+        import {
+            supabase
+        }
+        from '/assets/js/supabase.js';
+
+
+
+        /* =====================================================
+           ELEMENTS
+        ====================================================== */
+
+        const categoriesGrid =
+            document.getElementById(
+                'categoriesGrid'
+            );
+
+
+        const businessSection =
+            document.getElementById(
+                'businessSection'
+            );
+
+
+        const businessGrid =
+            document.getElementById(
+                'businessGrid'
+            );
+
+
+        const categoryName =
+            document.getElementById(
+                'categoryName'
+            );
+
+
+        const totalBusinesses =
+            document.getElementById(
+                'totalBusinesses'
+            );
+
+
+
+        /* =====================================================
+           STORE BUSINESSES
+        ====================================================== */
+
+        let allBusinesses = [];
+
+
+
+        /* =====================================================
+           CATEGORY ICONS
+        ====================================================== */
+
+        const categoryIcons = {
+
+            'Ujenzi': '🏗️',
+
+            'Teknolojia': '💻',
+
+            'Masoko': '📢',
+
+            'Chakula': '🍽️',
+
+            'Mitindo': '👗',
+
+            'Elimu': '📚',
+
+            'Afya': '🏥',
+
+            'Usafiri': '🚗',
+
+            'Nyingine': '📌'
+
+        };
+
+
+
+        /* =====================================================
+           LOAD BUSINESSES
+        ====================================================== */
+
+        async function loadBusinesses() {
+
+            try {
+
+
+                const {
+                    data,
+                    error
+                } = await supabase
+
+                    .from('businesses')
+
+                    .select('*')
+
+                    .eq(
+                        'is_active',
+                        true
+                    )
+
+                    .order(
+                        'name',
+                        {
+                            ascending: true
+                        }
+                    );
+
+
+                if (error) {
+
+                    throw error;
+
+                }
+
+
+                allBusinesses =
+                    data || [];
+
+
+                totalBusinesses.textContent =
+                    allBusinesses.length;
+
+
+                return allBusinesses;
+
+
+            }
+
+
+            catch (err) {
+
+                console.error(
+                    'Error loading businesses:',
+                    err
+                );
+
+
+                return [];
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           GET CATEGORIES
+        ====================================================== */
+
+        function getCategoriesWithCounts(
+            businesses
+        ) {
+
+
+            const categories = {};
+
+
+            businesses.forEach(
+                biz => {
+
+                    const cat =
+                        biz.category ||
+                        'Nyingine';
+
+
+                    if (!categories[cat]) {
+
+                        categories[cat] = {
+
+                            count: 0,
+
+                            icon:
+                                categoryIcons[cat]
+                                ||
+                                '📌'
+
+                        };
+
+                    }
+
+
+                    categories[cat].count++;
+
+                }
+            );
+
+
+            return categories;
+
+        }
+
+
+
+        /* =====================================================
+           RENDER CATEGORY CARDS
+        ====================================================== */
+
+        function renderCategories(
+            categories
+        ) {
+
+
+            const categoryNames =
+                Object.keys(categories);
+
+
+            if (
+                categoryNames.length === 0
+            ) {
+
+                categoriesGrid.innerHTML = `
+
+                    <div class="empty-state">
+
+                        <div class="icon">
+                            📭
+                        </div>
+
+                        <h3>
+                            Hakuna kategoria zilizopo
+                        </h3>
+
+                        <p>
+                            Hakuna biashara zilizoongezwa bado.
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+
+            let html = '';
+
+
+
+            categoryNames.forEach(
+                (
+                    name,
+                    index
+                ) => {
+
+
+                    const data =
+                        categories[name];
+
+
+                    const number =
+                        String(
+                            index + 1
+                        ).padStart(
+                            2,
+                            '0'
+                        );
+
+
+                    html += `
+
+                        <a
+                            href="#"
+                            class="category-card"
+                            data-category="${escapeHtml(name)}"
+                        >
+
+                            <div class="category-top">
+
+
+                                <div class="category-icon">
+
+                                    ${data.icon}
+
+                                </div>
+
+
+                                <div class="category-arrow">
+
+                                    ↗
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div class="category-bottom">
+
+
+                                <div class="category-number">
+
+                                    ${number}
+
+                                </div>
+
+
+                                <div class="category-name">
+
+                                    ${escapeHtml(name)}
+
+                                </div>
+
+
+                                <div class="category-count">
+
+                                    <strong>
+                                        ${data.count}
+                                    </strong>
+
+                                    biashara
+
+                                </div>
+
+
+                            </div>
+
+
+                        </a>
+
+                    `;
+
+                }
+            );
+
+
+
+            categoriesGrid.innerHTML =
+                html;
+
+
+
+            /* ==============================================
+               CLICK EVENTS
+            =============================================== */
+
+            document
+                .querySelectorAll(
+                    '.category-card'
+                )
+                .forEach(
+                    card => {
+
+                        card.addEventListener(
+                            'click',
+                            e => {
+
+                                e.preventDefault();
+
+
+                                const category =
+                                    card.dataset.category;
+
+
+                                showBusinessesByCategory(
+                                    category
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+        }
+
+
+
+        /* =====================================================
+           SHOW BUSINESSES
+        ====================================================== */
+
+        function showBusinessesByCategory(
+            category
+        ) {
+
+
+            const filtered =
+                allBusinesses.filter(
+                    biz =>
+                        (
+                            biz.category
+                            ||
+                            'Nyingine'
+                        )
+                        ===
+                        category
+                );
+
+
+
+            businessSection.style.display =
+                'block';
+
+
+            categoryName.textContent =
+                category;
+
+
+
+            if (
+                filtered.length === 0
+            ) {
+
+                businessGrid.innerHTML = `
+
+                    <div class="empty-state">
+
+                        <div class="icon">
+                            📭
+                        </div>
+
+                        <h3>
+                            Hakuna biashara
+                        </h3>
+
+                        <p>
+                            Hakuna biashara katika kategoria hii bado.
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                businessSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+
+                return;
+
+            }
+
+
+
+            let html = '';
+
+
+
+            filtered.forEach(
+                biz => {
+
+
+                    const businessName =
+                        biz.name ||
+                        'Business';
+
+
+                    const businessCategory =
+                        biz.category ||
+                        'Nyingine';
+
+
+                    const views =
+                        biz.views ||
+                        0;
+
+
+                    const likes =
+                        biz.likes ||
+                        0;
+
+
+                    const isPro =
+                        biz.is_pro;
+
+
+                    html += `
+
+                        <a
+                            href="/business-detail.html?id=${encodeURIComponent(biz.id)}"
+                            class="business-card"
+                        >
+
+
+                            <div class="business-top">
+
+
+                                <div class="business-icon">
+
+                                    ${categoryIcons[businessCategory] || '📌'}
+
+                                </div>
+
+
+                                ${
+                                    isPro
+                                    ?
+                                    `
+                                    <span class="badge-pro">
+                                        PRO+
+                                    </span>
+                                    `
+                                    :
+                                    ''
+                                }
+
+
+                            </div>
+
+
+
+                            <div>
+
+
+                                <div class="biz-name">
+
+                                    ${escapeHtml(
+                                        businessName
+                                    )}
+
+                                </div>
+
+
+                                <div class="biz-category">
+
+                                    ${escapeHtml(
+                                        businessCategory
+                                    )}
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div class="biz-stats">
+
+
+                                <span>
+
+                                    👁️
+
+                                    ${formatNumber(
+                                        views
+                                    )}
+
+                                    views
+
+                                </span>
+
+
+                                <span>
+
+                                    ♡
+
+                                    ${formatNumber(
+                                        likes
+                                    )}
+
+                                    likes
+
+                                </span>
+
+
+                            </div>
+
+
+                        </a>
+
+                    `;
+
+                }
+            );
+
+
+
+            businessGrid.innerHTML =
+                html;
+
+
+
+            businessSection.scrollIntoView({
+
+                behavior: 'smooth',
+
+                block: 'start'
+
+            });
+
+        }
+
+
+
+        /* =====================================================
+           URL CATEGORY
+        ====================================================== */
+
+        function getCategoryFromUrl() {
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            return params.get(
+                'cat'
+            );
+
+        }
+
+
+
+        /* =====================================================
+           FORMAT NUMBERS
+        ====================================================== */
+
+        function formatNumber(
+            number
+        ) {
+
+
+            const value =
+                Number(number) || 0;
+
+
+            if (
+                value >= 1000000
+            ) {
+
+                return (
+                    value / 1000000
+                )
+                .toFixed(1)
+                .replace(
+                    '.0',
+                    ''
+                )
+                + 'M';
+
+            }
+
+
+            if (
+                value >= 1000
+            ) {
+
+                return (
+                    value / 1000
+                )
+                .toFixed(1)
+                .replace(
+                    '.0',
+                    ''
+                )
+                + 'k';
+
+            }
+
+
+            return value;
+
+        }
+
+
+
+        /* =====================================================
+           ESCAPE HTML
+           Prevent unsafe HTML from database
+        ====================================================== */
+
+        function escapeHtml(
+            value
+        ) {
+
+
+            return String(value)
+                .replace(
+                    /&/g,
+                    '&amp;'
+                )
+                .replace(
+                    /</g,
+                    '&lt;'
+                )
+                .replace(
+                    />/g,
+                    '&gt;'
+                )
+                .replace(
+                    /"/g,
+                    '&quot;'
+                )
+                .replace(
+                    /'/g,
+                    '&#039;'
+                );
+
+        }
+
+
+
+        /* =====================================================
+           INITIALIZE
+        ====================================================== */
+
+        async function initCategories() {
+
+
+            const businesses =
+                await loadBusinesses();
+
+
+            allBusinesses =
+                businesses;
+
+
+            const categories =
+                getCategoriesWithCounts(
+                    businesses
+                );
+
+
+            renderCategories(
+                categories
+            );
+
+
+            /* ==============================================
+               CATEGORY FROM URL
+            =============================================== */
+
+            const categoryParam =
+                getCategoryFromUrl();
+
+
+            if (
+                categoryParam &&
+                categories[categoryParam]
+            ) {
+
+                showBusinessesByCategory(
+                    categoryParam
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           START
+        ====================================================== */
+
+        initCategories();
+
+
+    </script>
+
+
+</body>
+</html>
