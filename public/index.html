@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>DVARY Business - Home</title>
+
+    <!-- Supabase JS (ES Module) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+            }
+        }
+    </script>
+
+    <style>
+        /* ===== RESET & ROOT ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121f;
+            --bg-card: rgba(26, 26, 46, 0.7);
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent: #6366f1;
+            --accent-hover: #8b5cf6;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --border: rgba(255, 255, 255, 0.06);
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --shadow: rgba(99, 102, 241, 0.15);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --border: rgba(0, 0, 0, 0.06);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --glass-border: rgba(0, 0, 0, 0.06);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 60px;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+        input, textarea, select { font-family: inherit; outline: none; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+        /* ===== HEADER ===== */
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 12px 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .top-header.scrolled {
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .logo span { color: var(--accent); }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 15px;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a.active { color: var(--accent); }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-outline {
+            padding: 8px 20px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .btn-primary {
+            padding: 8px 24px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 40px 30px 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+        .hero-content h1 span { color: var(--accent); }
+
+        .hero-content p {
+            color: var(--text-secondary);
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 28px;
+            max-width: 500px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-image .placeholder {
+            width: 100%;
+            max-width: 550px;
+            aspect-ratio: 4/3;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        /* ===== STATS ===== */
+        .stats {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 30px 30px 60px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        .stat-item {
+            text-align: center;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px 16px;
+            transition: all 0.3s;
+        }
+        .stat-item:hover { border-color: var(--accent); transform: translateY(-4px); }
+        .stat-item .number { font-size: 36px; font-weight: 800; color: var(--accent); }
+        .stat-item .label { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+
+        /* ===== BUSINESS LIST ===== */
+        .business-section {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px 30px 60px;
+        }
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .section-title span { color: var(--accent); }
+        .section-sub {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .business-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .business-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .business-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+        .business-card .card-img {
+            height: 180px;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: var(--text-secondary);
+        }
+        .business-card .card-body {
+            padding: 18px 20px 20px;
+        }
+        .business-card .card-body h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        .business-card .card-body .category {
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .business-card .card-body .desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 6px 0 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .business-card .card-body .location {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 30px 30px 20px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .footer a { color: var(--text-secondary); transition: color 0.3s; }
+        .footer a:hover { color: var(--text-primary); }
+
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        .loading .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p { margin-left: auto; margin-right: auto; }
+            .hero-buttons { justify-content: center; }
+            .stats { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            body { padding-top: 70px; }
+            .top-header { padding: 10px 16px; flex-wrap: wrap; gap: 10px; }
+            .nav-links { gap: 12px; flex-wrap: wrap; }
+            .nav-links a { font-size: 13px; }
+            .hero { padding: 20px 16px 40px; }
+            .hero-content h1 { font-size: 34px; }
+            .stats { grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px 16px 40px; }
+            .business-section { padding: 10px 16px 40px; }
+            .section-title { font-size: 26px; }
+            .business-grid { grid-template-columns: 1fr; }
+            .footer { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 480px) {
+            .hero-content h1 { font-size: 28px; }
+            .stats { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="top-header" id="topHeader">
+        <div class="logo">🏢 DVARY <span>Business</span></div>
+        <ul class="nav-links">
+            <li><a href="/" class="active">Home</a></li>
+            <li><a href="/businesses">Businesses</a></li>
+            <li><a href="/categories">Categories</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+        <div class="header-right">
+            <a href="/login" class="btn-outline">Login</a>
+            <a href="/signup" class="btn-primary">Get Started</a>
+        </div>
+    </header>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Find the Best <span>Businesses</span> Near You</h1>
+            <p>Discover verified businesses, services, and professionals. Connect with the best in your area.</p>
+            <div class="hero-buttons">
+                <a href="/businesses" class="btn-primary">Explore Businesses</a>
+                <a href="/signup" class="btn-outline">List Your Business</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="placeholder">🏢</div>
+        </div>
+    </section>
+
+    <!-- ===== STATS ===== -->
+    <section class="stats" id="statsContainer">
+        <div class="stat-item">
+            <div class="number" id="statBusinesses">0</div>
+            <div class="label">Businesses</div>
+        </div>
+        <div class="stat-item">
+            <div class="number" id="statUsers">0</div>
+            <div class="label">Active Users</div>
+        </div>
+        <div class="stat-item">
+            <div class="number" id="statCategories">0</div>
+            <div class="label">Categories</div>
+        </div>
+        <div class="stat-item">
+            <div class="number" id="statReviews">0</div>
+            <div class="label">Reviews</div>
+        </div>
+    </section>
+
+    <!-- ===== BUSINESS LIST ===== -->
+    <section class="business-section">
+        <h2 class="section-title">Featured <span>Businesses</span></h2>
+        <p class="section-sub">Handpicked businesses for you</p>
+        <div class="business-grid" id="businessGrid">
+            <div class="loading"><div class="spinner"></div><p>Loading businesses...</p></div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div>© 2026 <strong>DVARY Business</strong>. All rights reserved.</div>
+        <div>
+            <a href="/privacy">Privacy</a> &middot;
+            <a href="/terms">Terms</a> &middot;
+            <a href="/contact">Contact</a>
+        </div>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT ===== -->
+    <!-- ============================================================ -->
+    <script type="module">
+        // ============================================================
+        // 1. IMPORT SUPABASE
+        // ============================================================
+        import { createClient } from '@supabase/supabase-js';
+
+        // ============================================================
+        // 2. SUPABASE CONFIG
+        // ============================================================
+        const supabaseUrl = 'https://mhglcqdmauflvmxfzswe.supabase.co';
+        const supabaseKey = 'sb_publishable_dBisUdMYLPbmZpQQN74Dkg_s3pX6n2S';
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        // ============================================================
+        // 3. DOM REFS
+        // ============================================================
+        const statsEl = {
+            businesses: document.getElementById('statBusinesses'),
+            users: document.getElementById('statUsers'),
+            categories: document.getElementById('statCategories'),
+            reviews: document.getElementById('statReviews')
+        };
+        const businessGrid = document.getElementById('businessGrid');
+
+        // ============================================================
+        // 4. LOAD STATS
+        // ============================================================
+        async function loadStats() {
+            try {
+                // Get businesses count
+                const { count: bizCount, error: bizErr } = await supabase
+                    .from('businesses')
+                    .select('id', { count: 'exact', head: true });
+
+                // Get users count
+                const { count: userCount, error: userErr } = await supabase
+                    .from('users')
+                    .select('id', { count: 'exact', head: true });
+
+                // Get categories count
+                const { count: catCount, error: catErr } = await supabase
+                    .from('categories')
+                    .select('id', { count: 'exact', head: true });
+
+                // Get reviews count
+                const { count: revCount, error: revErr } = await supabase
+                    .from('reviews')
+                    .select('id', { count: 'exact', head: true });
+
+                if (!bizErr) statsEl.businesses.textContent = bizCount || 0;
+                if (!userErr) statsEl.users.textContent = userCount || 0;
+                if (!catErr) statsEl.categories.textContent = catCount || 0;
+                if (!revErr) statsEl.reviews.textContent = revCount || 0;
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // ============================================================
+        // 5. LOAD BUSINESSES
+        // ============================================================
+        async function loadBusinesses() {
+            try {
+                const { data, error } = await supabase
+                    .from('businesses')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('created_at', { ascending: false })
+                    .limit(6);
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    businessGrid.innerHTML = `
+                        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-secondary);">
+                            <p style="font-size:20px;">🏢 No businesses yet</p>
+                            <p style="font-size:14px;margin-top:6px;">Be the first to list your business!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                businessGrid.innerHTML = data.map(biz => `
+                    <div class="business-card" onclick="window.location.href='/business-detail?id=${biz.id}'">
+                        <div class="card-img">
+                            ${biz.logo_url ? `<img src="${biz.logo_url}" alt="${biz.name}" style="width:100%;height:100%;object-fit:cover;">` : '🏢'}
+                        </div>
+                        <div class="card-body">
+                            <h3>${biz.name}</h3>
+                            <div class="category">${biz.category || 'General'}</div>
+                            <div class="desc">${biz.description || 'No description available'}</div>
+                            <div class="location">📍 ${biz.location || 'Location not set'}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading businesses:', error);
+                businessGrid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--danger);">
+                        <p>❌ Failed to load businesses</p>
+                        <button onclick="location.reload()" class="btn-primary" style="margin-top:12px;">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================================
+        // 6. HEADER SCROLL EFFECT
+        // ============================================================
+        const header = document.getElementById('topHeader');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 30);
+        });
+
+        // ============================================================
+        // 7. INIT
+        // ============================================================
+        loadStats();
+        loadBusinesses();
+
+        console.log('✅ DVARY Business homepage loaded with Supabase');
+    </script>
+
+</body>
+  </html>
