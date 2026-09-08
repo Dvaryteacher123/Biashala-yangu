@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Claims - Admin | Dvary Business</title>
+
+    <style>
+        /* ===== CSS ZOTE ZA ADMIN CLAIMS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .sidebar .logo span {
+            color: #60a5fa;
+        }
+
+        .sidebar .admin-badge {
+            background: #2563eb;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .sidebar nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+        .sidebar nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+        .sidebar nav a .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar .logout-btn {
+            margin-top: auto;
+            padding: 12px 16px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sidebar .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: calc(100% - 250px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #0f172a;
+        }
+        .page-header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-actions .btn-refresh {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .admin-actions .btn-refresh:hover {
+            background: #1d4ed8;
+        }
+        .admin-actions .btn-add-claim {
+            background: #22c55e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .admin-actions .btn-add-claim:hover {
+            background: #16a34a;
+        }
+        .admin-actions .btn-give-claim {
+            background: #8b5cf6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .admin-actions .btn-give-claim:hover {
+            background: #7c3aed;
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px 18px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .stat-card .stat-number {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .stat-card .stat-label {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        .stat-card .stat-icon {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+        .stat-card.active .stat-number {
+            color: #22c55e;
+        }
+        .stat-card.expired .stat-number {
+            color: #b91c1c;
+        }
+        .stat-card.total .stat-number {
+            color: #2563eb;
+        }
+
+        /* ===== FILTERS & SEARCH ===== */
+        .filter-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 22px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .filter-bar input,
+        .filter-bar select {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            background: #f8fafc;
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-bar input:focus,
+        .filter-bar select:focus {
+            border-color: #2563eb;
+            background: white;
+        }
+        .filter-bar .filter-label {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 13px;
+        }
+
+        /* ===== CLAIMS TABLE ===== */
+        .claims-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .claims-table-wrap {
+            overflow-x: auto;
+        }
+        .claims-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .claims-table th {
+            text-align: left;
+            padding: 12px 10px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .claims-table td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+            vertical-align: middle;
+        }
+        .claims-table tr:hover td {
+            background: #f8fafc;
+        }
+        .claims-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-badge.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-badge.expired {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .status-badge.used {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .action-btns button {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .action-btns .btn-delete {
+            background: #b91c1c;
+            color: white;
+        }
+        .action-btns .btn-delete:hover {
+            background: #991b1b;
+        }
+        .action-btns .btn-expire {
+            background: #eab308;
+            color: white;
+        }
+        .action-btns .btn-expire:hover {
+            background: #ca8a04;
+        }
+        .action-btns .btn-renew {
+            background: #2563eb;
+            color: white;
+        }
+        .action-btns .btn-renew:hover {
+            background: #1d4ed8;
+        }
+        .action-btns button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .msg {
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        .msg.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .msg.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .modal h2 {
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+        .modal p {
+            color: #64748b;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .modal .form-group {
+            margin-bottom: 18px;
+        }
+        .modal .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .modal .form-group select,
+        .modal .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            background: #f8fafc;
+        }
+        .modal .form-group select:focus,
+        .modal .form-group input:focus {
+            border-color: #2563eb;
+            background: white;
+        }
+        .modal .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .modal .modal-actions button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            flex: 1;
+        }
+        .modal .modal-actions .btn-confirm {
+            background: #2563eb;
+            color: white;
+        }
+        .modal .modal-actions .btn-confirm:hover {
+            background: #1d4ed8;
+        }
+        .modal .modal-actions .btn-cancel {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .modal .modal-actions .btn-cancel:hover {
+            background: #cbd5e1;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 15px 10px;
+                align-items: center;
+            }
+            .sidebar .logo {
+                font-size: 16px;
+                text-align: center;
+            }
+            .sidebar .logo span {
+                display: none;
+            }
+            .sidebar .admin-badge {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+            .sidebar nav a span {
+                display: none;
+            }
+            .sidebar nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar nav a .icon {
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            .main-content {
+                padding: 20px 15px;
+                max-width: calc(100% - 70px);
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-bar input,
+            .filter-bar select {
+                min-width: auto;
+            }
+            .page-header h1 {
+                font-size: 22px;
+            }
+            .action-btns {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .claims-table {
+                font-size: 12px;
+            }
+            .claims-table th,
+            .claims-table td {
+                padding: 8px 6px;
+            }
+            .modal {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    SIDEBAR
+    ============================================ -->
+    <aside class="sidebar">
+        <div class="logo">Dvary<span>Business</span></div>
+        <div class="admin-badge">🔐 ADMIN ACCESS 100%</div>
+
+        <nav>
+            <a href="/admin/">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/businesses.html">
+                <span class="icon">🏢</span>
+                <span>Businesses</span>
+            </a>
+            <a href="/admin/claims.html" class="active">
+                <span class="icon">🎁</span>
+                <span>Claims</span>
+            </a>
+            <a href="/admin/reviews.html">
+                <span class="icon">⭐</span>
+                <span>Reviews</span>
+            </a>
+            <a href="/admin/settings.html">
+                <span class="icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn" id="logoutBtn">
+            <span>🚪</span>
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <div class="page-header">
+            <h1>🎁 Manage Claims <small>— Claims zote za wateja</small></h1>
+            <div class="admin-actions">
+                <button class="btn-add-claim" id="addClaimBtn">➕ Add Claim</button>
+                <button class="btn-give-claim" id="giveClaimBtn">📧 Give Claim by Email</button>
+                <button class="btn-refresh" id="refreshBtn">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card total">
+                <div class="stat-icon">📋</div>
+                <div class="stat-number" id="totalClaims">0</div>
+                <div class="stat-label">Jumla ya Claims</div>
+            </div>
+            <div class="stat-card active">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number" id="totalActive">0</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="stat-card expired">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-number" id="totalExpired">0</div>
+                <div class="stat-label">Expired</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number" id="totalUsersWithClaims">0</div>
+                <div class="stat-label">Users wana Claim</div>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filter-bar">
+            <span class="filter-label">🔍 Tafuta:</span>
+            <input type="text" id="searchInput" placeholder="Code, jina la user, email, au biashara..." />
+
+            <span class="filter-label">📊 Status:</span>
+            <select id="statusFilter">
+                <option value="">Zote</option>
+                <option value="active">Active</option>
+                <option value="expired">Expired</option>
+                <option value="used">Used</option>
+            </select>
+        </div>
+
+        <!-- MESSAGE -->
+        <div id="messageBox" class="msg"></div>
+
+        <!-- CLAIMS TABLE -->
+        <div class="claims-section">
+            <div class="claims-table-wrap">
+                <div id="claimsTableContainer">
+                    <div class="loading-state">⏳ Inapakia claims...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+    MODAL 1: ADD CLAIM (Kwa kuchagua user)
+    ============================================ -->
+    <div class="modal-overlay" id="addClaimModal">
+        <div class="modal">
+            <h2>➕ Weka Claim Mpya</h2>
+            <p>Mpe user claim ya miezi 3 bure.</p>
+
+            <form id="addClaimForm">
+                <div class="form-group">
+                    <label for="modalUserId">Chagua User <span style="color:#b91c1c;">*</span></label>
+                    <select id="modalUserId" required>
+                        <option value="">-- Chagua User --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalMonths">Miezi <span style="color:#b91c1c;">*</span></label>
+                    <select id="modalMonths" required>
+                        <option value="1">1 Mwezi</option>
+                        <option value="3" selected>3 Miezi</option>
+                        <option value="6">6 Miezi</option>
+                        <option value="12">12 Miezi</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalBusinessId">Chagua Biashara (Hiari)</label>
+                    <select id="modalBusinessId">
+                        <option value="">-- Chagua Biashara (Hiari) --</option>
+                    </select>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-confirm">✅ Weka Claim</button>
+                    <button type="button" class="btn-cancel" id="modalCancelBtn">Cancel</button>
+                </div>
+            </form>
+
+            <div id="modalMessage" class="msg" style="margin-top:15px;"></div>
+        </div>
+    </div>
+
+    <!-- ============================================
+    MODAL 2: GIVE CLAIM BY EMAIL
+    ============================================ -->
+    <div class="modal-overlay" id="giveClaimModal">
+        <div class="modal">
+            <h2>📧 Mpa Claim kwa Email</h2>
+            <p>Weka email ya user na uchague miezi. Mfumo utamtengenezea claim code.</p>
+
+            <form id="giveClaimForm">
+                <div class="form-group">
+                    <label for="giveEmail">Email ya User <span style="color:#b91c1c;">*</span></label>
+                    <input type="email" id="giveEmail" placeholder="mfano@email.com" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="giveMonths">Miezi <span style="color:#b91c1c;">*</span></label>
+                    <select id="giveMonths" required>
+                        <option value="1">1 Mwezi</option>
+                        <option value="3" selected>3 Miezi</option>
+                        <option value="6">6 Miezi</option>
+                        <option value="12">12 Miezi</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="giveBusinessId">Biashara (Hiari)</label>
+                    <select id="giveBusinessId">
+                        <option value="">-- Chagua Biashara (Hiari) --</option>
+                    </select>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-confirm">📤 Tuma Claim</button>
+                    <button type="button" class="btn-cancel" id="giveModalCancelBtn">Cancel</button>
+                </div>
+            </form>
+
+            <div id="giveModalMessage" class="msg" style="margin-top:15px;"></div>
+        </div>
+    </div>
+
+    <!-- ============================================
+    MODAL 3: RENEW CLAIM (Ongeza Miezi)
+    ============================================ -->
+    <div class="modal-overlay" id="renewModal">
+        <div class="modal">
+            <h2>🔄 Renew Claim</h2>
+            <p>Ongeza miezi kwenye claim ya user.</p>
+
+            <form id="renewForm">
+                <div class="form-group">
+                    <label for="renewMonths">Miezi ya Kuongeza <span style="color:#b91c1c;">*</span></label>
+                    <select id="renewMonths" required>
+                        <option value="1">1 Mwezi</option>
+                        <option value="3" selected>3 Miezi</option>
+                        <option value="6">6 Miezi</option>
+                        <option value="12">12 Miezi</option>
+                    </select>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-confirm">✅ Renew Claim</button>
+                    <button type="button" class="btn-cancel" id="renewModalCancelBtn">Cancel</button>
+                </div>
+            </form>
+
+            <div id="renewModalMessage" class="msg" style="margin-top:15px;"></div>
+        </div>
+    </div>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        // ============================================
+        // INGIZA SUAPBASE CLIENT
+        // ============================================
+        import { supabase } from '/assets/js/supabase.js';
+
+        // ============================================
+        // VITAMBULISHO VYA ELEMENTS
+        // ============================================
+        const logoutBtn = document.getElementById('logoutBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const addClaimBtn = document.getElementById('addClaimBtn');
+        const giveClaimBtn = document.getElementById('giveClaimBtn');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+
+        const totalClaimsEl = document.getElementById('totalClaims');
+        const totalActiveEl = document.getElementById('totalActive');
+        const totalExpiredEl = document.getElementById('totalExpired');
+        const totalUsersWithClaimsEl = document.getElementById('totalUsersWithClaims');
+        const claimsTableContainer = document.getElementById('claimsTableContainer');
+        const messageBox = document.getElementById('messageBox');
+
+        // Modal 1: Add Claim
+        const addClaimModal = document.getElementById('addClaimModal');
+        const modalUserId = document.getElementById('modalUserId');
+        const modalMonths = document.getElementById('modalMonths');
+        const modalBusinessId = document.getElementById('modalBusinessId');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+        const addClaimForm = document.getElementById('addClaimForm');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Modal 2: Give Claim by Email
+        const giveClaimModal = document.getElementById('giveClaimModal');
+        const giveEmail = document.getElementById('giveEmail');
+        const giveMonths = document.getElementById('giveMonths');
+        const giveBusinessId = document.getElementById('giveBusinessId');
+        const giveModalCancelBtn = document.getElementById('giveModalCancelBtn');
+        const giveClaimForm = document.getElementById('giveClaimForm');
+        const giveModalMessage = document.getElementById('giveModalMessage');
+
+        // Modal 3: Renew Claim
+        const renewModal = document.getElementById('renewModal');
+        const renewMonths = document.getElementById('renewMonths');
+        const renewModalCancelBtn = document.getElementById('renewModalCancelBtn');
+        const renewForm = document.getElementById('renewForm');
+        const renewModalMessage = document.getElementById('renewModalMessage');
+
+        let allClaims = [];
+        let allUsers = [];
+        let allBusinesses = [];
+        let currentClaimId = null;
+
+        // ============================================
+        // FUNCTIONS: CHECK ADMIN SESSION
+        // ============================================
+        async function checkAdminSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = '/auth/login.html';
+                return null;
+            }
+
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (userError || !userData || userData.role !== 'admin') {
+                window.location.href = '/dashboard/';
+                return null;
+            }
+
+            return session.user;
+        }
+
+        // ============================================
+        // FUNCTIONS: SHOW MESSAGE
+        // ============================================
+        function showMessage(type, text, element = messageBox) {
+            element.className = `msg ${type}`;
+            element.textContent = text;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD DATA
+        // ============================================
+        async function loadData() {
+            try {
+                // Load claims with user and business info
+                const { data: claims, error: claimsError } = await supabase
+                    .from('claims')
+                    .select(`
+                        *,
+                        users:user_id (id, full_name, email),
+                        businesses:business_id (id, name)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (claimsError) throw claimsError;
+                allClaims = claims || [];
+
+                // Load users
+                const { data: users, error: userError } = await supabase
+                    .from('users')
+                    .select('id, full_name, email');
+
+                if (userError) throw userError;
+                allUsers = users || [];
+
+                // Load businesses
+                const { data: businesses, error: bizError } = await supabase
+                    .from('businesses')
+                    .select('id, name, user_id');
+
+                if (bizError) throw bizError;
+                allBusinesses = businesses || [];
+
+                return { claims: allClaims, users: allUsers, businesses: allBusinesses };
+
+            } catch (err) {
+                console.error('Error loading data:', err);
+                showMessage('error', 'Kuna tatizo la kupakia data. Jaribu tena.');
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: GET USER NAME BY ID
+        // ============================================
+        function getUserName(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            return user ? user.full_name || user.email : '—';
+        }
+
+        function getUserEmail(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            return user ? user.email : '—';
+        }
+
+        // ============================================
+        // FUNCTIONS: GET BUSINESS NAME BY ID
+        // ============================================
+        function getBusinessName(businessId) {
+            const biz = allBusinesses.find(b => b.id === businessId);
+            return biz ? biz.name : '—';
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER STATS
+        // ============================================
+        function renderStats(claims) {
+            const total = claims.length;
+            const active = claims.filter(c => {
+                const isExpired = c.expiry_date && new Date(c.expiry_date) < new Date();
+                return c.status === 'active' && !isExpired;
+            }).length;
+            const expired = claims.filter(c => {
+                const isExpired = c.expiry_date && new Date(c.expiry_date) < new Date();
+                return c.status === 'expired' || isExpired;
+            }).length;
+            const uniqueUsers = new Set(claims.map(c => c.user_id)).size;
+
+            totalClaimsEl.textContent = total;
+            totalActiveEl.textContent = active;
+            totalExpiredEl.textContent = expired;
+            totalUsersWithClaimsEl.textContent = uniqueUsers;
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER CLAIMS TABLE
+        // ============================================
+        function renderClaimsTable(claims) {
+            if (!claims || claims.length === 0) {
+                claimsTableContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <h3>Hakuna claims zilizopo</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="claims-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Code</th>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Biashara</th>
+                            <th>Tarehe ya Mwisho</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            claims.forEach((claim, index) => {
+                const userName = getUserName(claim.user_id);
+                const userEmail = getUserEmail(claim.user_id);
+                const bizName = getBusinessName(claim.business_id);
+                const expiryDate = claim.expiry_date ? new Date(claim.expiry_date).toLocaleDateString('sw-TZ') : '—';
+                const isExpired = claim.expiry_date && new Date(claim.expiry_date) < new Date();
+
+                let status = claim.status || 'active';
+                if (isExpired && status === 'active') {
+                    status = 'expired';
+                }
+
+                const statusClass = status === 'active' ? 'active' : status === 'expired' ? 'expired' : 'used';
+                const statusLabel = status === 'active' ? '✅ Active' : status === 'expired' ? '⏳ Expired' : '📌 Used';
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong style="font-family:monospace; font-size:13px;">${claim.claim_code}</strong></td>
+                        <td style="font-size:12px; color:#2563eb;">${userName}</td>
+                        <td style="font-size:11px; color:#64748b;">${userEmail}</td>
+                        <td>${bizName}</td>
+                        <td style="font-size:12px;">${expiryDate}</td>
+                        <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                ${status === 'active' ? `
+                                    <button class="btn-expire" onclick="window.adminExpireClaim('${claim.id}')">⏳ Expire</button>
+                                    <button class="btn-renew" onclick="window.adminOpenRenewModal('${claim.id}')">🔄 Renew</button>
+                                ` : `
+                                    <button class="btn-renew" onclick="window.adminOpenRenewModal('${claim.id}')">🔄 Renew</button>
+                                `}
+                                <button class="btn-delete" onclick="window.adminDeleteClaim('${claim.id}')">🗑️ Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            claimsTableContainer.innerHTML = html;
+
+            // Weka functions kwenye global scope
+            window.adminDeleteClaim = adminDeleteClaim;
+            window.adminExpireClaim = adminExpireClaim;
+            window.adminOpenRenewModal = adminOpenRenewModal;
+        }
+
+        // ============================================
+        // FUNCTIONS: FILTER CLAIMS
+        // ============================================
+        function filterClaims() {
+            const search = searchInput.value.toLowerCase().trim();
+            const status = statusFilter.value;
+
+            let filtered = allClaims;
+
+            // Search filter
+            if (search) {
+                filtered = filtered.filter(claim => {
+                    const userName = getUserName(claim.user_id).toLowerCase();
+                    const userEmail = getUserEmail(claim.user_id).toLowerCase();
+                    const bizName = getBusinessName(claim.business_id).toLowerCase();
+                    return (
+                        claim.claim_code?.toLowerCase().includes(search) ||
+                        userName.includes(search) ||
+                        userEmail.includes(search) ||
+                        bizName.includes(search)
+                    );
+                });
+            }
+
+            // Status filter
+            if (status) {
+                filtered = filtered.filter(claim => {
+                    let claimStatus = claim.status || 'active';
+                    if (claim.expiry_date && new Date(claim.expiry_date) < new Date() && claimStatus === 'active') {
+                        claimStatus = 'expired';
+                    }
+                    return claimStatus === status;
+                });
+            }
+
+            renderClaimsTable(filtered);
+        }
+
+        // ============================================
+        // FUNCTIONS: ADMIN ACTIONS
+        // ============================================
+
+        // 1. Delete Claim
+        async function adminDeleteClaim(claimId) {
+            if (!confirm('⚠️ Je, una uhakika unataka kufuta claim hii? Hatua hii haiwezi kurejeshwa!')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('claims')
+                    .delete()
+                    .eq('id', claimId);
+
+                if (error) throw error;
+
+                showMessage('success', '✅ Claim imefutwa kikamilifu!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Delete claim error:', err);
+                showMessage('error', 'Kuna tatizo la kufuta claim. Jaribu tena.');
+            }
+        }
+
+        // 2. Expire Claim
+        async function adminExpireClaim(claimId) {
+            if (!confirm('Je, una uhakika unataka ku-expire claim hii?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('claims')
+                    .update({ status: 'expired' })
+                    .eq('id', claimId);
+
+                if (error) throw error;
+
+                showMessage('success', '✅ Claim ime-expire kikamilifu!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Expire claim error:', err);
+                showMessage('error', 'Kuna tatizo la ku-expire claim. Jaribu tena.');
+            }
+        }
+
+        // 3. Open Renew Modal
+        function adminOpenRenewModal(claimId) {
+            currentClaimId = claimId;
+            renewModal.classList.add('active');
+            renewModalMessage.style.display = 'none';
+            renewMonths.value = '3';
+        }
+
+        // 4. Close Renew Modal
+        function closeRenewModal() {
+            renewModal.classList.remove('active');
+            renewForm.reset();
+            renewModalMessage.style.display = 'none';
+            currentClaimId = null;
+        }
+
+        // 5. Renew Claim (Ongeza Miezi)
+        renewForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            renewModalMessage.style.display = 'none';
+
+            if (!currentClaimId) {
+                showMessage('error', 'Hakuna claim iliyochaguliwa.', renewModalMessage);
+                return;
+            }
+
+            const months = parseInt(renewMonths.value);
+
+            try {
+                // Get current claim
+                const { data: claim, error: getError } = await supabase
+                    .from('claims')
+                    .select('*')
+                    .eq('id', currentClaimId)
+                    .single();
+
+                if (getError) throw getError;
+
+                // Calculate new expiry date
+                const newExpiry = new Date(claim.expiry_date);
+                newExpiry.setMonth(newExpiry.getMonth() + months);
+
+                // Update claim
+                const { error } = await supabase
+                    .from('claims')
+                    .update({
+                        expiry_date: newExpiry.toISOString(),
+                        status: 'active'
+                    })
+                    .eq('id', currentClaimId);
+
+                if (error) throw error;
+
+                showMessage('success', `✅ Claim imerenew kikamilifu! Miezi ${months} imeongezwa.`, renewModalMessage);
+                closeRenewModal();
+                await refreshAllData();
+            } catch (err) {
+                console.error('Renew claim error:', err);
+                showMessage('error', 'Kuna tatizo la ku-renew claim. Jaribu tena.', renewModalMessage);
+            }
+        });
+
+        renewModalCancelBtn.addEventListener('click', closeRenewModal);
+        renewModal.addEventListener('click', (e) => {
+            if (e.target === renewModal) closeRenewModal();
+        });
+
+        // ============================================
+        // MODAL 1: ADD CLAIM (Kwa kuchagua user)
+        // ============================================
+
+        function openAddModal() {
+            addClaimModal.classList.add('active');
+            populateAddModalDropdowns();
+            modalMessage.style.display = 'none';
+            modalMonths.value = '3';
+        }
+
+        function closeAddModal() {
+            addClaimModal.classList.remove('active');
+            addClaimForm.reset();
+            modalMessage.style.display = 'none';
+        }
+
+        function populateAddModalDropdowns() {
+            // Users dropdown
+            modalUserId.innerHTML = '<option value="">-- Chagua User --</option>';
+            allUsers.forEach(user => {
+                modalUserId.innerHTML += `
+                    <option value="${user.id}">${user.full_name || user.email} (${user.email})</option>
+                `;
+            });
+
+            // Businesses dropdown
+            modalBusinessId.innerHTML = '<option value="">-- Chagua Biashara (Hiari) --</option>';
+            allBusinesses.forEach(biz => {
+                const owner = getUserName(biz.user_id);
+                modalBusinessId.innerHTML += `
+                    <option value="${biz.id}">${biz.name} (${owner})</option>
+                `;
+            });
+        }
+
+        addClaimForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            modalMessage.style.display = 'none';
+
+            const userId = modalUserId.value;
+            const months = parseInt(modalMonths.value);
+            const businessId = modalBusinessId.value || null;
+
+            if (!userId) {
+                showMessage('error', 'Tafadhali chagua user.', modalMessage);
+                return;
+            }
+
+            // Check if user already has active claim
+            const existing = allClaims.find(c => c.user_id === userId && 
+                (c.status === 'active' || (c.expiry_date && new Date(c.expiry_date) > new Date())));
+            
+            if (existing) {
+                showMessage('error', 'User huyu tayari ana claim active!', modalMessage);
+                return;
+            }
+
+            try {
+                const claimCode = `CLAIM-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+                const expiryDate = new Date();
+                expiryDate.setMonth(expiryDate.getMonth() + months);
+
+                const { error } = await supabase
+                    .from('claims')
+                    .insert([{
+                        user_id: userId,
+                        business_id: businessId,
+                        claim_code: claimCode,
+                        expiry_date: expiryDate.toISOString(),
+                        status: 'active',
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (error) throw error;
+
+                showMessage('success', `✅ Claim imewekwa! Miezi ${months}. Code: ${claimCode}`, modalMessage);
+                setTimeout(() => {
+                    closeAddModal();
+                    refreshAllData();
+                }, 1500);
+            } catch (err) {
+                console.error('Add claim error:', err);
+                showMessage('error', 'Kuna tatizo la kuweka claim. Jaribu tena.', modalMessage);
+            }
+        });
+
+        modalCancelBtn.addEventListener('click', closeAddModal);
+        addClaimModal.addEventListener('click', (e) => {
+            if (e.target === addClaimModal) closeAddModal();
+        });
+
+        // ============================================
+        // MODAL 2: GIVE CLAIM BY EMAIL
+        // ============================================
+
+        function openGiveModal() {
+            giveClaimModal.classList.add('active');
+            populateGiveModalDropdowns();
+            giveModalMessage.style.display = 'none';
+            giveEmail.value = '';
+            giveMonths.value = '3';
+        }
+
+        function closeGiveModal() {
+            giveClaimModal.classList.remove('active');
+            giveClaimForm.reset();
+            giveModalMessage.style.display = 'none';
+        }
+
+        function populateGiveModalDropdowns() {
+            giveBusinessId.innerHTML = '<option value="">-- Chagua Biashara (Hiari) --</option>';
+            allBusinesses.forEach(biz => {
+                const owner = getUserName(biz.user_id);
+                giveBusinessId.innerHTML += `
+                    <option value="${biz.id}">${biz.name} (${owner})</option>
+                `;
+            });
+        }
+
+        giveClaimForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            giveModalMessage.style.display = 'none';
+
+            const email = giveEmail.value.trim();
+            const months = parseInt(giveMonths.value);
+            const businessId = giveBusinessId.value || null;
+
+            if (!email) {
+                showMessage('error', 'Tafadhali ingiza email ya user.', giveModalMessage);
+                return;
+            }
+
+            try {
+                // Find user by email
+                const { data: user, error: userError } = await supabase
+                    .from('users')
+                    .select('id, full_name, email')
+                    .eq('email', email)
+                    .single();
+
+                if (userError || !user) {
+                    showMessage('error', 'User aliye na email hii hapatikani. Hakikisha email ni sahihi.', giveModalMessage);
+                    return;
+                }
+
+                // Check if user already has active claim
+                const { data: existing, error: checkError } = await supabase
+                    .from('claims')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .eq('status', 'active')
+                    .limit(1);
+
+                if (checkError) throw checkError;
+
+                if (existing && existing.length > 0) {
+                    showMessage('error', `${user.full_name || user.email} tayari ana claim active.`, giveModalMessage);
+                    return;
+                }
+
+                // Generate claim code
+                const claimCode = `CLAIM-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+                const expiryDate = new Date();
+                expiryDate.setMonth(expiryDate.getMonth() + months);
+
+                // Insert claim
+                const { error: insertError } = await supabase
+                    .from('claims')
+                    .insert([{
+                        user_id: user.id,
+                        business_id: businessId,
+                        claim_code: claimCode,
+                        expiry_date: expiryDate.toISOString(),
+                        status: 'active',
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (insertError) throw insertError;
+
+                showMessage('success', 
+                    `✅ Claim imewekwa kwa ${user.full_name || user.email}! Miezi ${months}. Code: ${claimCode}`, 
+                    giveModalMessage
+                );
+
+                setTimeout(() => {
+                    closeGiveModal();
+                    refreshAllData();
+                }, 1500);
+
+            } catch (err) {
+                console.error('Give claim error:', err);
+                showMessage('error', 'Kuna tatizo la kuweka claim. Jaribu tena.', giveModalMessage);
+            }
+        });
+
+        giveModalCancelBtn.addEventListener('click', closeGiveModal);
+        giveClaimModal.addEventListener('click', (e) => {
+            if (e.target === giveClaimModal) closeGiveModal();
+        });
+
+        // ============================================
+        // FUNCTIONS: REFRESH ALL DATA
+        // ============================================
+        async function refreshAllData() {
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = '⏳ Inapakia...';
+
+            const data = await loadData();
+            if (data) {
+                renderStats(data.claims);
+                filterClaims();
+                if (addClaimModal.classList.contains('active')) {
+                    populateAddModalDropdowns();
+                }
+                if (giveClaimModal.classList.contains('active')) {
+                    populateGiveModalDropdowns();
+                }
+            }
+
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = '🔄 Refresh';
+        }
+
+        // ============================================
+        // FUNCTIONS: LOGOUT
+        // ============================================
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                alert('Kuna tatizo la kufunga akaunti. Jaribu tena.');
+            } else {
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+                window.location.href = '/auth/login.html';
+            }
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        logoutBtn.addEventListener('click', handleLogout);
+        refreshBtn.addEventListener('click', refreshAllData);
+        addClaimBtn.addEventListener('click', openAddModal);
+        giveClaimBtn.addEventListener('click', openGiveModal);
+        searchInput.addEventListener('input', filterClaims);
+        statusFilter.addEventListener('change', filterClaims);
+
+        // ============================================
+        // INIT - ANZA ADMIN CLAIMS
+        // ============================================
+        async function initAdminClaims() {
+            const user = await checkAdminSession();
+            if (!user) return;
+
+            const data = await loadData();
+            if (data) {
+                renderStats(data.claims);
+                renderClaimsTable(data.claims);
+            }
+
+            localStorage.setItem('dvary_user_id', user.id);
+        }
+
+        // ============================================
+        // ANZA
+        // ============================================
+        initAdminClaims();
+    </script>
+</body>
+  </html>f
