@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - Dvary Business</title>
+
+    <style>
+        /* ===== CSS ZOTE ZA SETTINGS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .sidebar .logo span {
+            color: #60a5fa;
+        }
+
+        .sidebar .user-info {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .sidebar .user-info .name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .sidebar .user-info .email {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .sidebar nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+        .sidebar nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+        .sidebar nav a .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar .logout-btn {
+            margin-top: auto;
+            padding: 12px 16px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sidebar .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: calc(100% - 250px);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #0f172a;
+        }
+        .page-header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748b;
+        }
+        .page-header p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* ===== SETTINGS CARDS ===== */
+        .settings-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 30px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            margin-bottom: 25px;
+            max-width: 700px;
+        }
+        .settings-card .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .settings-card .card-subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: 0.3s;
+            background: #f8fafc;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+        .form-group input:disabled {
+            background: #f1f5f9;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: scale(1.01);
+        }
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-danger {
+            background: #b91c1c;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-danger:hover {
+            background: #991b1b;
+        }
+        .btn-danger:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .msg {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+        .msg.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .msg.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        .msg.info {
+            display: block;
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 2px solid #e2e8f0;
+            margin: 10px 0 20px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 15px 10px;
+                align-items: center;
+            }
+            .sidebar .logo {
+                font-size: 16px;
+                text-align: center;
+            }
+            .sidebar .logo span {
+                display: none;
+            }
+            .sidebar .user-info {
+                display: none;
+            }
+            .sidebar nav a span {
+                display: none;
+            }
+            .sidebar nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar nav a .icon {
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            .main-content {
+                padding: 20px 15px;
+                max-width: calc(100% - 70px);
+            }
+            .settings-card {
+                padding: 20px;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            .form-actions button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    SIDEBAR
+    ============================================ -->
+    <aside class="sidebar">
+        <div class="logo">Dvary<span>Business</span></div>
+
+        <div class="user-info" id="userInfo">
+            <div class="name" id="userName">Loading...</div>
+            <div class="email" id="userEmail">loading@email.com</div>
+        </div>
+
+        <nav>
+            <a href="/dashboard/">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/dashboard/add-business.html">
+                <span class="icon">➕</span>
+                <span>Add Business</span>
+            </a>
+            <a href="/dashboard/claims.html">
+                <span class="icon">🎁</span>
+                <span>Claims</span>
+            </a>
+            <a href="/dashboard/analytics.html">
+                <span class="icon">📈</span>
+                <span>Analytics</span>
+            </a>
+            <a href="/dashboard/settings.html" class="active">
+                <span class="icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn" id="logoutBtn">
+            <span>🚪</span>
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1>⚙️ Settings <small>— Mipangilio ya akaunti yako</small></h1>
+            <p>Badilisha maelezo yako, nenosiri, au futa akaunti.</p>
+        </div>
+
+        <!-- ============================================
+        CARD 1: Profile Settings
+        ============================================ -->
+        <div class="settings-card">
+            <div class="card-title">👤 Maelezo ya Akaunti</div>
+            <div class="card-subtitle">Badilisha maelezo yako ya msingi.</div>
+
+            <form id="profileForm">
+                <div class="form-group">
+                    <label for="fullName">Jina Kamili</label>
+                    <input type="text" id="fullName" placeholder="Jina lako kamili" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="businessName">Jina la Biashara</label>
+                    <input type="text" id="businessName" placeholder="Jina la biashara yako" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Barua Pepe (Email)</label>
+                    <input type="email" id="email" disabled />
+                    <small style="color:#64748b; display:block; margin-top:5px;">Email haiwezi kubadilishwa. Wasiliana nasi kwa msaada.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Kategoria ya Biashara</label>
+                    <select id="category">
+                        <option value="Ujenzi">Ujenzi</option>
+                        <option value="Teknolojia">Teknolojia</option>
+                        <option value="Masoko">Masoko</option>
+                        <option value="Chakula">Chakula</option>
+                        <option value="Mitindo">Mitindo</option>
+                        <option value="Elimu">Elimu</option>
+                        <option value="Afya">Afya</option>
+                        <option value="Usafiri">Usafiri</option>
+                        <option value="Nyingine">Nyingine</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="updateProfileBtn">💾 Hifadhi Mabadiliko</button>
+                </div>
+
+                <div id="profileMessage" class="msg"></div>
+            </form>
+        </div>
+
+        <!-- ============================================
+        CARD 2: Change Password
+        ============================================ -->
+        <div class="settings-card">
+            <div class="card-title">🔑 Badilisha Nenosiri</div>
+            <div class="card-subtitle">Badilisha nenosiri lako la kuingia.</div>
+
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="currentPassword">Nenosiri la Sasa</label>
+                    <input type="password" id="currentPassword" placeholder="Ingiza nenosiri lako la sasa" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword">Nenosiri Mpya</label>
+                    <input type="password" id="newPassword" placeholder="Nenosiri mpya (angalau herufi 6)" required minlength="6" />
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Thibitisha Nenosiri Mpya</label>
+                    <input type="password" id="confirmPassword" placeholder="Andika nenosiri mpya tena" required minlength="6" />
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="updatePasswordBtn">🔑 Badilisha Nenosiri</button>
+                </div>
+
+                <div id="passwordMessage" class="msg"></div>
+            </form>
+        </div>
+
+        <!-- ============================================
+        CARD 3: Delete Account (Danger Zone)
+        ============================================ -->
+        <div class="settings-card" style="border-color: #b91c1c; border-width: 2px;">
+            <div class="card-title" style="color: #b91c1c;">⚠️ Futa Akaunti</div>
+            <div class="card-subtitle">Hii ni hatua ya kudumu. Biashara zako zote na data zote zitafutwa.</div>
+
+            <form id="deleteForm">
+                <div class="form-group">
+                    <label for="deleteConfirm">Andika "FUTA" ili kuthibitisha</label>
+                    <input type="text" id="deleteConfirm" placeholder="Andika FUTA hapa" required />
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-danger" id="deleteAccountBtn">🗑️ Futa Akaunti</button>
+                </div>
+
+                <div id="deleteMessage" class="msg"></div>
+            </form>
+        </div>
+    </main>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        // ============================================
+        // INGIZA SUAPBASE CLIENT
+        // ============================================
+        import { supabase } from '/assets/js/supabase.js';
+
+        // ============================================
+        // VITAMBULISHO VYA ELEMENTS
+        // ============================================
+        const userNameEl = document.getElementById('userName');
+        const userEmailEl = document.getElementById('userEmail');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Profile form
+        const profileForm = document.getElementById('profileForm');
+        const fullNameInput = document.getElementById('fullName');
+        const businessNameInput = document.getElementById('businessName');
+        const emailInput = document.getElementById('email');
+        const categoryInput = document.getElementById('category');
+        const updateProfileBtn = document.getElementById('updateProfileBtn');
+        const profileMessage = document.getElementById('profileMessage');
+
+        // Password form
+        const passwordForm = document.getElementById('passwordForm');
+        const currentPasswordInput = document.getElementById('currentPassword');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const updatePasswordBtn = document.getElementById('updatePasswordBtn');
+        const passwordMessage = document.getElementById('passwordMessage');
+
+        // Delete form
+        const deleteForm = document.getElementById('deleteForm');
+        const deleteConfirmInput = document.getElementById('deleteConfirm');
+        const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+        const deleteMessage = document.getElementById('deleteMessage');
+
+        // ============================================
+        // FUNCTIONS: CHECK SESSION
+        // ============================================
+        async function checkSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = '/auth/login.html';
+                return null;
+            }
+
+            return session.user;
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD USER DATA
+        // ============================================
+        async function loadUserData(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+
+                if (error) {
+                    console.error('Error loading user:', error);
+                    return null;
+                }
+
+                return data;
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: SHOW MESSAGE
+        // ============================================
+        function showMessage(element, type, text) {
+            element.className = `msg ${type}`;
+            element.textContent = text;
+            element.style.display = 'block';
+        }
+
+        function hideMessage(element) {
+            element.className = 'msg';
+            element.style.display = 'none';
+        }
+
+        // ============================================
+        // FUNCTIONS: UPDATE PROFILE
+        // ============================================
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessage(profileMessage);
+
+            const user = await checkSession();
+            if (!user) return;
+
+            const fullName = fullNameInput.value.trim();
+            const businessName = businessNameInput.value.trim();
+            const category = categoryInput.value;
+
+            if (!fullName || !businessName) {
+                showMessage(profileMessage, 'error', 'Tafadhali jaza jina lako na jina la biashara.');
+                return;
+            }
+
+            updateProfileBtn.disabled = true;
+            updateProfileBtn.textContent = '⏳ Inahifadhi...';
+
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .update({
+                        full_name: fullName,
+                        business_name: businessName,
+                        category: category,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', user.id);
+
+                if (error) {
+                    console.error('Update error:', error);
+                    showMessage(profileMessage, 'error', error.message || 'Kuna tatizo la kuhifadhi. Jaribu tena.');
+                    return;
+                }
+
+                showMessage(profileMessage, 'success', '✅ Mabadiliko yamehifadhiwa kikamilifu!');
+                userNameEl.textContent = fullName;
+
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                showMessage(profileMessage, 'error', 'Kuna hitilafu ya mfumo. Jaribu tena.');
+            } finally {
+                updateProfileBtn.disabled = false;
+                updateProfileBtn.textContent = '💾 Hifadhi Mabadiliko';
+            }
+        });
+
+        // ============================================
+        // FUNCTIONS: UPDATE PASSWORD
+        // ============================================
+        passwordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessage(passwordMessage);
+
+            const user = await checkSession();
+            if (!user) return;
+
+            const currentPassword = currentPasswordInput.value.trim();
+            const newPassword = newPasswordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showMessage(passwordMessage, 'error', 'Tafadhali jaza sehemu zote.');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showMessage(passwordMessage, 'error', 'Nenosiri mpya lazima liwe na angalau herufi 6.');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showMessage(passwordMessage, 'error', 'Nenosiri mpya na uthibitisho hazifanani.');
+                return;
+            }
+
+            updatePasswordBtn.disabled = true;
+            updatePasswordBtn.textContent = '⏳ Inabadilisha...';
+
+            try {
+                // Badilisha nenosiri kwa kutumia Supabase Auth
+                const { data, error } = await supabase.auth.updateUser({
+                    password: newPassword
+                });
+
+                if (error) {
+                    console.error('Password update error:', error);
+                    showMessage(passwordMessage, 'error', error.message || 'Kuna tatizo la kubadilisha nenosiri. Hakikisha nenosiri la sasa ni sahihi.');
+                    return;
+                }
+
+                showMessage(passwordMessage, 'success', '✅ Nenosiri limebadilishwa kikamilifu!');
+                currentPasswordInput.value = '';
+                newPasswordInput.value = '';
+                confirmPasswordInput.value = '';
+
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                showMessage(passwordMessage, 'error', 'Kuna hitilafu ya mfumo. Jaribu tena.');
+            } finally {
+                updatePasswordBtn.disabled = false;
+                updatePasswordBtn.textContent = '🔑 Badilisha Nenosiri';
+            }
+        });
+
+        // ============================================
+        // FUNCTIONS: DELETE ACCOUNT
+        // ============================================
+        deleteForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessage(deleteMessage);
+
+            const user = await checkSession();
+            if (!user) return;
+
+            const confirmText = deleteConfirmInput.value.trim();
+
+            if (confirmText !== 'FUTA') {
+                showMessage(deleteMessage, 'error', 'Tafadhali andika "FUTA" kwa herufi kubwa ili kuthibitisha.');
+                return;
+            }
+
+            if (!confirm('Je, una uhakika unataka kufuta akaunti yako? Hatua hii haiwezi kurejeshwa!')) {
+                return;
+            }
+
+            deleteAccountBtn.disabled = true;
+            deleteAccountBtn.textContent = '⏳ Inafuta...';
+
+            try {
+                // 1. Futa biashara zote za mtumiaji
+                const { error: bizError } = await supabase
+                    .from('businesses')
+                    .delete()
+                    .eq('user_id', user.id);
+
+                if (bizError) {
+                    console.error('Delete businesses error:', bizError);
+                }
+
+                // 2. Futa claims zote za mtumiaji
+                const { error: claimError } = await supabase
+                    .from('claims')
+                    .delete()
+                    .eq('user_id', user.id);
+
+                if (claimError) {
+                    console.error('Delete claims error:', claimError);
+                }
+
+                // 3. Futa data ya mtumiaji kwenye users table
+                const { error: userError } = await supabase
+                    .from('users')
+                    .delete()
+                    .eq('id', user.id);
+
+                if (userError) {
+                    console.error('Delete user error:', userError);
+                    showMessage(deleteMessage, 'error', 'Kuna tatizo la kufuta akaunti. Jaribu tena.');
+                    return;
+                }
+
+                // 4. Futa akaunti ya Supabase Auth
+                const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
+
+                if (authError) {
+                    console.error('Delete auth error:', authError);
+                    // Tunaendelea hata kama auth imeshindwa, kwa sababu data zimefutwa
+                }
+
+                showMessage(deleteMessage, 'success', '✅ Akaunti imefutwa kikamilifu! Unaelekezwa kwenye homepage...');
+
+                // Futa session
+                await supabase.auth.signOut();
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                showMessage(deleteMessage, 'error', 'Kuna hitilafu ya mfumo. Jaribu tena.');
+            } finally {
+                deleteAccountBtn.disabled = false;
+                deleteAccountBtn.textContent = '🗑️ Futa Akaunti';
+            }
+        });
+
+        // ============================================
+        // FUNCTIONS: LOGOUT
+        // ============================================
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                alert('Kuna tatizo la kufunga akaunti. Jaribu tena.');
+            } else {
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+                window.location.href = '/auth/login.html';
+            }
+        }
+
+        // ============================================
+        // INIT - LOAD USER DATA
+        // ============================================
+        async function initSettings() {
+            const user = await checkSession();
+            if (!user) return;
+
+            const userData = await loadUserData(user.id);
+            if (userData) {
+                fullNameInput.value = userData.full_name || '';
+                businessNameInput.value = userData.business_name || '';
+                emailInput.value = userData.email || user.email || '';
+                categoryInput.value = userData.category || '';
+
+                userNameEl.textContent = userData.full_name || 'Mfanyabiashara';
+                userEmailEl.textContent = userData.email || user.email || '';
+            } else {
+                userNameEl.textContent = user.email || 'Mfanyabiashara';
+                userEmailEl.textContent = user.email || '';
+                emailInput.value = user.email || '';
+            }
+
+            localStorage.setItem('dvary_user_id', user.id);
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        logoutBtn.addEventListener('click', handleLogout);
+
+        // ============================================
+        // ANZA
+        // ============================================
+        initSettings();
+    </script>
+</body>
+                              </html>
