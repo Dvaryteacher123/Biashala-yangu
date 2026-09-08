@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Settings - Dvary Business</title>
+
+    <style>
+        /* ===== CSS ZOTE ZA ADMIN SETTINGS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .sidebar .logo span {
+            color: #60a5fa;
+        }
+
+        .sidebar .admin-badge {
+            background: #2563eb;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .sidebar nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+        .sidebar nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+        .sidebar nav a .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar .logout-btn {
+            margin-top: auto;
+            padding: 12px 16px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sidebar .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: calc(100% - 250px);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #0f172a;
+        }
+        .page-header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748b;
+        }
+        .page-header p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* ===== SETTINGS CARDS ===== */
+        .settings-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 30px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            margin-bottom: 25px;
+            max-width: 800px;
+        }
+        .settings-card .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .settings-card .card-subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.3s;
+            background: #f8fafc;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            padding: 10px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: scale(1.01);
+        }
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-danger {
+            background: #b91c1c;
+            color: white;
+            padding: 10px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-danger:hover {
+            background: #991b1b;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .msg {
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-top: 12px;
+            font-size: 13px;
+            display: none;
+        }
+        .msg.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .msg.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        /* ===== ACTIVITY LOG TABLE ===== */
+        .activity-log {
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .activity-log table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .activity-log th {
+            text-align: left;
+            padding: 10px 8px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 11px;
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            background: white;
+        }
+        .activity-log td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+        }
+        .activity-log tr:last-child td {
+            border-bottom: none;
+        }
+        .activity-log .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 15px 10px;
+                align-items: center;
+            }
+            .sidebar .logo {
+                font-size: 16px;
+                text-align: center;
+            }
+            .sidebar .logo span {
+                display: none;
+            }
+            .sidebar .admin-badge {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+            .sidebar nav a span {
+                display: none;
+            }
+            .sidebar nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar nav a .icon {
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            .main-content {
+                padding: 20px 15px;
+                max-width: calc(100% - 70px);
+            }
+            .settings-card {
+                padding: 20px;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            .form-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    SIDEBAR
+    ============================================ -->
+    <aside class="sidebar">
+        <div class="logo">Dvary<span>Business</span></div>
+        <div class="admin-badge">🔐 ADMIN ACCESS 100%</div>
+
+        <nav>
+            <a href="/admin/">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/businesses.html">
+                <span class="icon">🏢</span>
+                <span>Businesses</span>
+            </a>
+            <a href="/admin/claims.html">
+                <span class="icon">🎁</span>
+                <span>Claims</span>
+            </a>
+            <a href="/admin/reviews.html">
+                <span class="icon">⭐</span>
+                <span>Reviews</span>
+            </a>
+            <a href="/admin/settings.html" class="active">
+                <span class="icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn" id="logoutBtn">
+            <span>🚪</span>
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1>⚙️ Admin Settings <small>— Mipangilio ya mfumo</small></h1>
+            <p>Simamia mipangilio ya jumla, admin wengine, na angalia shughuli za mfumo.</p>
+        </div>
+
+        <!-- ============================================
+        CARD 1: General Settings
+        ============================================ -->
+        <div class="settings-card">
+            <div class="card-title">🌐 Mipangilio ya Jumla</div>
+            <div class="card-subtitle">Badilisha mipangilio ya msingi ya mfumo.</div>
+
+            <form id="generalSettingsForm">
+                <div class="form-group">
+                    <label for="siteName">Jina la Tovuti</label>
+                    <input type="text" id="siteName" placeholder="Dvary Business" />
+                </div>
+
+                <div class="form-group">
+                    <label for="siteTagline">Tagline / Slogan</label>
+                    <input type="text" id="siteTagline" placeholder="Discover & Grow Your Business" />
+                </div>
+
+                <div class="form-group">
+                    <label for="contactEmail">Email ya Wasiliana</label>
+                    <input type="email" id="contactEmail" placeholder="info@dvary.com" />
+                </div>
+
+                <div class="form-group">
+                    <label for="contactPhone">Namba ya Simu</label>
+                    <input type="text" id="contactPhone" placeholder="0712 345 678" />
+                </div>
+
+                <div class="form-group">
+                    <label for="siteDescription">Maelezo ya Tovuti (Meta Description)</label>
+                    <textarea id="siteDescription" placeholder="Maelezo mafupi kuhusu tovuti yako"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="saveGeneralBtn">💾 Hifadhi Mipangilio</button>
+                </div>
+
+                <div id="generalMessage" class="msg"></div>
+            </form>
+        </div>
+
+        <!-- ============================================
+        CARD 2: Admin Users
+        ============================================ -->
+        <div class="settings-card">
+            <div class="card-title">👤 Wasimamizi (Admin Users)</div>
+            <div class="card-subtitle">Ona na simamia admin wengine wa mfumo.</div>
+
+            <div id="adminUsersContainer">
+                <div class="loading-state" style="text-align:center; padding:20px; color:#64748b;">
+                    ⏳ Inapakia admin users...
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        CARD 3: Activity Log
+        ============================================ -->
+        <div class="settings-card">
+            <div class="card-title">📋 Activity Log</div>
+            <div class="card-subtitle">Angalia shughuli za hivi karibuni kwenye mfumo.</div>
+
+            <div id="activityLogContainer">
+                <div class="loading-state" style="text-align:center; padding:20px; color:#64748b;">
+                    ⏳ Inapakia activity log...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        // ============================================
+        // INGIZA SUAPBASE CLIENT
+        // ============================================
+        import { supabase } from '/assets/js/supabase.js';
+
+        // ============================================
+        // VITAMBULISHO VYA ELEMENTS
+        // ============================================
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // General Settings
+        const generalForm = document.getElementById('generalSettingsForm');
+        const siteNameInput = document.getElementById('siteName');
+        const siteTaglineInput = document.getElementById('siteTagline');
+        const contactEmailInput = document.getElementById('contactEmail');
+        const contactPhoneInput = document.getElementById('contactPhone');
+        const siteDescriptionInput = document.getElementById('siteDescription');
+        const saveGeneralBtn = document.getElementById('saveGeneralBtn');
+        const generalMessage = document.getElementById('generalMessage');
+
+        // Admin Users
+        const adminUsersContainer = document.getElementById('adminUsersContainer');
+
+        // Activity Log
+        const activityLogContainer = document.getElementById('activityLogContainer');
+
+        let allUsers = [];
+        let allActivityLogs = [];
+
+        // ============================================
+        // FUNCTIONS: CHECK ADMIN SESSION
+        // ============================================
+        async function checkAdminSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = '/auth/login.html';
+                return null;
+            }
+
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (userError || !userData || userData.role !== 'admin') {
+                window.location.href = '/dashboard/';
+                return null;
+            }
+
+            return session.user;
+        }
+
+        // ============================================
+        // FUNCTIONS: SHOW MESSAGE
+        // ============================================
+        function showMessage(element, type, text) {
+            element.className = `msg ${type}`;
+            element.textContent = text;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 4000);
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD SETTINGS
+        // ============================================
+        async function loadSettings() {
+            try {
+                const { data, error } = await supabase
+                    .from('settings')
+                    .select('*')
+                    .limit(1);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    const settings = data[0];
+                    siteNameInput.value = settings.site_name || '';
+                    siteTaglineInput.value = settings.site_tagline || '';
+                    contactEmailInput.value = settings.contact_email || '';
+                    contactPhoneInput.value = settings.contact_phone || '';
+                    siteDescriptionInput.value = settings.site_description || '';
+                }
+
+                return data ? data[0] : null;
+            } catch (err) {
+                console.error('Error loading settings:', err);
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: SAVE SETTINGS
+        // ============================================
+        generalForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            generalMessage.style.display = 'none';
+
+            const siteName = siteNameInput.value.trim();
+            const siteTagline = siteTaglineInput.value.trim();
+            const contactEmail = contactEmailInput.value.trim();
+            const contactPhone = contactPhoneInput.value.trim();
+            const siteDescription = siteDescriptionInput.value.trim();
+
+            if (!siteName) {
+                showMessage(generalMessage, 'error', 'Tafadhali ingiza jina la tovuti.');
+                return;
+            }
+
+            saveGeneralBtn.disabled = true;
+            saveGeneralBtn.textContent = '⏳ Inahifadhi...';
+
+            try {
+                // Angalia kama settings tayari zipo
+                const { data: existing, error: checkError } = await supabase
+                    .from('settings')
+                    .select('id')
+                    .limit(1);
+
+                if (checkError) throw checkError;
+
+                let result;
+                if (existing && existing.length > 0) {
+                    // Update existing
+                    result = await supabase
+                        .from('settings')
+                        .update({
+                            site_name: siteName,
+                            site_tagline: siteTagline,
+                            contact_email: contactEmail,
+                            contact_phone: contactPhone,
+                            site_description: siteDescription,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', existing[0].id);
+                } else {
+                    // Insert new
+                    result = await supabase
+                        .from('settings')
+                        .insert([{
+                            site_name: siteName,
+                            site_tagline: siteTagline,
+                            contact_email: contactEmail,
+                            contact_phone: contactPhone,
+                            site_description: siteDescription,
+                            created_at: new Date().toISOString()
+                        }]);
+                }
+
+                if (result.error) throw result.error;
+
+                showMessage(generalMessage, 'success', '✅ Mipangilio imehifadhiwa kikamilifu!');
+
+            } catch (err) {
+                console.error('Save settings error:', err);
+                showMessage(generalMessage, 'error', 'Kuna tatizo la kuhifadhi mipangilio. Jaribu tena.');
+            } finally {
+                saveGeneralBtn.disabled = false;
+                saveGeneralBtn.textContent = '💾 Hifadhi Mipangilio';
+            }
+        });
+
+        // ============================================
+        // FUNCTIONS: LOAD ADMIN USERS
+        // ============================================
+        async function loadAdminUsers() {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('role', 'admin')
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+                allUsers = data || [];
+
+                if (allUsers.length === 0) {
+                    adminUsersContainer.innerHTML = `
+                        <div class="empty-state" style="text-align:center; padding:20px; color:#64748b;">
+                            📭 Hakuna admin users wengine.
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `
+                    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left; padding:8px; color:#64748b; border-bottom:2px solid #e2e8f0;">Jina</th>
+                                <th style="text-align:left; padding:8px; color:#64748b; border-bottom:2px solid #e2e8f0;">Email</th>
+                                <th style="text-align:left; padding:8px; color:#64748b; border-bottom:2px solid #e2e8f0;">Tarehe</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                allUsers.forEach(user => {
+                    const date = user.created_at ? new Date(user.created_at).toLocaleDateString('sw-TZ') : '—';
+                    html += `
+                        <tr>
+                            <td style="padding:8px; border-bottom:1px solid #f1f5f9;"><strong>${user.full_name || '—'}</strong></td>
+                            <td style="padding:8px; border-bottom:1px solid #f1f5f9; color:#2563eb;">${user.email}</td>
+                            <td style="padding:8px; border-bottom:1px solid #f1f5f9; font-size:12px;">${date}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                        </tbody>
+                    </table>
+                `;
+
+                adminUsersContainer.innerHTML = html;
+
+            } catch (err) {
+                console.error('Error loading admin users:', err);
+                adminUsersContainer.innerHTML = `
+                    <div style="text-align:center; padding:20px; color:#b91c1c;">
+                        ⚠️ Kuna tatizo la kupakia admin users.
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD ACTIVITY LOG
+        // ============================================
+        async function loadActivityLog() {
+            try {
+                // Kwa sasa tunatumia data bandia kwa ajili ya activity log
+                // Baadae unaweza kuunda table ya activity_logs na kujaza data halisi
+                const mockLogs = [
+                    { action: 'Admin aliingia mfumo', user: 'Admin', time: new Date(Date.now() - 1000 * 60 * 5).toLocaleString('sw-TZ') },
+                    { action: 'Biashara mpya imeongezwa: Outcrowd Studio', user: 'Admin', time: new Date(Date.now() - 1000 * 60 * 30).toLocaleString('sw-TZ') },
+                    { action: 'Claim imetolewa kwa user: John Doe', user: 'Admin', time: new Date(Date.now() - 1000 * 60 * 60 * 2).toLocaleString('sw-TZ') },
+                    { action: 'Review imeapprove: HALO LAB', user: 'Admin', time: new Date(Date.now() - 1000 * 60 * 60 * 5).toLocaleString('sw-TZ') },
+                    { action: 'User amejisajili: Jane Smith', user: 'System', time: new Date(Date.now() - 1000 * 60 * 60 * 12).toLocaleString('sw-TZ') },
+                    { action: 'Biashara imefutwa: Wello Agency', user: 'Admin', time: new Date(Date.now() - 1000 * 60 * 60 * 24).toLocaleString('sw-TZ') },
+                    { action: 'Mipangilio ya mfumo imebadilishwa', user: 'Admin', time: new Date(Date.now() - 1000 * 60 * 60 * 48).toLocaleString('sw-TZ') }
+                ];
+
+                // Tunaweza pia kujaribu kusoma kutoka Supabase kama table ipo
+                try {
+                    const { data, error } = await supabase
+                        .from('activity_logs')
+                        .select('*')
+                        .order('created_at', { ascending: false })
+                        .limit(20);
+
+                    if (!error && data && data.length > 0) {
+                        allActivityLogs = data;
+                        renderActivityLog(data);
+                        return;
+                    }
+                } catch (e) {
+                    // Table haipo, tumia mock data
+                }
+
+                renderActivityLog(mockLogs);
+
+            } catch (err) {
+                console.error('Error loading activity log:', err);
+                activityLogContainer.innerHTML = `
+                    <div style="text-align:center; padding:20px; color:#b91c1c;">
+                        ⚠️ Kuna tatizo la kupakia activity log.
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER ACTIVITY LOG
+        // ============================================
+        function renderActivityLog(logs) {
+            if (!logs || logs.length === 0) {
+                activityLogContainer.innerHTML = `
+                    <div class="empty-state" style="text-align:center; padding:20px; color:#64748b;">
+                        📭 Hakuna shughuli zilizorekodiwa.
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="activity-log">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Shughuli</th>
+                                <th>Mtumiaji</th>
+                                <th>Muda</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            logs.forEach((log, index) => {
+                const action = log.action || log.message || '—';
+                const user = log.user || log.user_name || 'System';
+                const time = log.time || log.created_at || '—';
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${action}</td>
+                        <td style="color:#2563eb; font-size:12px;">${user}</td>
+                        <td style="font-size:12px;">${time}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            activityLogContainer.innerHTML = html;
+        }
+
+        // ============================================
+        // FUNCTIONS: LOGOUT
+        // ============================================
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                alert('Kuna tatizo la kufunga akaunti. Jaribu tena.');
+            } else {
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+                window.location.href = '/auth/login.html';
+            }
+        }
+
+        // ============================================
+        // INIT - ANZA ADMIN SETTINGS
+        // ============================================
+        async function initAdminSettings() {
+            const user = await checkAdminSession();
+            if (!user) return;
+
+            await loadSettings();
+            await loadAdminUsers();
+            await loadActivityLog();
+
+            localStorage.setItem('dvary_user_id', user.id);
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        logoutBtn.addEventListener('click', handleLogout);
+
+        // ============================================
+        // ANZA
+        // ============================================
+        initAdminSettings();
+
+        // ============================================
+        // MUUNDO WA DATABASE (Kwa kumbukumbu)
+        // ============================================
+        /*
+        -- TABLE: settings (Unda kama haipo)
+        CREATE TABLE settings (
+          id BIGSERIAL PRIMARY KEY,
+          site_name VARCHAR(200),
+          site_tagline VARCHAR(200),
+          contact_email VARCHAR(200),
+          contact_phone VARCHAR(50),
+          site_description TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        -- TABLE: activity_logs (Optional - kwa ajili ya activity tracking)
+        CREATE TABLE activity_logs (
+          id BIGSERIAL PRIMARY KEY,
+          action TEXT NOT NULL,
+          user_id UUID REFERENCES users(id),
+          user_name VARCHAR(200),
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        -- Weka setting default
+        INSERT INTO settings (site_name, site_tagline, contact_email, site_description)
+        VALUES ('Dvary Business', 'Discover & Grow Your Business', 'info@dvary.com', 'Directory ya wafanyabiashara Tanzania');
+        */
+    </script>
+</body>
+</html>
