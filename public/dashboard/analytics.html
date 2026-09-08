@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analytics - Dvary Business</title>
+
+    <style>
+        /* ===== CSS ZOTE ZA ANALYTICS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .sidebar .logo span {
+            color: #60a5fa;
+        }
+
+        .sidebar .user-info {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .sidebar .user-info .name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .sidebar .user-info .email {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .sidebar nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+        .sidebar nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+        .sidebar nav a .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar .logout-btn {
+            margin-top: auto;
+            padding: 12px 16px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sidebar .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: calc(100% - 250px);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #0f172a;
+        }
+        .page-header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748b;
+        }
+        .page-header p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px 22px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+        .stat-card .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .stat-card .stat-label {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .stat-card .stat-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        /* ===== CHARTS (CSS Bar Chart) ===== */
+        .chart-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            margin-bottom: 30px;
+        }
+        .chart-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .chart-section .section-header h2 {
+            font-size: 20px;
+            color: #0f172a;
+        }
+
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .chart-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .chart-bar-label {
+            width: 150px;
+            font-size: 14px;
+            color: #0f172a;
+            font-weight: 500;
+            flex-shrink: 0;
+            text-align: right;
+        }
+        .chart-bar-track {
+            flex: 1;
+            height: 28px;
+            background: #f1f5f9;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+        .chart-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+            border-radius: 30px;
+            transition: width 0.8s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 30px;
+        }
+        .chart-bar-fill.low {
+            background: linear-gradient(90deg, #22c55e, #86efac);
+        }
+        .chart-bar-fill.medium {
+            background: linear-gradient(90deg, #eab308, #fde047);
+        }
+        .chart-bar-fill.high {
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+        }
+        .chart-bar-fill.very-high {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        }
+
+        /* ===== BUSINESS LIST (Compact) ===== */
+        .business-table-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+        .business-table-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .business-table-section .section-header h2 {
+            font-size: 20px;
+            color: #0f172a;
+        }
+
+        .business-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .business-table th {
+            text-align: left;
+            padding: 12px 8px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .business-table td {
+            padding: 14px 8px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #0f172a;
+        }
+        .business-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .empty-state h3 {
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 15px 10px;
+                align-items: center;
+            }
+            .sidebar .logo {
+                font-size: 16px;
+                text-align: center;
+            }
+            .sidebar .logo span {
+                display: none;
+            }
+            .sidebar .user-info {
+                display: none;
+            }
+            .sidebar nav a span {
+                display: none;
+            }
+            .sidebar nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar nav a .icon {
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            .main-content {
+                padding: 20px 15px;
+                max-width: calc(100% - 70px);
+            }
+            .page-header h1 {
+                font-size: 22px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .chart-bar-label {
+                width: 80px;
+                font-size: 12px;
+            }
+            .business-table {
+                font-size: 13px;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    SIDEBAR
+    ============================================ -->
+    <aside class="sidebar">
+        <div class="logo">Dvary<span>Business</span></div>
+
+        <div class="user-info" id="userInfo">
+            <div class="name" id="userName">Loading...</div>
+            <div class="email" id="userEmail">loading@email.com</div>
+        </div>
+
+        <nav>
+            <a href="/dashboard/">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/dashboard/add-business.html">
+                <span class="icon">➕</span>
+                <span>Add Business</span>
+            </a>
+            <a href="/dashboard/claims.html">
+                <span class="icon">🎁</span>
+                <span>Claims</span>
+            </a>
+            <a href="/dashboard/analytics.html" class="active">
+                <span class="icon">📈</span>
+                <span>Analytics</span>
+            </a>
+            <a href="/dashboard/settings.html">
+                <span class="icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn" id="logoutBtn">
+            <span>🚪</span>
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1>📈 Analytics <small>— Takwimu za biashara zako</small></h1>
+            <p>Angalia utendaji wa biashara zako kwa undani.</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-number" id="totalBusinesses">0</div>
+                <div class="stat-label">Jumla ya Biashara</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👁️</div>
+                <div class="stat-number" id="totalViews">0</div>
+                <div class="stat-label">Jumla ya Views</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❤️</div>
+                <div class="stat-number" id="totalLikes">0</div>
+                <div class="stat-label">Jumla ya Likes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-number" id="avgEngagement">0%</div>
+                <div class="stat-label">Wastani wa Engagement</div>
+            </div>
+        </div>
+
+        <!-- Chart: Views per Business -->
+        <div class="chart-section">
+            <div class="section-header">
+                <h2>👁️ Views kwa Biashara</h2>
+            </div>
+            <div id="viewsChart" class="chart-container">
+                <div class="loading-state">⏳ Inapakia data...</div>
+            </div>
+        </div>
+
+        <!-- Chart: Likes per Business -->
+        <div class="chart-section">
+            <div class="section-header">
+                <h2>❤️ Likes kwa Biashara</h2>
+            </div>
+            <div id="likesChart" class="chart-container">
+                <div class="loading-state">⏳ Inapakia data...</div>
+            </div>
+        </div>
+
+        <!-- Business List with Stats -->
+        <div class="business-table-section">
+            <div class="section-header">
+                <h2>📋 Biashara Zako (Maelezo Kamili)</h2>
+            </div>
+            <div id="businessList">
+                <div class="empty-state">
+                    <div class="icon">📭</div>
+                    <h3>Hujatengeneza biashara bado</h3>
+                    <p>Bonyeza "Add Business" ili kuanza kuweka biashara yako kwenye directory.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        // ============================================
+        // INGIZA SUAPBASE CLIENT
+        // ============================================
+        import { supabase } from '/assets/js/supabase.js';
+
+        // ============================================
+        // VITAMBULISHO VYA ELEMENTS
+        // ============================================
+        const userNameEl = document.getElementById('userName');
+        const userEmailEl = document.getElementById('userEmail');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        const totalBusinessesEl = document.getElementById('totalBusinesses');
+        const totalViewsEl = document.getElementById('totalViews');
+        const totalLikesEl = document.getElementById('totalLikes');
+        const avgEngagementEl = document.getElementById('avgEngagement');
+        const viewsChartContainer = document.getElementById('viewsChart');
+        const likesChartContainer = document.getElementById('likesChart');
+        const businessListEl = document.getElementById('businessList');
+
+        // ============================================
+        // FUNCTIONS: CHECK SESSION
+        // ============================================
+        async function checkSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = '/auth/login.html';
+                return null;
+            }
+
+            return session.user;
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD USER DATA
+        // ============================================
+        async function loadUserData(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('full_name, email')
+                    .eq('id', userId)
+                    .single();
+
+                if (error) {
+                    console.error('Error loading user:', error);
+                    return null;
+                }
+
+                return data;
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD BUSINESSES
+        // ============================================
+        async function loadBusinesses(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('businesses')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error loading businesses:', error);
+                    return [];
+                }
+
+                return data || [];
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                return [];
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER STATS
+        // ============================================
+        function renderStats(businesses) {
+            const total = businesses.length;
+            let totalViews = 0;
+            let totalLikes = 0;
+
+            businesses.forEach(biz => {
+                totalViews += biz.views || 0;
+                totalLikes += biz.likes || 0;
+            });
+
+            totalBusinessesEl.textContent = total;
+            totalViewsEl.textContent = totalViews.toLocaleString();
+            totalLikesEl.textContent = totalLikes.toLocaleString();
+
+            // Wastani wa engagement (views + likes per business)
+            if (total > 0) {
+                const avg = Math.round(((totalViews + totalLikes) / total) * 100) / 100;
+                avgEngagementEl.textContent = avg.toFixed(1);
+            } else {
+                avgEngagementEl.textContent = '0';
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER CHART (Bar Chart)
+        // ============================================
+        function renderChart(container, businesses, metric, label, colorClass) {
+            if (!businesses || businesses.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="icon">📊</div><h3>Hakuna data</h3><p>Hakuna biashara zilizopo bado.</p></div>`;
+                return;
+            }
+
+            // Pata max value kwa scaling
+            const maxVal = Math.max(...businesses.map(b => b[metric] || 0), 1);
+
+            let html = '';
+            businesses.forEach(biz => {
+                const val = biz[metric] || 0;
+                const percentage = Math.round((val / maxVal) * 100);
+                const displayVal = val.toLocaleString();
+
+                // Chagua color class based on percentage
+                let color = 'low';
+                if (percentage > 80) color = 'very-high';
+                else if (percentage > 50) color = 'high';
+                else if (percentage > 25) color = 'medium';
+
+                html += `
+                    <div class="chart-bar-row">
+                        <div class="chart-bar-label">${biz.name}</div>
+                        <div class="chart-bar-track">
+                            <div class="chart-bar-fill ${color}" style="width: ${Math.max(percentage, 5)}%;">
+                                ${displayVal}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER BUSINESS TABLE
+        // ============================================
+        function renderBusinessTable(businesses) {
+            if (!businesses || businesses.length === 0) {
+                businessListEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <h3>Hujatengeneza biashara bado</h3>
+                        <p>Bonyeza "Add Business" ili kuanza kuweka biashara yako kwenye directory.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="business-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jina la Biashara</th>
+                            <th>Kategoria</th>
+                            <th>Views</th>
+                            <th>Likes</th>
+                            <th>Engagement</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            businesses.forEach((biz, index) => {
+                const engagement = ((biz.views || 0) + (biz.likes || 0));
+                const statusLabel = biz.is_active ? '✅ Active' : '⏳ Inactive';
+                const statusColor = biz.is_active ? 'active' : 'pending';
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${biz.name}</strong></td>
+                        <td>${biz.category || '—'}</td>
+                        <td>${biz.views || 0}</td>
+                        <td>${biz.likes || 0}</td>
+                        <td>${engagement}</td>
+                        <td><span class="status-badge ${statusColor}">${statusLabel}</span></td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            businessListEl.innerHTML = html;
+        }
+
+        // ============================================
+        // FUNCTIONS: LOGOUT
+        // ============================================
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                alert('Kuna tatizo la kufunga akaunti. Jaribu tena.');
+            } else {
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+                window.location.href = '/auth/login.html';
+            }
+        }
+
+        // ============================================
+        // INIT - PAKIA DATA ZOTE
+        // ============================================
+        async function initAnalytics() {
+            // 1. Check session
+            const user = await checkSession();
+            if (!user) return;
+
+            // 2. Load user data for sidebar
+            const userData = await loadUserData(user.id);
+            if (userData) {
+                userNameEl.textContent = userData.full_name || 'Mfanyabiashara';
+                userEmailEl.textContent = userData.email || user.email;
+            } else {
+                userNameEl.textContent = user.email || 'Mfanyabiashara';
+                userEmailEl.textContent = user.email || '';
+            }
+
+            // 3. Load businesses
+            const businesses = await loadBusinesses(user.id);
+
+            // 4. Render everything
+            renderStats(businesses);
+            renderChart(viewsChartContainer, businesses, 'views', 'Views', 'high');
+            renderChart(likesChartContainer, businesses, 'likes', 'Likes', 'medium');
+            renderBusinessTable(businesses);
+
+            // 5. Hifadhi ID kwenye localStorage
+            localStorage.setItem('dvary_user_id', user.id);
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        logoutBtn.addEventListener('click', handleLogout);
+
+        // ============================================
+        // ANZA
+        // ============================================
+        initAnalytics();
+    </script>
+</body>
+</html>
