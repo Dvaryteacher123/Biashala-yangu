@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - Dvary Business</title>
+  
+  <style>
+    /* ===== CSS ZOTE ZA SIGNUP ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .signup-container {
+      background: white;
+      padding: 40px 35px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      max-width: 440px;
+      width: 100%;
+      border: 1px solid #e2e8f0;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+    .logo span {
+      color: #2563eb;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: 15px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 15px;
+      transition: 0.3s;
+      background: #f8fafc;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #2563eb;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .btn-signup {
+      width: 100%;
+      padding: 14px;
+      background: #22c55e;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+    .btn-signup:hover {
+      background: #16a34a;
+      transform: scale(1.01);
+    }
+    .btn-signup:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .msg {
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-top: 15px;
+      font-size: 14px;
+      display: none;
+    }
+    .msg.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    .msg.success {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .extra-links {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #64748b;
+    }
+    .extra-links a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .extra-links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <div class="logo">Dvary<span>Business</span></div>
+    <p class="subtitle">Jiandikishe kama mfanyabiashara</p>
+
+    <!-- SIGNUP FORM -->
+    <form id="signupForm">
+      <div class="form-group">
+        <label for="fullName">Jina Kamili</label>
+        <input type="text" id="fullName" placeholder="Jina lako kamili" required />
+      </div>
+
+      <div class="form-group">
+        <label for="businessName">Jina la Biashara</label>
+        <input type="text" id="businessName" placeholder="Jina la biashara yako" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Barua Pepe (Email)</label>
+        <input type="email" id="email" placeholder="mfano@email.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Nenosiri</label>
+        <input type="password" id="password" placeholder="Nenosiri (angalau herufi 6)" required minlength="6" />
+      </div>
+
+      <div class="form-group">
+        <label for="category">Kategoria ya Biashara</label>
+        <select id="category" required>
+          <option value="">-- Chagua Kategoria --</option>
+          <option value="Ujenzi">Ujenzi</option>
+          <option value="Teknolojia">Teknolojia</option>
+          <option value="Masoko">Masoko</option>
+          <option value="Chakula">Chakula</option>
+          <option value="Mitindo">Mitindo</option>
+          <option value="Elimu">Elimu</option>
+          <option value="Afya">Afya</option>
+          <option value="Usafiri">Usafiri</option>
+          <option value="Nyingine">Nyingine</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-signup" id="signupBtn">🚀 Jiandikisha</button>
+    </form>
+
+    <!-- MESSAGE BOX -->
+    <div id="messageBox" class="msg"></div>
+
+    <div class="extra-links">
+      <p>Tayari una akaunti? <a href="/auth/login.html">Ingia hapa</a></p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT - Inatumia Supabase Auth Halisi -->
+  <script type="module">
+    import { supabase } from '/assets/js/supabase.js';
+
+    const form = document.getElementById('signupForm');
+    const fullNameInput = document.getElementById('fullName');
+    const businessNameInput = document.getElementById('businessName');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const categoryInput = document.getElementById('category');
+    const signupBtn = document.getElementById('signupBtn');
+    const msgBox = document.getElementById('messageBox');
+
+    function showMessage(type, text) {
+      msgBox.className = `msg ${type}`;
+      msgBox.textContent = text;
+      msgBox.style.display = 'block';
+    }
+
+    function hideMessage() {
+      msgBox.className = 'msg';
+      msgBox.style.display = 'none';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideMessage();
+
+      const fullName = fullNameInput.value.trim();
+      const businessName = businessNameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+      const category = categoryInput.value;
+
+      // Validation
+      if (!fullName || !businessName || !email || !password || !category) {
+        showMessage('error', 'Tafadhali jaza sehemu zote.');
+        return;
+      }
+
+      if (password.length < 6) {
+        showMessage('error', 'Nenosiri lazima liwe na angalau herufi 6.');
+        return;
+      }
+
+      // Zima kitufe
+      signupBtn.disabled = true;
+      signupBtn.textContent = '⏳ Inajiandikisha...';
+
+      try {
+        // ============================================
+        // 1. JIANDIKISHA MTUMIAJI (Supabase Auth)
+        // ============================================
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              full_name: fullName,
+              business_name: businessName,
+              category: category,
+              role: 'business_owner'
+            }
+          }
+        });
+
+        if (authError) {
+          console.error('Auth error:', authError);
+          showMessage('error', authError.message || 'Kuna tatizo la kujiandikisha. Jaribu tena.');
+          return;
+        }
+
+        if (authData && authData.user) {
+          const userId = authData.user.id;
+
+          // ============================================
+          // 2. WEKA DATA YA MTUMIAJI KWENYE TABLE 'users'
+          // ============================================
+          const { error: insertError } = await supabase
+            .from('users')
+            .insert([
+              {
+                id: userId,
+                full_name: fullName,
+                email: email,
+                business_name: businessName,
+                category: category,
+                role: 'business_owner',
+                created_at: new Date().toISOString()
+              }
+            ]);
+
+          if (insertError) {
+            console.error('Insert user error:', insertError);
+            // Tunaweza kuendelea hata kama insert imeshindwa, lakini tunaonya
+            showMessage('success', '✅ Akaunti imeundwa lakini kuna tatizo la kuhifadhi data. Wasiliana nasi.');
+            return;
+          }
+
+          // ============================================
+          // 3. MAFANIKIO
+          // ============================================
+          showMessage('success', '✅ Umejiandikisha kikamilifu! Unaelekezwa kwenye dashboard...');
+
+          // Hifadhi session (hiari)
+          localStorage.setItem('dvary_user_id', userId);
+          localStorage.setItem('dvary_user_email', email);
+
+          // Elekeza kwenye dashboard baada ya sekunde 1.5
+          setTimeout(() => {
+            window.location.href = '/dashboard/';
+          }, 1500);
+        }
+
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        showMessage('error', 'Kuna hitilafu ya mfumo. Jaribu tena baada ya muda.');
+      } finally {
+        signupBtn.disabled = false;
+        signupBtn.textContent = '🚀 Jiandikisha';
+      }
+    });
+  </script>
+</body>
+</html>
