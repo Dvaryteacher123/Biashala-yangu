@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us - Dvary Business</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .logo span {
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #334155;
+            font-weight: 500;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #2563eb;
+        }
+        .nav-links a.active {
+            font-weight: 600;
+        }
+
+        .btn-outline {
+            border: 2px solid #2563eb;
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #2563eb !important;
+            font-weight: 600;
+        }
+        .btn-outline:hover {
+            background: #2563eb;
+            color: white !important;
+        }
+
+        .btn-primary-nav {
+            background: #2563eb;
+            padding: 8px 22px;
+            border-radius: 30px;
+            color: white !important;
+            font-weight: 600;
+        }
+        .btn-primary-nav:hover {
+            background: #1d4ed8;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 50px 40px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .about-header h1 {
+            font-size: 38px;
+            color: #0f172a;
+        }
+        .about-header h1 span {
+            color: #2563eb;
+        }
+        .about-header p {
+            color: #64748b;
+            font-size: 17px;
+            margin-top: 10px;
+        }
+
+        .about-content {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .about-content h2 {
+            color: #0f172a;
+            font-size: 22px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .about-content h2:first-child {
+            margin-top: 0;
+        }
+        .about-content p {
+            color: #475569;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        .about-content ul {
+            padding-left: 25px;
+            margin: 10px 0;
+        }
+        .about-content ul li {
+            color: #475569;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: auto;
+        }
+        footer p {
+            margin: 5px 0;
+        }
+        footer a {
+            color: #94a3b8;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        footer a:hover {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                padding: 15px 20px;
+            }
+            .nav-links {
+                justify-content: center;
+                gap: 10px;
+            }
+            .main-content {
+                padding: 20px 15px;
+            }
+            .about-header h1 {
+                font-size: 28px;
+            }
+            .about-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Dvary<span>Business</span></div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/categories.html">Categories</a>
+            <a href="/about.html" class="active">About</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/auth/login.html" class="btn-outline">Log In</a>
+            <a href="/auth/signup.html" class="btn-primary-nav">Sign Up</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="about-header">
+            <h1>📖 <span>About</span> Dvary Business</h1>
+            <p>Kuwaunganisha wafanyabiashara na wateja kwa urahisi.</p>
+        </div>
+
+        <div class="about-content">
+            <h2>🌍 Dhamira Yetu</h2>
+            <p>
+                Dvary Business ni jukwaa la kuwaunganisha wafanyabiashara wa Tanzania na wateja wao.
+                Tunatoa nafasi kwa biashara zote, kubwa na ndogo, kuonekana na watu wanaotafuta huduma zao.
+            </p>
+
+            <h2>🎯 Malengo Yetu</h2>
+            <ul>
+                <li>Kuwawezesha wafanyabiashara kujitangaza kwa urahisi na gharama nafuu.</li>
+                <li>Kuwasaidia wateja kupata biashara bora karibu nao.</li>
+                <li>Kuongeza mwonekano wa biashara za ndani na kusaidia uchumi wa Tanzania.</li>
+            </ul>
+
+            <h2>📜 Historia Yetu</h2>
+            <p>
+                Dvary Business ilianzishwa mwaka 2026 kwa lengo la kuleta mabadiliko katika
+                jinsi biashara zinavyojitangaza. Tunaamini kwamba kila biashara ina hadithi
+                yake na inastahili kuonekana.
+            </p>
+
+            <h2>🤝 Jiunge Nasi</h2>
+            <p>
+                Ikiwa wewe ni mfanyabiashara, jiandikishe leo na upate ofa ya miezi 3 bure.
+                Ikiwa wewe ni mteja, tumia jukwaa letu kupata biashara bora karibu nawe.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Dvary Business. All rights reserved.</p>
+        <p>
+            <a href="/privacy.html">Privacy</a> |
+            <a href="/terms.html">Terms</a> |
+            <a href="/contact.html">Contact</a>
+        </p>
+    </footer>
+</body>
+</html>
