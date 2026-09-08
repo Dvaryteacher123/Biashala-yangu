@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Login - Dvary Business</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+    /* =====================================
+       RESET
+    ====================================== */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #211a16;
+      --dark: #30251f;
+      --brown: #80604a;
+      --brown-light: #a98469;
+
+      --cream: #f5f0e9;
+      --cream-light: #fbf8f3;
+
+      --white: #ffffff;
+
+      --gray: #77716b;
+      --border: #ded6cd;
+
+      --success: #276941;
+      --error: #9b302c;
+    }
+
+    body {
+      min-height: 100vh;
+
+      font-family: "DM Sans", sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 15% 10%,
+          rgba(150, 115, 87, 0.14),
+          transparent 30%
+        ),
+        linear-gradient(
+          135deg,
+          #eee7de,
+          #f8f4ee
+        );
+
+      color: var(--black);
+
+      padding: 30px;
+    }
+
+
+    /* =====================================
+       MAIN
+    ====================================== */
+
+    .page {
+      width: 100%;
+      min-height: calc(100vh - 60px);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    /* =====================================
+       LOGIN BOX
+    ====================================== */
+
+    .login-box {
+      width: 100%;
+      max-width: 1120px;
+      min-height: 650px;
+
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+
+      background: var(--white);
+
+      border-radius: 35px;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 35px 90px rgba(48, 37, 29, 0.13),
+        0 10px 30px rgba(48, 37, 29, 0.05);
+    }
+
+
+    /* =====================================
+       LEFT SIDE
+       LOGIN FORM
+    ====================================== */
+
+    .login-section {
+      padding: 65px 75px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      background: #fffdf9;
+    }
+
+
+    /* =====================================
+       LOGO
+    ====================================== */
+
+    .logo {
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+
+      margin-bottom: 65px;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+
+      background: var(--black);
+
+      color: white;
+
+      border-radius: 13px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-weight: 800;
+      font-size: 23px;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span {
+      font-weight: 400;
+      color: #837a72;
+    }
+
+
+    /* =====================================
+       FORM HEADER
+    ====================================== */
+
+    .form-header {
+      margin-bottom: 35px;
+    }
+
+    .form-label {
+      color: var(--brown);
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      letter-spacing: 4px;
+
+      text-transform: uppercase;
+
+      margin-bottom: 13px;
+    }
+
+    .form-header h1 {
+      font-family: "Playfair Display", serif;
+
+      font-size: 52px;
+
+      line-height: 1;
+
+      letter-spacing: -2px;
+
+      font-weight: 600;
+
+      margin-bottom: 15px;
+    }
+
+    .form-header p {
+      color: var(--gray);
+
+      font-size: 14px;
+
+      line-height: 1.6;
+
+      max-width: 420px;
+    }
+
+
+    /* =====================================
+       FORM
+    ====================================== */
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      margin-bottom: 8px;
+
+      color: #332b25;
+    }
+
+
+    .input-box {
+      position: relative;
+    }
+
+
+    .input-icon {
+      position: absolute;
+
+      left: 17px;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      color: #918980;
+
+      font-size: 15px;
+
+      pointer-events: none;
+    }
+
+
+    .form-group input {
+      width: 100%;
+
+      height: 54px;
+
+      padding: 0 17px 0 45px;
+
+      background: #f8f5f0;
+
+      border: 1px solid var(--border);
+
+      border-radius: 13px;
+
+      outline: none;
+
+      font-family: "DM Sans", sans-serif;
+
+      font-size: 14px;
+
+      color: var(--black);
+
+      transition: 0.25s;
+    }
+
+
+    .form-group input::placeholder {
+      color: #aaa29b;
+    }
+
+
+    .form-group input:hover {
+      border-color: #c9bbae;
+    }
+
+
+    .form-group input:focus {
+      background: white;
+
+      border-color: var(--brown);
+
+      box-shadow:
+        0 0 0 4px rgba(128, 96, 74, 0.08);
+    }
+
+
+    /* =====================================
+       PASSWORD OPTIONS
+    ====================================== */
+
+    .password-row {
+      display: flex;
+
+      justify-content: flex-end;
+
+      margin-top: -10px;
+
+      margin-bottom: 22px;
+    }
+
+    .forgot-link {
+      color: var(--brown);
+
+      text-decoration: none;
+
+      font-size: 12px;
+
+      font-weight: 600;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+
+    /* =====================================
+       LOGIN BUTTON
+    ====================================== */
+
+    .btn-login {
+      width: 100%;
+
+      height: 55px;
+
+      border: none;
+
+      border-radius: 14px;
+
+      background: var(--black);
+
+      color: white;
+
+      font-family: "DM Sans", sans-serif;
+
+      font-size: 14px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 12px;
+
+      transition: 0.25s;
+    }
+
+
+    .btn-login:hover {
+      background: #49362a;
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 12px 28px rgba(33, 26, 22, 0.18);
+    }
+
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+
+    .btn-login:disabled {
+      opacity: 0.6;
+
+      cursor: not-allowed;
+
+      transform: none;
+
+      box-shadow: none;
+    }
+
+
+    .arrow {
+      font-size: 18px;
+
+      transition: transform 0.2s;
+    }
+
+
+    .btn-login:hover .arrow {
+      transform: translateX(4px);
+    }
+
+
+    /* =====================================
+       MESSAGE
+    ====================================== */
+
+    .msg {
+      display: none;
+
+      padding: 13px 15px;
+
+      border-radius: 11px;
+
+      margin-top: 15px;
+
+      font-size: 13px;
+
+      line-height: 1.5;
+    }
+
+
+    .msg.error {
+      display: block;
+
+      background: #fbe9e7;
+
+      color: var(--error);
+
+      border: 1px solid #efc3be;
+    }
+
+
+    .msg.success {
+      display: block;
+
+      background: #e8f5ec;
+
+      color: var(--success);
+
+      border: 1px solid #bfdfc8;
+    }
+
+
+    /* =====================================
+       SIGNUP LINK
+    ====================================== */
+
+    .signup-link {
+      text-align: center;
+
+      margin-top: 25px;
+
+      color: #817a73;
+
+      font-size: 13px;
+    }
+
+
+    .signup-link a {
+      color: var(--black);
+
+      font-weight: 700;
+
+      text-decoration: none;
+
+      border-bottom: 1px solid var(--black);
+
+      padding-bottom: 2px;
+    }
+
+
+    .signup-link a:hover {
+      color: var(--brown);
+
+      border-color: var(--brown);
+    }
+
+
+    /* =====================================
+       RIGHT SIDE
+       BRAND / VISUAL
+    ====================================== */
+
+    .visual-section {
+      position: relative;
+
+      overflow: hidden;
+
+      padding: 55px;
+
+      color: white;
+
+      background:
+        linear-gradient(
+          145deg,
+          #241c17 0%,
+          #503a2b 50%,
+          #71543e 100%
+        );
+
+      display: flex;
+
+      flex-direction: column;
+
+      justify-content: space-between;
+    }
+
+
+    /* decorative circles */
+
+    .visual-section::before {
+      content: "";
+
+      position: absolute;
+
+      width: 480px;
+      height: 480px;
+
+      border-radius: 50%;
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      top: -190px;
+      right: -180px;
+    }
+
+
+    .visual-section::after {
+      content: "";
+
+      position: absolute;
+
+      width: 360px;
+      height: 360px;
+
+      border-radius: 50%;
+
+      background: rgba(255,255,255,0.035);
+
+      bottom: -160px;
+      left: -150px;
+    }
+
+
+    /* =====================================
+       VISUAL TOP
+    ====================================== */
+
+    .visual-top {
+      position: relative;
+
+      z-index: 2;
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+    }
+
+
+    .mini-label {
+      font-size: 10px;
+
+      letter-spacing: 3px;
+
+      font-weight: 700;
+
+      opacity: 0.55;
+    }
+
+
+    .status {
+      padding: 8px 13px;
+
+      border-radius: 50px;
+
+      background: rgba(255,255,255,0.1);
+
+      border: 1px solid rgba(255,255,255,0.13);
+
+      font-size: 10px;
+
+      color: rgba(255,255,255,0.75);
+    }
+
+
+    /* =====================================
+       VISUAL CENTER
+    ====================================== */
+
+    .visual-content {
+      position: relative;
+
+      z-index: 2;
+
+      margin-top: 20px;
+    }
+
+
+    .visual-content .number {
+      font-size: 12px;
+
+      color: #c5a183;
+
+      font-weight: 700;
+
+      letter-spacing: 3px;
+
+      margin-bottom: 15px;
+    }
+
+
+    .visual-content h2 {
+      font-family: "Playfair Display", serif;
+
+      font-size: clamp(45px, 5vw, 72px);
+
+      line-height: 0.94;
+
+      letter-spacing: -3px;
+
+      font-weight: 600;
+
+      margin-bottom: 27px;
+    }
+
+
+    .visual-content h2 span {
+      color: #c49b7b;
+    }
+
+
+    .visual-content p {
+      max-width: 400px;
+
+      color: rgba(255,255,255,0.68);
+
+      font-size: 14px;
+
+      line-height: 1.75;
+    }
+
+
+    /* =====================================
+       VISUAL BOTTOM
+    ====================================== */
+
+    .visual-bottom {
+      position: relative;
+
+      z-index: 2;
+
+      display: grid;
+
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 12px;
+    }
+
+
+    .stat {
+      padding-top: 17px;
+
+      border-top: 1px solid rgba(255,255,255,0.16);
+    }
+
+
+    .stat strong {
+      display: block;
+
+      font-family: "Playfair Display", serif;
+
+      font-size: 25px;
+
+      margin-bottom: 3px;
+    }
+
+
+    .stat span {
+      font-size: 10px;
+
+      color: rgba(255,255,255,0.52);
+    }
+
+
+    /* =====================================
+       RESPONSIVE
+    ====================================== */
+
+    @media (max-width: 950px) {
+
+      body {
+        padding: 20px;
+      }
+
+
+      .page {
+        min-height: auto;
+      }
+
+
+      .login-box {
+        max-width: 650px;
+
+        grid-template-columns: 1fr;
+      }
+
+
+      .visual-section {
+        min-height: 400px;
+
+        order: -1;
+
+        padding: 40px;
+      }
+
+
+      .login-section {
+        padding: 45px;
+      }
+
+
+      .logo {
+        margin-bottom: 40px;
+      }
+
+
+      .visual-content h2 {
+        font-size: 55px;
+      }
+    }
+
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 12px;
+      }
+
+
+      .login-box {
+        border-radius: 25px;
+      }
+
+
+      .visual-section {
+        min-height: 350px;
+
+        padding: 30px 25px;
+      }
+
+
+      .visual-content {
+        margin-top: 20px;
+      }
+
+
+      .visual-content h2 {
+        font-size: 43px;
+
+        letter-spacing: -2px;
+      }
+
+
+      .visual-content p {
+        font-size: 12px;
+      }
+
+
+      .visual-bottom {
+        gap: 8px;
+      }
+
+
+      .stat strong {
+        font-size: 21px;
+      }
+
+
+      .stat span {
+        font-size: 9px;
+      }
+
+
+      .login-section {
+        padding: 35px 23px 40px;
+      }
+
+
+      .logo {
+        margin-bottom: 45px;
+      }
+
+
+      .form-header h1 {
+        font-size: 42px;
+      }
+
+
+      .form-header p {
+        font-size: 13px;
+      }
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <main class="page">
+
+    <div class="login-box">
+
+
+      <!-- =================================
+           LOGIN FORM
+      ================================== -->
+
+      <section class="login-section">
+
+
+        <!-- LOGO -->
+
+        <div class="logo">
+
+          <div class="logo-icon">
+            D
+          </div>
+
+          <div class="logo-text">
+            DVARY <span>BUSINESS</span>
+          </div>
+
+        </div>
+
+
+        <!-- HEADER -->
+
+        <div class="form-header">
+
+          <div class="form-label">
+            WELCOME BACK
+          </div>
+
+          <h1>
+            Karibu<br>
+            tena.
+          </h1>
+
+          <p>
+            Ingia kwenye akaunti yako na endelea
+            kukuza biashara yako kupitia Dvary Business.
+          </p>
+
+        </div>
+
+
+        <!-- LOGIN FORM -->
+
+        <form id="loginForm">
+
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+
+            <label for="email">
+              Barua Pepe
+            </label>
+
+            <div class="input-box">
+
+              <span class="input-icon">
+                @
+              </span>
+
+              <input
+                type="email"
+                id="email"
+                placeholder="mfano@email.com"
+                required
+              />
+
+            </div>
+
+          </div>
+
+
+          <!-- PASSWORD -->
+
+          <div class="form-group">
+
+            <label for="password">
+              Nenosiri
+            </label>
+
+            <div class="input-box">
+
+              <span class="input-icon">
+                ●
+              </span>
+
+              <input
+                type="password"
+                id="password"
+                placeholder="Ingiza nenosiri"
+                required
+              />
+
+            </div>
+
+          </div>
+
+
+          <!-- FORGOT -->
+
+          <div class="password-row">
+
+            <a
+              href="/auth/forgot-password.html"
+              class="forgot-link"
+            >
+              Nimesahau nenosiri?
+            </a>
+
+          </div>
+
+
+          <!-- BUTTON -->
+
+          <button
+            type="submit"
+            class="btn-login"
+            id="loginBtn"
+          >
+
+            <span>
+              Ingia kwenye akaunti
+            </span>
+
+            <span class="arrow">
+              →
+            </span>
+
+          </button>
+
+
+        </form>
+
+
+        <!-- MESSAGE -->
+
+        <div
+          id="messageBox"
+          class="msg"
+        ></div>
+
+
+        <!-- SIGNUP -->
+
+        <div class="signup-link">
+
+          Huna akaunti?
+
+          <a href="/auth/signup.html">
+            Jisajili hapa
+          </a>
+
+        </div>
+
+
+      </section>
+
+
+
+      <!-- =================================
+           RIGHT VISUAL
+      ================================== -->
+
+      <section class="visual-section">
+
+
+        <!-- TOP -->
+
+        <div class="visual-top">
+
+          <div class="mini-label">
+            DVARY BUSINESS
+          </div>
+
+          <div class="status">
+            BUSINESS DIRECTORY
+          </div>
+
+        </div>
+
+
+        <!-- CENTER -->
+
+        <div class="visual-content">
+
+          <div class="number">
+            01 — DISCOVER
+          </div>
+
+          <h2>
+            Discover.<br>
+            Connect.<br>
+            <span>Grow.</span>
+          </h2>
+
+          <p>
+            Sehemu moja ya kugundua biashara,
+            huduma bora na fursa mpya.
+            Dvary Business inakusaidia kuunganisha
+            biashara yako na wateja wanaokuhitaji.
+          </p>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="visual-bottom">
+
+          <div class="stat">
+
+            <strong>
+              1.5k+
+            </strong>
+
+            <span>
+              Businesses
+            </span>
+
+          </div>
+
+
+          <div class="stat">
+
+            <strong>
+              746k
+            </strong>
+
+            <span>
+              Total Views
+            </span>
+
+          </div>
+
+
+          <div class="stat">
+
+            <strong>
+              4.9
+            </strong>
+
+            <span>
+              Rating
+            </span>
+
+          </div>
+
+        </div>
+
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+
+  <!-- ==========================================
+       JAVASCRIPT - SUPABASE AUTH
+  =========================================== -->
+
+  <script type="module">
+
+    import { supabase } from '/assets/js/supabase.js';
+
+
+    const form =
+      document.getElementById('loginForm');
+
+    const emailInput =
+      document.getElementById('email');
+
+    const passwordInput =
+      document.getElementById('password');
+
+    const loginBtn =
+      document.getElementById('loginBtn');
+
+    const msgBox =
+      document.getElementById('messageBox');
+
+
+    /* =================================
+       SHOW MESSAGE
+    ================================= */
+
+    function showMessage(type, text) {
+
+      msgBox.className = `msg ${type}`;
+
+      msgBox.textContent = text;
+
+      msgBox.style.display = 'block';
+
+    }
+
+
+    /* =================================
+       HIDE MESSAGE
+    ================================= */
+
+    function hideMessage() {
+
+      msgBox.className = 'msg';
+
+      msgBox.style.display = 'none';
+
+    }
+
+
+    /* =================================
+       LOGIN
+    ================================= */
+
+    form.addEventListener(
+      'submit',
+      async (e) => {
+
+        e.preventDefault();
+
+        hideMessage();
+
+
+        const email =
+          emailInput.value.trim();
+
+        const password =
+          passwordInput.value.trim();
+
+
+        /* =============================
+           VALIDATION
+        ============================== */
+
+        if (!email || !password) {
+
+          showMessage(
+            'error',
+            'Tafadhali jaza barua pepe na nenosiri.'
+          );
+
+          return;
+
+        }
+
+
+        /* =============================
+           DISABLE BUTTON
+        ============================== */
+
+        loginBtn.disabled = true;
+
+        loginBtn.innerHTML = `
+          <span>Inaingia...</span>
+          <span>⏳</span>
+        `;
+
+
+        try {
+
+
+          /* =============================
+             SUPABASE LOGIN
+          ============================== */
+
+          const {
+            data,
+            error
+          } = await supabase.auth.signInWithPassword({
+
+            email: email,
+
+            password: password
+
+          });
+
+
+          /* =============================
+             ERROR
+          ============================== */
+
+          if (error) {
+
+            console.error(
+              'Login error:',
+              error
+            );
+
+            showMessage(
+              'error',
+              error.message ||
+              'Email au nenosiri si sahihi. Jaribu tena.'
+            );
+
+            return;
+
+          }
+
+
+          /* =============================
+             SUCCESS
+          ============================== */
+
+          if (
+            data &&
+            data.user
+          ) {
+
+
+            showMessage(
+              'success',
+              '✓ Umefanikiwa kuingia! Unaelekezwa kwenye dashboard...'
+            );
+
+
+            /* =============================
+               LOCAL STORAGE
+            ============================== */
+
+            localStorage.setItem(
+              'dvary_user_id',
+              data.user.id
+            );
+
+
+            localStorage.setItem(
+              'dvary_user_email',
+              data.user.email
+            );
+
+
+            /* =============================
+               REDIRECT
+            ============================== */
+
+            setTimeout(
+              () => {
+
+                window.location.href =
+                  '/dashboard/';
+
+              },
+              1500
+            );
+
+          }
+
+
+        }
+
+
+        /* =============================
+           UNEXPECTED ERROR
+        ============================== */
+
+        catch (err) {
+
+          console.error(
+            'Unexpected error:',
+            err
+          );
+
+          showMessage(
+            'error',
+            'Kuna hitilafu ya mfumo. Jaribu tena baada ya muda.'
+          );
+
+        }
+
+
+        /* =============================
+           ENABLE BUTTON
+        ============================== */
+
+        finally {
+
+          loginBtn.disabled = false;
+
+          loginBtn.innerHTML = `
+            <span>Ingia kwenye akaunti</span>
+            <span class="arrow">→</span>
+          `;
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
