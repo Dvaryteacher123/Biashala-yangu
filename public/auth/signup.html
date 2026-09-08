@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - Dvary Business</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+    /* =========================
+       RESET
+    ========================= */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #211a16;
+      --dark: #30251f;
+      --brown: #80604a;
+      --light-brown: #a98368;
+      --cream: #f5f0e9;
+      --cream-2: #eee7de;
+      --white: #ffffff;
+      --gray: #746d67;
+      --border: #ddd4ca;
+      --success: #286b43;
+      --error: #9b302c;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at top left,
+          rgba(166, 132, 103, 0.14),
+          transparent 35%
+        ),
+        linear-gradient(135deg, #f7f3ed 0%, #eee7dd 100%);
+      font-family: "DM Sans", sans-serif;
+      color: var(--black);
+      padding: 35px 25px;
+    }
+
+    /* =========================
+       PAGE
+    ========================= */
+
+    .page {
+      width: 100%;
+      max-width: 1180px;
+      min-height: calc(100vh - 70px);
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* =========================
+       SIGNUP CARD
+    ========================= */
+
+    .signup-card {
+      width: 100%;
+      max-width: 1050px;
+      min-height: 650px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(90, 68, 51, 0.12);
+      border-radius: 34px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      box-shadow:
+        0 30px 80px rgba(45, 31, 20, 0.12),
+        0 8px 30px rgba(45, 31, 20, 0.05);
+    }
+
+    /* =========================
+       LEFT SIDE
+    ========================= */
+
+    .signup-info {
+      position: relative;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(42, 31, 23, 0.98),
+          rgba(82, 59, 43, 0.96)
+        );
+      color: white;
+      padding: 55px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .signup-info::before {
+      content: "";
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.045);
+      top: -150px;
+      left: -150px;
+    }
+
+    .signup-info::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.07);
+      right: -140px;
+      bottom: -130px;
+    }
+
+    .brand {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 43px;
+      height: 43px;
+      border-radius: 13px;
+      background: white;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-name span {
+      font-weight: 400;
+      opacity: 0.7;
+    }
+
+    .info-content {
+      position: relative;
+      z-index: 2;
+      margin-top: 30px;
+    }
+
+    .small-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: 0.65;
+      margin-bottom: 18px;
+    }
+
+    .info-content h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(44px, 5vw, 70px);
+      line-height: 0.94;
+      letter-spacing: -3px;
+      font-weight: 600;
+      margin-bottom: 28px;
+    }
+
+    .info-content h1 span {
+      color: #c19a79;
+    }
+
+    .info-content p {
+      max-width: 390px;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .benefits {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      gap: 14px;
+    }
+
+    .benefit {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .benefit-icon {
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    /* =========================
+       RIGHT SIDE
+    ========================= */
+
+    .signup-form-area {
+      padding: 55px 65px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: #fffdf9;
+    }
+
+    .form-header {
+      margin-bottom: 32px;
+    }
+
+    .form-header .tag {
+      color: var(--brown);
+      font-size: 11px;
+      letter-spacing: 3px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .form-header h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 40px;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 9px;
+    }
+
+    .form-header p {
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    /* =========================
+       FORM
+    ========================= */
+
+    #signupForm {
+      width: 100%;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 19px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #332b25;
+      margin-bottom: 8px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      height: 52px;
+      padding: 0 16px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #f9f6f1;
+      color: var(--black);
+      font-family: "DM Sans", sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .form-group input.has-icon {
+      padding-left: 45px;
+    }
+
+    .form-group input::placeholder {
+      color: #aaa29a;
+    }
+
+    .form-group input:hover,
+    .form-group select:hover {
+      border-color: #c7b9aa;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      background: white;
+      border-color: var(--brown);
+      box-shadow: 0 0 0 4px rgba(128, 96, 74, 0.09);
+    }
+
+    /* =========================
+       PASSWORD
+    ========================= */
+
+    .password-hint {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #99918a;
+    }
+
+    /* =========================
+       BUTTON
+    ========================= */
+
+    .btn-signup {
+      width: 100%;
+      height: 54px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 14px;
+      background: var(--black);
+      color: white;
+      font-family: "DM Sans", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-signup:hover {
+      background: #49362a;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(35, 27, 21, 0.18);
+    }
+
+    .btn-signup:active {
+      transform: translateY(0);
+    }
+
+    .btn-signup:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .arrow {
+      font-size: 18px;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-signup:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    .msg {
+      padding: 13px 15px;
+      border-radius: 11px;
+      margin-top: 15px;
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .msg.error {
+      display: block;
+      background: #fbe9e7;
+      color: var(--error);
+      border: 1px solid #efc3be;
+    }
+
+    .msg.success {
+      display: block;
+      background: #e8f5ec;
+      color: var(--success);
+      border: 1px solid #bfdfc8;
+    }
+
+    /* =========================
+       LOGIN
+    ========================= */
+
+    .extra-links {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 13px;
+      color: #817a73;
+    }
+
+    .extra-links a {
+      color: var(--black);
+      text-decoration: none;
+      font-weight: 700;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 2px;
+    }
+
+    .extra-links a:hover {
+      color: var(--brown);
+      border-color: var(--brown);
+    }
+
+    .terms {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 10px;
+      color: #aaa29b;
+      line-height: 1.5;
+    }
+
+    /* =========================
+       RESPONSIVE TABLET
+    ========================= */
+
+    @media (max-width: 900px) {
+
+      body {
+        padding: 20px;
+      }
+
+      .page {
+        min-height: auto;
+      }
+
+      .signup-card {
+        grid-template-columns: 1fr;
+        max-width: 650px;
+      }
+
+      .signup-info {
+        min-height: 350px;
+        padding: 40px;
+      }
+
+      .info-content h1 {
+        font-size: 52px;
+      }
+
+      .benefits {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .signup-form-area {
+        padding: 45px 45px 50px;
+      }
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 12px;
+      }
+
+      .signup-card {
+        border-radius: 24px;
+      }
+
+      .signup-info {
+        min-height: 340px;
+        padding: 30px 25px;
+      }
+
+      .brand-icon {
+        width: 38px;
+        height: 38px;
+      }
+
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .info-content {
+        margin-top: 25px;
+      }
+
+      .info-content h1 {
+        font-size: 43px;
+        letter-spacing: -2px;
+      }
+
+      .info-content p {
+        font-size: 13px;
+      }
+
+      .benefits {
+        grid-template-columns: 1fr;
+        gap: 9px;
+      }
+
+      .benefit {
+        font-size: 12px;
+      }
+
+      .signup-form-area {
+        padding: 35px 23px 40px;
+      }
+
+      .form-header h2 {
+        font-size: 34px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .form-group {
+        margin-bottom: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <div class="signup-card">
+
+      <!-- ==================================
+           LEFT / BRAND SECTION
+      =================================== -->
+      <section class="signup-info">
+
+        <div class="brand">
+          <div class="brand-icon">D</div>
+
+          <div class="brand-name">
+            DVARY <span>BUSINESS</span>
+          </div>
+        </div>
+
+
+        <div class="info-content">
+
+          <div class="small-title">
+            DVARY BUSINESS
+          </div>
+
+          <h1>
+            Jenga.<br>
+            Kukuza.<br>
+            <span>Fanikiwa.</span>
+          </h1>
+
+          <p>
+            Jiunge na Dvary Business na uanze kuonyesha
+            biashara yako kwa wateja wengi zaidi.
+            Jenga uwepo wako wa kidigitali na kukuza
+            biashara yako sehemu moja.
+          </p>
+
+        </div>
+
+
+        <div class="benefits">
+
+          <div class="benefit">
+            <div class="benefit-icon">✓</div>
+            <span>Onyesha biashara yako</span>
+          </div>
+
+          <div class="benefit">
+            <div class="benefit-icon">★</div>
+            <span>Fikia wateja wapya</span>
+          </div>
+
+          <div class="benefit">
+            <div class="benefit-icon">↗</div>
+            <span>Kukuza biashara yako</span>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================
+           RIGHT / SIGNUP FORM
+      =================================== -->
+      <section class="signup-form-area">
+
+        <div class="form-header">
+
+          <div class="tag">
+            CREATE ACCOUNT
+          </div>
+
+          <h2>
+            Jiandikishe
+          </h2>
+
+          <p>
+            Tengeneza akaunti yako ya Dvary Business.
+          </p>
+
+        </div>
+
+
+        <!-- SIGNUP FORM -->
+        <form id="signupForm">
+
+          <div class="form-row">
+
+            <!-- FULL NAME -->
+            <div class="form-group">
+
+              <label for="fullName">
+                Jina Kamili
+              </label>
+
+              <div class="input-wrap">
+
+                <span class="input-icon">●</span>
+
+                <input
+                  type="text"
+                  id="fullName"
+                  class="has-icon"
+                  placeholder="Jina lako kamili"
+                  required
+                />
+
+              </div>
+
+            </div>
+
+
+            <!-- BUSINESS NAME -->
+            <div class="form-group">
+
+              <label for="businessName">
+                Jina la Biashara
+              </label>
+
+              <div class="input-wrap">
+
+                <span class="input-icon">▣</span>
+
+                <input
+                  type="text"
+                  id="businessName"
+                  class="has-icon"
+                  placeholder="Jina la biashara yako"
+                  required
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- EMAIL -->
+          <div class="form-group">
+
+            <label for="email">
+              Barua Pepe
+            </label>
+
+            <div class="input-wrap">
+
+              <span class="input-icon">@</span>
+
+              <input
+                type="email"
+                id="email"
+                class="has-icon"
+                placeholder="mfano@email.com"
+                required
+              />
+
+            </div>
+
+          </div>
+
+
+          <!-- PASSWORD -->
+          <div class="form-group">
+
+            <label for="password">
+              Nenosiri
+            </label>
+
+            <div class="input-wrap">
+
+              <span class="input-icon">●</span>
+
+              <input
+                type="password"
+                id="password"
+                class="has-icon"
+                placeholder="Ingiza nenosiri lako"
+                required
+                minlength="6"
+              />
+
+            </div>
+
+            <div class="password-hint">
+              Angalau herufi 6
+            </div>
+
+          </div>
+
+
+          <!-- CATEGORY -->
+          <div class="form-group">
+
+            <label for="category">
+              Kategoria ya Biashara
+            </label>
+
+            <select id="category" required>
+
+              <option value="">
+                Chagua kategoria ya biashara
+              </option>
+
+              <option value="Ujenzi">
+                Ujenzi
+              </option>
+
+              <option value="Teknolojia">
+                Teknolojia
+              </option>
+
+              <option value="Masoko">
+                Masoko
+              </option>
+
+              <option value="Chakula">
+                Chakula
+              </option>
+
+              <option value="Mitindo">
+                Mitindo
+              </option>
+
+              <option value="Elimu">
+                Elimu
+              </option>
+
+              <option value="Afya">
+                Afya
+              </option>
+
+              <option value="Usafiri">
+                Usafiri
+              </option>
+
+              <option value="Nyingine">
+                Nyingine
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- SIGNUP BUTTON -->
+          <button
+            type="submit"
+            class="btn-signup"
+            id="signupBtn"
+          >
+
+            <span>
+              Jiandikishe
+            </span>
+
+            <span class="arrow">
+              →
+            </span>
+
+          </button>
+
+        </form>
+
+
+        <!-- MESSAGE -->
+        <div
+          id="messageBox"
+          class="msg"
+        ></div>
+
+
+        <!-- LOGIN -->
+        <div class="extra-links">
+
+          Tayari una akaunti?
+
+          <a href="/auth/login.html">
+            Ingia hapa
+          </a>
+
+        </div>
+
+
+        <div class="terms">
+          Kwa kujiandikisha unakubali masharti na
+          sera za Dvary Business.
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- ==========================================
+       JAVASCRIPT - SUPABASE
+  =========================================== -->
+
+  <script type="module">
+
+    import { supabase } from '/assets/js/supabase.js';
+
+
+    const form =
+      document.getElementById('signupForm');
+
+    const fullNameInput =
+      document.getElementById('fullName');
+
+    const businessNameInput =
+      document.getElementById('businessName');
+
+    const emailInput =
+      document.getElementById('email');
+
+    const passwordInput =
+      document.getElementById('password');
+
+    const categoryInput =
+      document.getElementById('category');
+
+    const signupBtn =
+      document.getElementById('signupBtn');
+
+    const msgBox =
+      document.getElementById('messageBox');
+
+
+    /* ==============================
+       MESSAGE
+    ============================== */
+
+    function showMessage(type, text) {
+
+      msgBox.className = `msg ${type}`;
+
+      msgBox.textContent = text;
+
+      msgBox.style.display = 'block';
+
+    }
+
+
+    function hideMessage() {
+
+      msgBox.className = 'msg';
+
+      msgBox.style.display = 'none';
+
+    }
+
+
+    /* ==============================
+       SIGNUP
+    ============================== */
+
+    form.addEventListener('submit', async (e) => {
+
+      e.preventDefault();
+
+      hideMessage();
+
+
+      const fullName =
+        fullNameInput.value.trim();
+
+      const businessName =
+        businessNameInput.value.trim();
+
+      const email =
+        emailInput.value.trim();
+
+      const password =
+        passwordInput.value.trim();
+
+      const category =
+        categoryInput.value;
+
+
+      /* ==============================
+         VALIDATION
+      ============================== */
+
+      if (
+        !fullName ||
+        !businessName ||
+        !email ||
+        !password ||
+        !category
+      ) {
+
+        showMessage(
+          'error',
+          'Tafadhali jaza sehemu zote.'
+        );
+
+        return;
+
+      }
+
+
+      if (password.length < 6) {
+
+        showMessage(
+          'error',
+          'Nenosiri lazima liwe na angalau herufi 6.'
+        );
+
+        return;
+
+      }
+
+
+      /* ==============================
+         DISABLE BUTTON
+      ============================== */
+
+      signupBtn.disabled = true;
+
+      signupBtn.innerHTML = `
+        <span>Inajiandikisha...</span>
+        <span>⏳</span>
+      `;
+
+
+      try {
+
+        /* =========================================
+           1. SUPABASE AUTH SIGNUP
+        ========================================== */
+
+        const {
+          data: authData,
+          error: authError
+        } = await supabase.auth.signUp({
+
+          email: email,
+
+          password: password,
+
+          options: {
+
+            data: {
+
+              full_name: fullName,
+
+              business_name: businessName,
+
+              category: category,
+
+              role: 'business_owner'
+
+            }
+
+          }
+
+        });
+
+
+        /* =========================================
+           AUTH ERROR
+        ========================================== */
+
+        if (authError) {
+
+          console.error(
+            'Auth error:',
+            authError
+          );
+
+          showMessage(
+            'error',
+            authError.message ||
+            'Kuna tatizo la kujiandikisha. Jaribu tena.'
+          );
+
+          return;
+
+        }
+
+
+        /* =========================================
+           USER CREATED
+        ========================================== */
+
+        if (
+          authData &&
+          authData.user
+        ) {
+
+          const userId =
+            authData.user.id;
+
+
+          /* =======================================
+             2. INSERT USERS TABLE
+          ======================================== */
+
+          const {
+            error: insertError
+          } = await supabase
+
+            .from('users')
+
+            .insert([
+
+              {
+
+                id: userId,
+
+                full_name: fullName,
+
+                email: email,
+
+                business_name: businessName,
+
+                category: category,
+
+                role: 'business_owner',
+
+                created_at:
+                  new Date().toISOString()
+
+              }
+
+            ]);
+
+
+          /* =======================================
+             INSERT ERROR
+          ======================================== */
+
+          if (insertError) {
+
+            console.error(
+              'Insert user error:',
+              insertError
+            );
+
+            showMessage(
+              'success',
+              'Akaunti imeundwa lakini kuna tatizo la kuhifadhi data. Wasiliana nasi.'
+            );
+
+            return;
+
+          }
+
+
+          /* =======================================
+             SUCCESS
+          ======================================== */
+
+          showMessage(
+            'success',
+            '✓ Umejiandikisha kikamilifu! Unaelekezwa kwenye dashboard...'
+          );
+
+
+          /* =======================================
+             LOCAL STORAGE
+          ======================================== */
+
+          localStorage.setItem(
+            'dvary_user_id',
+            userId
+          );
+
+          localStorage.setItem(
+            'dvary_user_email',
+            email
+          );
+
+
+          /* =======================================
+             REDIRECT
+          ======================================== */
+
+          setTimeout(() => {
+
+            window.location.href =
+              '/dashboard/';
+
+          }, 1500);
+
+        }
+
+      }
+
+
+      /* =========================================
+         UNEXPECTED ERROR
+      ========================================== */
+
+      catch (err) {
+
+        console.error(
+          'Unexpected error:',
+          err
+        );
+
+        showMessage(
+          'error',
+          'Kuna hitilafu ya mfumo. Jaribu tena baada ya muda.'
+        );
+
+      }
+
+
+      /* =========================================
+         ENABLE BUTTON
+      ========================================== */
+
+      finally {
+
+        signupBtn.disabled = false;
+
+        signupBtn.innerHTML = `
+          <span>Jiandikishe</span>
+          <span class="arrow">→</span>
+        `;
+
+      }
+
+    });
+
+  </script>
+
+</body>
+  </html>
