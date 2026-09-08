@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Dvary Business</title>
+
+    <style>
+        /* ===== CSS ZOTE ZA ADMIN DASHBOARD ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .sidebar .logo span {
+            color: #60a5fa;
+        }
+
+        .sidebar .admin-badge {
+            background: #2563eb;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .sidebar nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+        .sidebar nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+        .sidebar nav a .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar .logout-btn {
+            margin-top: auto;
+            padding: 12px 16px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sidebar .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: calc(100% - 250px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #0f172a;
+        }
+        .page-header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-actions .btn-refresh {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .admin-actions .btn-refresh:hover {
+            background: #1d4ed8;
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 18px 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .stat-card .stat-number {
+            font-size: 30px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .stat-card .stat-label {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .stat-card .stat-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        .stat-card.blocked .stat-number {
+            color: #b91c1c;
+        }
+        .stat-card.claims .stat-number {
+            color: #2563eb;
+        }
+        .stat-card.business .stat-number {
+            color: #22c55e;
+        }
+
+        /* ===== CHART SECTION ===== */
+        .chart-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            margin-bottom: 30px;
+        }
+        .chart-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .chart-section .section-header h2 {
+            font-size: 18px;
+            color: #0f172a;
+        }
+        .chart-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            height: 200px;
+            padding-top: 10px;
+            overflow-x: auto;
+        }
+        .chart-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 40px;
+            flex: 1;
+        }
+        .chart-bar {
+            width: 30px;
+            background: linear-gradient(180deg, #2563eb, #60a5fa);
+            border-radius: 6px 6px 0 0;
+            min-height: 4px;
+            transition: height 0.6s ease;
+            position: relative;
+        }
+        .chart-bar-label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 6px;
+            text-align: center;
+        }
+        .chart-bar-value {
+            font-size: 10px;
+            color: #0f172a;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        /* ===== USERS TABLE ===== */
+        .users-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+        .users-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .users-section .section-header h2 {
+            font-size: 18px;
+            color: #0f172a;
+        }
+        .users-section .section-header input {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            width: 250px;
+        }
+        .users-section .section-header input:focus {
+            border-color: #2563eb;
+        }
+
+        .users-table-wrap {
+            overflow-x: auto;
+        }
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .users-table th {
+            text-align: left;
+            padding: 12px 10px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .users-table td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+            vertical-align: middle;
+        }
+        .users-table tr:hover td {
+            background: #f8fafc;
+        }
+        .users-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-badge.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-badge.blocked {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .status-badge.pending {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .action-btns button {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .action-btns .btn-claim {
+            background: #2563eb;
+            color: white;
+        }
+        .action-btns .btn-claim:hover {
+            background: #1d4ed8;
+        }
+        .action-btns .btn-block {
+            background: #b91c1c;
+            color: white;
+        }
+        .action-btns .btn-block:hover {
+            background: #991b1b;
+        }
+        .action-btns .btn-unblock {
+            background: #22c55e;
+            color: white;
+        }
+        .action-btns .btn-unblock:hover {
+            background: #16a34a;
+        }
+        .action-btns .btn-delete-claim {
+            background: #eab308;
+            color: white;
+        }
+        .action-btns .btn-delete-claim:hover {
+            background: #ca8a04;
+        }
+        .action-btns button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .msg {
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        .msg.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .msg.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 15px 10px;
+                align-items: center;
+            }
+            .sidebar .logo {
+                font-size: 16px;
+                text-align: center;
+            }
+            .sidebar .logo span {
+                display: none;
+            }
+            .sidebar .admin-badge {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+            .sidebar nav a span {
+                display: none;
+            }
+            .sidebar nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar nav a .icon {
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            .main-content {
+                padding: 20px 15px;
+                max-width: calc(100% - 70px);
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .users-section .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .users-section .section-header input {
+                width: 100%;
+            }
+            .action-btns {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .page-header h1 {
+                font-size: 22px;
+            }
+            .chart-container {
+                height: 150px;
+            }
+            .chart-bar {
+                width: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .users-table {
+                font-size: 12px;
+            }
+            .users-table th,
+            .users-table td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    SIDEBAR
+    ============================================ -->
+    <aside class="sidebar">
+        <div class="logo">Dvary<span>Business</span></div>
+        <div class="admin-badge">🔐 ADMIN ACCESS 100%</div>
+
+        <nav>
+            <a href="/admin/" class="active">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/admin/businesses.html">
+                <span class="icon">🏢</span>
+                <span>Businesses</span>
+            </a>
+            <a href="/admin/claims.html">
+                <span class="icon">🎁</span>
+                <span>Claims</span>
+            </a>
+            <a href="/admin/reviews.html">
+                <span class="icon">⭐</span>
+                <span>Reviews</span>
+            </a>
+            <a href="/admin/settings.html">
+                <span class="icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn" id="logoutBtn">
+            <span>🚪</span>
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <div class="page-header">
+            <h1>📊 Admin Dashboard <small>— Udhibiti Kamili</small></h1>
+            <div class="admin-actions">
+                <button class="btn-refresh" id="refreshBtn">🔄 Refresh Data</button>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon">👤</div>
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">Jumla ya Users</div>
+            </div>
+            <div class="stat-card business">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-number" id="totalBusinesses">0</div>
+                <div class="stat-label">Jumla ya Biashara</div>
+            </div>
+            <div class="stat-card claims">
+                <div class="stat-icon">🎁</div>
+                <div class="stat-number" id="totalClaims">0</div>
+                <div class="stat-label">Jumla ya Claims</div>
+            </div>
+            <div class="stat-card blocked">
+                <div class="stat-icon">🚫</div>
+                <div class="stat-number" id="totalBlocked">0</div>
+                <div class="stat-label">Users Walioblock</div>
+            </div>
+        </div>
+
+        <!-- CHART: Users Registration -->
+        <div class="chart-section">
+            <div class="section-header">
+                <h2>📈 Users Waliojiandikisha (Siku 7 zilizopita)</h2>
+            </div>
+            <div id="chartContainer" class="chart-container">
+                <div class="loading-state">⏳ Inapakia graph...</div>
+            </div>
+        </div>
+
+        <!-- USERS TABLE -->
+        <div class="users-section">
+            <div class="section-header">
+                <h2>👤 Users Wote</h2>
+                <input type="text" id="searchInput" placeholder="🔍 Tafuta kwa jina, email, au biashara..." />
+            </div>
+
+            <div id="messageBox" class="msg"></div>
+
+            <div class="users-table-wrap">
+                <div id="usersTableContainer">
+                    <div class="loading-state">⏳ Inapakia users...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        // ============================================
+        // INGIZA SUAPBASE CLIENT
+        // ============================================
+        import { supabase } from '/assets/js/supabase.js';
+
+        // ============================================
+        // VITAMBULISHO VYA ELEMENTS
+        // ============================================
+        const logoutBtn = document.getElementById('logoutBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        const totalUsersEl = document.getElementById('totalUsers');
+        const totalBusinessesEl = document.getElementById('totalBusinesses');
+        const totalClaimsEl = document.getElementById('totalClaims');
+        const totalBlockedEl = document.getElementById('totalBlocked');
+        const chartContainer = document.getElementById('chartContainer');
+        const usersTableContainer = document.getElementById('usersTableContainer');
+        const searchInput = document.getElementById('searchInput');
+        const messageBox = document.getElementById('messageBox');
+
+        let allUsers = [];
+        let allBusinesses = [];
+        let allClaims = [];
+
+        // ============================================
+        // FUNCTIONS: CHECK SESSION (Admin Only)
+        // ============================================
+        async function checkAdminSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = '/auth/login.html';
+                return null;
+            }
+
+            // Angalia kama user ni admin (kwenye users table)
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (userError || !userData || userData.role !== 'admin') {
+                // Sio admin - elekezwa kwenye dashboard ya kawaida
+                window.location.href = '/dashboard/';
+                return null;
+            }
+
+            return session.user;
+        }
+
+        // ============================================
+        // FUNCTIONS: SHOW MESSAGE
+        // ============================================
+        function showMessage(type, text) {
+            messageBox.className = `msg ${type}`;
+            messageBox.textContent = text;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 4000);
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD ALL DATA
+        // ============================================
+        async function loadAllData() {
+            try {
+                // 1. Load users
+                const { data: users, error: usersError } = await supabase
+                    .from('users')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (usersError) throw usersError;
+                allUsers = users || [];
+
+                // 2. Load businesses
+                const { data: businesses, error: bizError } = await supabase
+                    .from('businesses')
+                    .select('*');
+
+                if (bizError) throw bizError;
+                allBusinesses = businesses || [];
+
+                // 3. Load claims
+                const { data: claims, error: claimsError } = await supabase
+                    .from('claims')
+                    .select('*');
+
+                if (claimsError) throw claimsError;
+                allClaims = claims || [];
+
+                return { users: allUsers, businesses: allBusinesses, claims: allClaims };
+
+            } catch (err) {
+                console.error('Error loading data:', err);
+                showMessage('error', 'Kuna tatizo la kupakia data. Jaribu tena.');
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER STATS
+        // ============================================
+        function renderStats(users, businesses, claims) {
+            const totalUsers = users.length;
+            const totalBusinesses = businesses.length;
+            const totalClaims = claims.filter(c => c.status === 'active').length;
+            const totalBlocked = users.filter(u => u.is_blocked === true).length;
+
+            totalUsersEl.textContent = totalUsers;
+            totalBusinessesEl.textContent = totalBusinesses;
+            totalClaimsEl.textContent = totalClaims;
+            totalBlockedEl.textContent = totalBlocked;
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER CHART (Last 7 days)
+        // ============================================
+        function renderChart(users) {
+            const now = new Date();
+            const days = [];
+            const counts = [];
+
+            // Weka siku 7 zilizopita
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(now);
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                days.push(dateStr);
+
+                // Hesabu users waliojiandikisha siku hiyo
+                const count = users.filter(u => {
+                    const created = u.created_at ? new Date(u.created_at).toISOString().split('T')[0] : null;
+                    return created === dateStr;
+                }).length;
+                counts.push(count);
+            }
+
+            const maxCount = Math.max(...counts, 1);
+
+            let html = '';
+            days.forEach((day, index) => {
+                const count = counts[index];
+                const height = Math.max((count / maxCount) * 160, 10);
+
+                html += `
+                    <div class="chart-bar-wrapper">
+                        <div class="chart-bar-value">${count}</div>
+                        <div class="chart-bar" style="height: ${height}px;"></div>
+                        <div class="chart-bar-label">${day.slice(5)}</div>
+                    </div>
+                `;
+            });
+
+            chartContainer.innerHTML = html;
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER USERS TABLE
+        // ============================================
+        function renderUsersTable(users, businesses, claims) {
+            if (!users || users.length === 0) {
+                usersTableContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <h3>Hakuna users waliojiandikisha</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jina</th>
+                            <th>Email</th>
+                            <th>Biashara</th>
+                            <th>Kategoria</th>
+                            <th>Status</th>
+                            <th>Claim</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach((user, index) => {
+                // Pata biashara za user
+                const userBusinesses = businesses.filter(b => b.user_id === user.id);
+                const bizNames = userBusinesses.map(b => b.name).join(', ') || '—';
+
+                // Pata claim ya user (active)
+                const userClaim = claims.find(c => c.user_id === user.id && c.status === 'active');
+                const hasClaim = !!userClaim;
+                const claimStatus = hasClaim ? '✅ Active' : '❌ No Claim';
+
+                const isBlocked = user.is_blocked === true;
+                const statusClass = isBlocked ? 'blocked' : 'active';
+                const statusLabel = isBlocked ? '🚫 Blocked' : '✅ Active';
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${user.full_name || '—'}</strong></td>
+                        <td style="font-size:12px; color:#2563eb;">${user.email || '—'}</td>
+                        <td>${bizNames}</td>
+                        <td>${user.category || '—'}</td>
+                        <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                        <td><span class="status-badge ${hasClaim ? 'active' : 'pending'}">${claimStatus}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                ${!isBlocked ? `
+                                    <button class="btn-block" onclick="window.adminBlockUser('${user.id}')">🚫 Block</button>
+                                ` : `
+                                    <button class="btn-unblock" onclick="window.adminUnblockUser('${user.id}')">✅ Unblock</button>
+                                `}
+                                ${!hasClaim ? `
+                                    <button class="btn-claim" onclick="window.adminGiveClaim('${user.id}')">🎁 Give Claim</button>
+                                ` : `
+                                    <button class="btn-delete-claim" onclick="window.adminDeleteClaim('${userClaim?.id}')">🗑️ Delete Claim</button>
+                                `}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            usersTableContainer.innerHTML = html;
+
+            // Weka functions kwenye global scope
+            window.adminBlockUser = adminBlockUser;
+            window.adminUnblockUser = adminUnblockUser;
+            window.adminGiveClaim = adminGiveClaim;
+            window.adminDeleteClaim = adminDeleteClaim;
+        }
+
+        // ============================================
+        // FUNCTIONS: FILTER USERS (Search)
+        // ============================================
+        function filterUsers(query) {
+            if (!query.trim()) {
+                renderUsersTable(allUsers, allBusinesses, allClaims);
+                return;
+            }
+
+            const q = query.toLowerCase().trim();
+            const filtered = allUsers.filter(user => {
+                return (
+                    user.full_name?.toLowerCase().includes(q) ||
+                    user.email?.toLowerCase().includes(q) ||
+                    user.business_name?.toLowerCase().includes(q) ||
+                    user.category?.toLowerCase().includes(q)
+                );
+            });
+
+            renderUsersTable(filtered, allBusinesses, allClaims);
+        }
+
+        // ============================================
+        // FUNCTIONS: ADMIN ACTIONS
+        // ============================================
+
+        // 1. BLOCK USER
+        async function adminBlockUser(userId) {
+            if (!confirm('Je, una uhakika unataka kum-block user huyu?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('users')
+                    .update({ is_blocked: true })
+                    .eq('id', userId);
+
+                if (error) throw error;
+
+                showMessage('success', '✅ User ameblock kikamilifu!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Block error:', err);
+                showMessage('error', 'Kuna tatizo la kumblock user. Jaribu tena.');
+            }
+        }
+
+        // 2. UNBLOCK USER
+        async function adminUnblockUser(userId) {
+            if (!confirm('Je, una uhakika unataka kum-unblock user huyu?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('users')
+                    .update({ is_blocked: false })
+                    .eq('id', userId);
+
+                if (error) throw error;
+
+                showMessage('success', '✅ User ameunblock kikamilifu!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Unblock error:', err);
+                showMessage('error', 'Kuna tatizo la kumunblock user. Jaribu tena.');
+            }
+        }
+
+        // 3. GIVE CLAIM (Free Trial)
+        async function adminGiveClaim(userId) {
+            if (!confirm('Je, una uhakika unataka kumpa user huyu claim ya miezi 3 bure?')) return;
+
+            try {
+                // Angalia kama tayari ana claim
+                const { data: existing, error: checkError } = await supabase
+                    .from('claims')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .eq('status', 'active')
+                    .limit(1);
+
+                if (checkError) throw checkError;
+
+                if (existing && existing.length > 0) {
+                    showMessage('error', 'User huyu tayari ana claim active!');
+                    return;
+                }
+
+                // Tengeneza code
+                const claimCode = `FREE-3M-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+                const expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + 90);
+
+                // Pata business_id ya user (kama ana)
+                const { data: bizData, error: bizError } = await supabase
+                    .from('businesses')
+                    .select('id')
+                    .eq('user_id', userId)
+                    .limit(1);
+
+                if (bizError) throw bizError;
+                const businessId = bizData && bizData.length > 0 ? bizData[0].id : null;
+
+                // Weka claim
+                const { error: insertError } = await supabase
+                    .from('claims')
+                    .insert([{
+                        user_id: userId,
+                        business_id: businessId,
+                        claim_code: claimCode,
+                        expiry_date: expiryDate.toISOString(),
+                        status: 'active',
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (insertError) throw insertError;
+
+                showMessage('success', `✅ Claim imewekwa! Code: ${claimCode}`);
+                await refreshAllData();
+            } catch (err) {
+                console.error('Give claim error:', err);
+                showMessage('error', 'Kuna tatizo la kuweka claim. Jaribu tena.');
+            }
+        }
+
+        // 4. DELETE CLAIM
+        async function adminDeleteClaim(claimId) {
+            if (!claimId) {
+                showMessage('error', 'Hakuna claim ya kufuta.');
+                return;
+            }
+
+            if (!confirm('Je, una uhakika unataka kufuta claim hii?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('claims')
+                    .delete()
+                    .eq('id', claimId);
+
+                if (error) throw error;
+
+                showMessage('success', '✅ Claim imefutwa kikamilifu!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Delete claim error:', err);
+                showMessage('error', 'Kuna tatizo la kufuta claim. Jaribu tena.');
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: REFRESH ALL DATA
+        // ============================================
+        async function refreshAllData() {
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = '⏳ Inapakia...';
+
+            const data = await loadAllData();
+            if (data) {
+                renderStats(data.users, data.businesses, data.claims);
+                renderChart(data.users);
+                // Apply search filter if any
+                const query = searchInput.value.trim();
+                if (query) {
+                    filterUsers(query);
+                } else {
+                    renderUsersTable(data.users, data.businesses, data.claims);
+                }
+            }
+
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = '🔄 Refresh Data';
+        }
+
+        // ============================================
+        // FUNCTIONS: LOGOUT
+        // ============================================
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                alert('Kuna tatizo la kufunga akaunti. Jaribu tena.');
+            } else {
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+                window.location.href = '/auth/login.html';
+            }
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        logoutBtn.addEventListener('click', handleLogout);
+        refreshBtn.addEventListener('click', refreshAllData);
+        searchInput.addEventListener('input', (e) => {
+            filterUsers(e.target.value);
+        });
+
+        // ============================================
+        // INIT - ANZA ADMIN DASHBOARD
+        // ============================================
+        async function initAdmin() {
+            // Check admin session
+            const user = await checkAdminSession();
+            if (!user) return;
+
+            // Load all data
+            const data = await loadAllData();
+            if (data) {
+                renderStats(data.users, data.businesses, data.claims);
+                renderChart(data.users);
+                renderUsersTable(data.users, data.businesses, data.claims);
+            }
+
+            localStorage.setItem('dvary_user_id', user.id);
+        }
+
+        // ============================================
+        // ANZA
+        // ============================================
+        initAdmin();
+
+        // ============================================
+        // MUUNDO WA DATABASE (Kwa kumbukumbu)
+        // ============================================
+        /*
+        -- ADD is_blocked column to users table
+        ALTER TABLE users ADD COLUMN is_blocked BOOLEAN DEFAULT false;
+
+        -- Update user to be admin (weka admin yako)
+        UPDATE users SET role = 'admin' WHERE email = 'admin@email.com';
+        */
+    </script>
+</body>
+  </html>
