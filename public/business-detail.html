@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Detail - Dvary Business</title>
+
+    <style>
+        /* ===== CSS ZOTE ZA BUSINESS DETAIL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            background: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .logo span {
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #334155;
+            font-weight: 500;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .btn-outline {
+            border: 2px solid #2563eb;
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #2563eb !important;
+            font-weight: 600;
+        }
+        .btn-outline:hover {
+            background: #2563eb;
+            color: white !important;
+        }
+
+        .btn-primary-nav {
+            background: #2563eb;
+            padding: 8px 22px;
+            border-radius: 30px;
+            color: white !important;
+            font-weight: 600;
+        }
+        .btn-primary-nav:hover {
+            background: #1d4ed8;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+            font-size: 18px;
+        }
+
+        /* ===== BUSINESS CARD ===== */
+        .business-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04);
+            margin-bottom: 30px;
+        }
+
+        .business-header {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .business-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 16px;
+            object-fit: cover;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+        .business-image-placeholder {
+            width: 200px;
+            height: 200px;
+            border-radius: 16px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            border: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .business-info {
+            flex: 1;
+        }
+        .business-info .name {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .business-info .category {
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 4px;
+        }
+        .business-info .badge-pro {
+            display: inline-block;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            font-size: 12px;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+        .business-info .description {
+            color: #475569;
+            margin-top: 15px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .business-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .business-meta .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #475569;
+            font-size: 14px;
+        }
+        .business-meta .meta-item .icon {
+            font-size: 18px;
+        }
+        .business-meta .meta-item a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .business-meta .meta-item a:hover {
+            text-decoration: underline;
+        }
+
+        .business-stats {
+            display: flex;
+            gap: 35px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .business-stats .stat {
+            text-align: center;
+        }
+        .business-stats .stat .number {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .business-stats .stat .label {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* ===== SOCIAL MEDIA ===== */
+        .social-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .social-section .social-title {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .social-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #f1f5f9;
+            border-radius: 30px;
+            color: #0f172a;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .social-links a:hover {
+            background: #2563eb;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .social-links a .icon {
+            font-size: 18px;
+        }
+
+        /* ===== WORKING HOURS ===== */
+        .hours-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .hours-section .hours-title {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        .hours-section .hours-text {
+            color: #475569;
+            font-size: 14px;
+        }
+
+        /* ===== SERVICES ===== */
+        .services-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .services-section .services-title {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        .services-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .services-list .service-tag {
+            background: #eef2ff;
+            color: #2563eb;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* ===== VIDEO SECTION ===== */
+        .video-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .video-section .video-title {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .video-section video {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: #0f172a;
+        }
+
+        /* ===== LOCATION MAP ===== */
+        .map-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .map-section .map-title {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .map-section iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+        }
+        .map-section .no-location {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* ===== REVIEWS SECTION ===== */
+        .reviews-section {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 35px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04);
+            margin-top: 30px;
+        }
+        .reviews-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .reviews-section .section-header h2 {
+            font-size: 22px;
+            color: #0f172a;
+        }
+        .reviews-section .section-header .avg-rating {
+            font-size: 20px;
+            color: #eab308;
+            font-weight: 700;
+        }
+
+        .review-item {
+            padding: 18px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .review-item:last-child {
+            border-bottom: none;
+        }
+        .review-item .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .review-item .review-user {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .review-item .review-stars {
+            color: #eab308;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        .review-item .review-date {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+        .review-item .review-comment {
+            color: #475569;
+            margin-top: 6px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .empty-reviews {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+        .empty-reviews .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        /* ===== REVIEW FORM ===== */
+        .review-form {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid #e2e8f0;
+        }
+        .review-form h3 {
+            font-size: 18px;
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.3s;
+            background: #f8fafc;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-group select {
+            max-width: 200px;
+        }
+
+        .btn-submit-review {
+            background: #2563eb;
+            color: white;
+            padding: 10px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-submit-review:hover {
+            background: #1d4ed8;
+        }
+        .btn-submit-review:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .msg {
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        .msg.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .msg.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        .msg.info {
+            display: block;
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: auto;
+        }
+        footer p {
+            margin: 5px 0;
+        }
+        footer a {
+            color: #94a3b8;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        footer a:hover {
+            color: white;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                padding: 15px 20px;
+            }
+            .nav-links {
+                justify-content: center;
+                gap: 10px;
+            }
+            .main-content {
+                padding: 20px 15px;
+            }
+            .business-card {
+                padding: 20px;
+            }
+            .business-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .business-image,
+            .business-image-placeholder {
+                width: 150px;
+                height: 150px;
+            }
+            .business-info .name {
+                font-size: 26px;
+            }
+            .business-meta {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .business-meta .meta-item {
+                justify-content: center;
+            }
+            .business-stats {
+                justify-content: center;
+                gap: 20px;
+            }
+            .reviews-section {
+                padding: 20px;
+            }
+            .reviews-section .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .review-item .review-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .video-section video {
+                max-width: 100%;
+            }
+            .social-links {
+                justify-content: center;
+            }
+            .services-list {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    NAVIGATION
+    ============================================ -->
+    <nav>
+        <div class="logo">Dvary<span>Business</span></div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/categories.html">Categories</a>
+            <a href="/about.html">About</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/auth/login.html" class="btn-outline">Log In</a>
+            <a href="/auth/signup.html" class="btn-primary-nav">Sign Up</a>
+        </div>
+    </nav>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+        <a href="/categories.html" class="back-link">← Rudi kwenye Categories</a>
+
+        <!-- Business Detail -->
+        <div id="businessDetail">
+            <div class="loading-state">⏳ Inapakia maelezo ya biashara...</div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div id="reviewsSection" class="reviews-section" style="display:none;">
+            <div class="section-header">
+                <h2>⭐ Reviews</h2>
+                <div class="avg-rating" id="avgRating">0.0 ⭐</div>
+            </div>
+            <div id="reviewsList">
+                <div class="empty-reviews">
+                    <div class="icon">📝</div>
+                    <p>Hakuna reviews bado. Kuwa wa kwanza kuandika review!</p>
+                </div>
+            </div>
+
+            <!-- Review Form -->
+            <div class="review-form" id="reviewFormContainer">
+                <h3>✍️ Andika Review</h3>
+                <form id="reviewForm">
+                    <div class="form-group">
+                        <label for="rating">Rating <span style="color:#b91c1c;">*</span></label>
+                        <select id="rating" required>
+                            <option value="">-- Chagua --</option>
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment">Maoni yako</label>
+                        <textarea id="comment" placeholder="Andika maoni yako kuhusu biashara hii..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit-review" id="submitReviewBtn">📤 Tuma Review</button>
+                    <div id="reviewMessage" class="msg"></div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+    FOOTER
+    ============================================ -->
+    <footer>
+        <p>© 2026 Dvary Business. All rights reserved.</p>
+        <p>
+            <a href="/privacy.html">Privacy</a> |
+            <a href="/terms.html">Terms</a> |
+            <a href="/contact.html">Contact</a>
+        </p>
+    </footer>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        import { supabase } from '/assets/js/supabase.js';
+
+        const businessDetail = document.getElementById('businessDetail');
+        const reviewsSection = document.getElementById('reviewsSection');
+        const reviewsList = document.getElementById('reviewsList');
+        const avgRatingEl = document.getElementById('avgRating');
+        const reviewForm = document.getElementById('reviewForm');
+        const ratingInput = document.getElementById('rating');
+        const commentInput = document.getElementById('comment');
+        const submitReviewBtn = document.getElementById('submitReviewBtn');
+        const reviewMessage = document.getElementById('reviewMessage');
+
+        let currentBusiness = null;
+        let currentUser = null;
+
+        function getBusinessIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        async function checkSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error || !session) {
+                return null;
+            }
+            return session.user;
+        }
+
+        async function loadBusiness(businessId) {
+            try {
+                const { data, error } = await supabase
+                    .from('businesses')
+                    .select('*')
+                    .eq('id', businessId)
+                    .single();
+
+                if (error) throw error;
+                return data;
+            } catch (err) {
+                console.error('Error loading business:', err);
+                return null;
+            }
+        }
+
+        async function loadReviews(businessId) {
+            try {
+                const { data, error } = await supabase
+                    .from('reviews')
+                    .select('*')
+                    .eq('business_id', businessId)
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                return data || [];
+            } catch (err) {
+                console.error('Error loading reviews:', err);
+                return [];
+            }
+        }
+
+        function renderBusiness(business) {
+            const imageHtml = business.image_url
+                ? `<img src="${business.image_url}" alt="${business.name}" class="business-image" />`
+                : `<div class="business-image-placeholder">🏢</div>`;
+
+            const proBadge = business.is_pro ? '<span class="badge-pro">⭐ PRO+</span>' : '';
+
+            // Location handling safe from [object Object] errors
+            let mapHtml = '';
+            if (business.location) {
+                let lat, lng;
+                if (typeof business.location === 'object') {
+                    lat = business.location.lat || business.location.latitude;
+                    lng = business.location.lng || business.location.longitude;
+                } else if (typeof business.location === 'string') {
+                    try {
+                        const loc = JSON.parse(business.location);
+                        lat = loc.lat || loc.latitude;
+                        lng = loc.lng || loc.longitude;
+                    } catch (e) {
+                        // not JSON
+                    }
+                }
+                if (lat && lng) {
+                    mapHtml = `
+                        <div class="map-section">
+                            <div class="map-title">📍 Location</div>
+                            <iframe 
+                                src="https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed"
+                                allowfullscreen
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    `;
+                } else {
+                    let locText = typeof business.location === 'object' ? (business.location.address || JSON.stringify(business.location)) : business.location;
+                    mapHtml = `
+                        <div class="map-section">
+                            <div class="map-title">📍 Location</div>
+                            <div class="no-location">${locText}</div>
+                        </div>
+                    `;
+                }
+            } else {
+                mapHtml = `
+                    <div class="map-section">
+                        <div class="map-title">📍 Location</div>
+                        <div class="no-location">Hakuna location iliyowekwa.</div>
+                    </div>
+                `;
+            }
+
+            let videoHtml = '';
+            if (business.video_url) {
+                videoHtml = `
+                    <div class="video-section">
+                        <div class="video-title">🎥 Video ya Biashara</div>
+                        <video controls>
+                            <source src="${business.video_url}" type="video/mp4">
+                            Browser yako haisupporti video.
+                        </video>
+                    </div>
+                `;
+            }
+
+            let socialHtml = '';
+            if (business.social_media) {
+                const sm = typeof business.social_media === 'string' ? JSON.parse(business.social_media) : business.social_media;
+                const links = [];
+                if (sm.facebook) links.push({ icon: '📘', name: 'Facebook', url: sm.facebook });
+                if (sm.instagram) links.push({ icon: '📸', name: 'Instagram', url: sm.instagram });
+                if (sm.twitter) links.push({ icon: '🐦', name: 'Twitter/X', url: sm.twitter });
+                if (sm.youtube) links.push({ icon: '▶️', name: 'YouTube', url: sm.youtube });
+
+                if (links.length > 0) {
+                    socialHtml = `
+                        <div class="social-section">
+                            <div class="social-title">🌐 Social Media</div>
+                            <div class="social-links">
+                                ${links.map(l => `<a href="${l.url}" target="_blank"><span class="icon">${l.icon}</span> ${l.name}</a>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            let hoursHtml = '';
+            if (business.working_hours) {
+                const wh = typeof business.working_hours === 'string' ? JSON.parse(business.working_hours) : business.working_hours;
+                if (wh.start && wh.end) {
+                    hoursHtml = `
+                        <div class="hours-section">
+                            <div class="hours-title">🕐 Saa za Kazi</div>
+                            <div class="hours-text">${wh.start} - ${wh.end}</div>
+                        </div>
+                    `;
+                }
+            }
+
+            let servicesHtml = '';
+            if (business.services) {
+                const services = Array.isArray(business.services) ? business.services : 
+                                (typeof business.services === 'string' ? JSON.parse(business.services) : []);
+                if (services.length > 0) {
+                    servicesHtml = `
+                        <div class="services-section">
+                            <div class="services-title">📋 Huduma Zinazotolewa</div>
+                            <div class="services-list">
+                                ${services.map(s => `<span class="service-tag">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            let metaHtml = '';
+            if (business.address || business.phone || business.website) {
+                metaHtml = `
+                    <div class="business-meta">
+                        ${business.address ? `
+                            <div class="meta-item">
+                                <span class="icon">📍</span>
+                                <span>${business.address}</span>
+                            </div>
+                        ` : ''}
+                        ${business.phone ? `
+                            <div class="meta-item">
+                                <span class="icon">📞</span>
+                                <a href="tel:${business.phone}">${business.phone}</a>
+                            </div>
+                        ` : ''}
+                        ${business.website ? `
+                            <div class="meta-item">
+                                <span class="icon">🌐</span>
+                                <a href="${business.website}" target="_blank">${business.website}</a>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            const statsHtml = `
+                <div class="business-stats">
+                    <div class="stat">
+                        <div class="number">${business.views || 0}</div>
+                        <div class="label">👁️ Views</div>
+                    </div>
+                    <div class="stat">
+                        <div class="number">${business.likes || 0}</div>
+                        <div class="label">❤️ Likes</div>
+                    </div>
+                </div>
+            `;
+
+            businessDetail.innerHTML = `
+                <div class="business-card">
+                    <div class="business-header">
+                        ${imageHtml}
+                        <div class="business-info">
+                            <div class="name">${business.name} ${proBadge}</div>
+                            <div class="category">📂 ${business.category || 'Nyingine'}</div>
+                            <div class="description">${business.description || 'Hakuna maelezo ya biashara hii.'}</div>
+                        </div>
+                    </div>
+
+                    ${metaHtml}
+                    ${statsHtml}
+                    ${socialHtml}
+                    ${hoursHtml}
+                    ${servicesHtml}
+                    ${videoHtml}
+                    ${mapHtml}
+                </div>
+            `;
+
+            updateViews(business.id, (business.views || 0) + 1);
+        }
+
+        async function updateViews(businessId, newViews) {
+            try {
+                await supabase
+                    .from('businesses')
+                    .update({ views: newViews })
+                    .eq('id', businessId);
+            } catch (err) {
+                console.error('Error updating views:', err);
+            }
+        }
+
+        function renderReviews(reviews) {
+            if (!reviews || reviews.length === 0) {
+                reviewsList.innerHTML = `
+                    <div class="empty-reviews">
+                        <div class="icon">📝</div>
+                        <p>Hakuna reviews bado. Kuwa wa kwanza kuandika review!</p>
+                    </div>
+                `;
+                avgRatingEl.textContent = '0.0 ⭐';
+                return;
+            }
+
+            const total = reviews.length;
+            const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+            const avg = (sum / total).toFixed(1);
+
+            avgRatingEl.textContent = `${avg} ⭐ (${total} reviews)`;
+
+            let html = '';
+            reviews.forEach(review => {
+                const stars = '⭐'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                const date = review.created_at ? new Date(review.created_at).toLocaleDateString('sw-TZ') : '—';
+
+                html += `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-user">${review.user_name || 'Mteja'}</span>
+                            <span class="review-stars">${stars}</span>
+                            <span class="review-date">${date}</span>
+                        </div>
+                        <div class="review-comment">${review.comment || 'Hakuna maoni.'}</div>
+                    </div>
+                `;
+            });
+
+            reviewsList.innerHTML = html;
+        }
+
+        reviewForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            reviewMessage.style.display = 'none';
+
+            if (!currentUser) {
+                reviewMessage.className = 'msg info';
+                reviewMessage.textContent = '🔐 Tafadhali ingia kwanza ili kuweza kuandika review.';
+                reviewMessage.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = '/auth/login.html';
+                }, 2000);
+                return;
+            }
+
+            const rating = parseInt(ratingInput.value);
+            const comment = commentInput.value.trim();
+
+            if (!rating) {
+                reviewMessage.className = 'msg error';
+                reviewMessage.textContent = 'Tafadhali chagua rating.';
+                reviewMessage.style.display = 'block';
+                return;
+            }
+
+            submitReviewBtn.disabled = true;
+            submitReviewBtn.textContent = '⏳ Inatuma...';
+
+            try {
+                const userName = currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || (currentUser.email ? currentUser.email.split('@')[0] : 'Mteja');
+
+                const { error } = await supabase
+                    .from('reviews')
+                    .insert([{
+                        business_id: currentBusiness.id,
+                        user_id: currentUser.id,
+                        user_name: userName,
+                        rating: rating,
+                        comment: comment || '',
+                        status: 'pending',
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (error) throw error;
+
+                reviewMessage.className = 'msg success';
+                reviewMessage.textContent = '✅ Review imetumwa! Inasubiri kuidhinishwa na Admin.';
+                reviewMessage.style.display = 'block';
+
+                ratingInput.value = '';
+                commentInput.value = '';
+
+                setTimeout(async () => {
+                    const reviews = await loadReviews(currentBusiness.id);
+                    renderReviews(reviews);
+                }, 1500);
+
+            } catch (err) {
+                console.error('Submit review error:', err);
+                reviewMessage.className = 'msg error';
+                reviewMessage.textContent = 'Kuna tatizo la kutuma review. Jaribu tena.';
+                reviewMessage.style.display = 'block';
+            } finally {
+                submitReviewBtn.disabled = false;
+                submitReviewBtn.textContent = '📤 Tuma Review';
+            }
+        });
+
+        async function initBusinessDetail() {
+            const businessId = getBusinessIdFromUrl();
+            if (!businessId) {
+                businessDetail.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:#b91c1c;">
+                        ⚠️ Hakuna ID ya biashara iliyotolewa.
+                        <br /><a href="/categories.html" style="color:#2563eb;">Rudi kwenye Categories</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const business = await loadBusiness(businessId);
+            if (!business) {
+                businessDetail.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:#b91c1c;">
+                        ⚠️ Biashara haikupatikana.
+                        <br /><a href="/categories.html" style="color:#2563eb;">Rudi kwenye Categories</a>
+                    </div>
+                `;
+                return;
+            }
+
+            currentBusiness = business;
+            currentUser = await checkSession();
+
+            renderBusiness(business);
+
+            const reviews = await loadReviews(businessId);
+            renderReviews(reviews);
+
+            reviewsSection.style.display = 'block';
+
+            if (!currentUser) {
+                document.querySelector('.review-form h3').textContent = '🔐 Ingia kuandika review';
+                submitReviewBtn.disabled = true;
+                submitReviewBtn.textContent = '🔐 Ingia Kwanza';
+                submitReviewBtn.style.cursor = 'not-allowed';
+            } else {
+                document.querySelector('.review-form h3').textContent = '✍️ Andika Review';
+                submitReviewBtn.disabled = false;
+                submitReviewBtn.textContent = '📤 Tuma Review';
+                submitReviewBtn.style.cursor = 'pointer';
+            }
+        }
+
+        initBusinessDetail();
+    </script>
+</body>
+</html>
+
