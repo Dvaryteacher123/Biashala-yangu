@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Dvary Business</title>
+
+    <style>
+        /* ============================================
+           CSS ZOTE ZA DASHBOARD - DESIGN MPYA
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .sidebar .logo span {
+            color: #60a5fa;
+        }
+
+        .sidebar .user-info {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .sidebar .user-info .name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .sidebar .user-info .email {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .sidebar nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+        .sidebar nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+        .sidebar nav a .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar .logout-btn {
+            margin-top: auto;
+            padding: 12px 16px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sidebar .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: calc(100% - 250px);
+        }
+
+        /* ===== CLAIM BANNER ===== */
+        #claimBanner {
+            display: none;
+            margin-bottom: 25px;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #0f172a;
+        }
+        .page-header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .header-actions .btn-primary {
+            background: #2563eb;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header-actions .btn-primary:hover {
+            background: #1d4ed8;
+            transform: scale(1.02);
+        }
+        .header-actions .btn-secondary {
+            background: white;
+            color: #0f172a;
+            padding: 10px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            transition: 0.3s;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header-actions .btn-secondary:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        /* ===== HERO / WELCOME SECTION ===== */
+        .welcome-section {
+            background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%);
+            border-radius: 20px;
+            padding: 40px 45px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .welcome-section .badge {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.08);
+            color: #2563eb;
+            padding: 4px 18px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        .welcome-section h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .welcome-section h2 span {
+            color: #2563eb;
+        }
+        .welcome-section p {
+            color: #475569;
+            font-size: 16px;
+            max-width: 600px;
+            margin: 10px auto 0;
+            line-height: 1.7;
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px 22px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .stat-card .stat-number {
+            font-size: 30px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .stat-card .stat-label {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .stat-card .stat-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        /* ===== FEATURED / QUICK ACTIONS ===== */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .quick-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+        .quick-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+            border-color: #2563eb;
+        }
+        .quick-card .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .quick-card .title {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 16px;
+        }
+        .quick-card .desc {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* ===== BUSINESS LIST ===== */
+        .business-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+        .business-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .business-section .section-header h2 {
+            font-size: 20px;
+            color: #0f172a;
+        }
+        .business-section .section-header a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .business-section .section-header a:hover {
+            text-decoration: underline;
+        }
+
+        .business-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .business-table th {
+            text-align: left;
+            padding: 12px 8px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .business-table td {
+            padding: 14px 8px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #0f172a;
+        }
+        .business-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-badge.pending {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .status-badge.expired {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .business-table .actions a {
+            color: #2563eb;
+            text-decoration: none;
+            margin-right: 12px;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        .business-table .actions a:hover {
+            text-decoration: underline;
+        }
+        .business-table .actions a.delete {
+            color: #b91c1c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .empty-state h3 {
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 15px 10px;
+                align-items: center;
+            }
+            .sidebar .logo {
+                font-size: 16px;
+                text-align: center;
+            }
+            .sidebar .logo span {
+                display: none;
+            }
+            .sidebar .user-info {
+                display: none;
+            }
+            .sidebar nav a span {
+                display: none;
+            }
+            .sidebar nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar nav a .icon {
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            .main-content {
+                padding: 20px 15px;
+                max-width: calc(100% - 70px);
+            }
+            .page-header h1 {
+                font-size: 22px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .quick-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+            .welcome-section {
+                padding: 30px 20px;
+            }
+            .welcome-section h2 {
+                font-size: 24px;
+            }
+            .business-table {
+                font-size: 13px;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header-actions {
+                flex-direction: column;
+            }
+            .header-actions a {
+                text-align: center;
+                justify-content: center;
+            }
+            .welcome-section h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    SIDEBAR
+    ============================================ -->
+    <aside class="sidebar">
+        <div class="logo">Dvary<span>Business</span></div>
+
+        <div class="user-info" id="userInfo">
+            <div class="name" id="userName">Loading...</div>
+            <div class="email" id="userEmail">loading@email.com</div>
+        </div>
+
+        <nav>
+            <a href="/dashboard/" class="active">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/dashboard/add-business.html">
+                <span class="icon">➕</span>
+                <span>Add Business</span>
+            </a>
+            <a href="/dashboard/claims.html">
+                <span class="icon">🎁</span>
+                <span>Claims</span>
+            </a>
+            <a href="/dashboard/analytics.html">
+                <span class="icon">📈</span>
+                <span>Analytics</span>
+            </a>
+            <a href="/dashboard/settings.html">
+                <span class="icon">⚙️</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn" id="logoutBtn">
+            <span>🚪</span>
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+
+        <!-- ===== CLAIM BANNER ===== -->
+        <div id="claimBanner"></div>
+
+        <!-- ===== HEADER ===== -->
+        <div class="page-header">
+            <h1>📊 Dashboard <small>— Karibu tena!</small></h1>
+            <div class="header-actions">
+                <a href="/dashboard/claims.html" class="btn-secondary">🎁 Claim Free Trial</a>
+                <a href="/dashboard/add-business.html" class="btn-primary">➕ Add Business</a>
+            </div>
+        </div>
+
+        <!-- ===== WELCOME SECTION ===== -->
+        <div class="welcome-section">
+            <div class="badge">🚀 THE PERFECT BUSINESS</div>
+            <h2>Tunakusaidia kugundua <span>biashara bora</span></h2>
+            <p>
+                Kupata wateja wapya na kukuza biashara yako kupitia Dvary Business.
+            </p>
+        </div>
+
+        <!-- ===== STATS ===== -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-number" id="totalBusinesses">0</div>
+                <div class="stat-label">Biashara Zako</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👁️</div>
+                <div class="stat-number" id="totalViews">0</div>
+                <div class="stat-label">Jumla ya Views</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❤️</div>
+                <div class="stat-number" id="totalLikes">0</div>
+                <div class="stat-label">Jumla ya Likes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-number" id="claimStatus">—</div>
+                <div class="stat-label">Hali ya Claim</div>
+            </div>
+        </div>
+
+        <!-- ===== QUICK ACTIONS ===== -->
+        <div class="quick-actions">
+            <a href="/dashboard/add-business.html" class="quick-card">
+                <div class="icon">➕</div>
+                <div class="title">Add Business</div>
+                <div class="desc">Weka biashara yako mpya</div>
+            </a>
+            <a href="/dashboard/claims.html" class="quick-card">
+                <div class="icon">🎁</div>
+                <div class="title">Claim Free Trial</div>
+                <div class="desc">Pata miezi 3 bure</div>
+            </a>
+            <a href="/dashboard/analytics.html" class="quick-card">
+                <div class="icon">📈</div>
+                <div class="title">Analytics</div>
+                <div class="desc">Angalia utendaji wako</div>
+            </a>
+            <a href="/dashboard/settings.html" class="quick-card">
+                <div class="icon">⚙️</div>
+                <div class="title">Settings</div>
+                <div class="desc">Simamia akaunti yako</div>
+            </a>
+        </div>
+
+        <!-- ===== BUSINESS LIST ===== -->
+        <div class="business-section">
+            <div class="section-header">
+                <h2>📋 Biashara Zako</h2>
+                <a href="/dashboard/add-business.html">+ Ongeza Mpya</a>
+            </div>
+
+            <div id="businessList">
+                <div class="empty-state">
+                    <div class="icon">📭</div>
+                    <h3>Hujatengeneza biashara bado</h3>
+                    <p>Bonyeza "Add Business" ili kuanza kuweka biashara yako kwenye directory.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        // ============================================
+        // INGIZA SUAPBASE CLIENT
+        // ============================================
+        import { supabase } from '/assets/js/supabase.js';
+
+        // ============================================
+        // VITAMBULISHO VYA ELEMENTS
+        // ============================================
+        const userNameEl = document.getElementById('userName');
+        const userEmailEl = document.getElementById('userEmail');
+        const totalBusinessesEl = document.getElementById('totalBusinesses');
+        const totalViewsEl = document.getElementById('totalViews');
+        const totalLikesEl = document.getElementById('totalLikes');
+        const claimStatusEl = document.getElementById('claimStatus');
+        const businessListEl = document.getElementById('businessList');
+        const claimBanner = document.getElementById('claimBanner');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        let currentUserId = null;
+
+        // ============================================
+        // FUNCTIONS: CHECK SESSION
+        // ============================================
+        async function checkSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = '/auth/login.html';
+                return null;
+            }
+            currentUserId = session.user.id;
+            return session.user;
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD USER DATA
+        // ============================================
+        async function loadUserData(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('full_name, email')
+                    .eq('id', userId)
+                    .single();
+
+                if (error) {
+                    console.error('Error loading user:', error);
+                    return null;
+                }
+
+                return data;
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD BUSINESSES
+        // ============================================
+        async function loadBusinesses(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('businesses')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error loading businesses:', error);
+                    return [];
+                }
+
+                return data || [];
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                return [];
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: CHECK CLAIM
+        // ============================================
+        async function checkClaim(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('claims')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .eq('status', 'active')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                if (error) {
+                    console.error('Error checking claim:', error);
+                    return null;
+                }
+
+                if (data && data.length > 0) {
+                    const claim = data[0];
+                    const expiryDate = new Date(claim.expiry_date);
+                    const now = new Date();
+
+                    if (expiryDate > now) {
+                        return { status: 'active', expiry: expiryDate, code: claim.claim_code };
+                    } else {
+                        return { status: 'expired', expiry: expiryDate };
+                    }
+                }
+
+                return { status: 'none' };
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: CHECK CLAIM STATUS AND SHOW BANNER
+        // ============================================
+        async function checkClaimStatus(userId) {
+            try {
+                const response = await fetch(`/api/claims/status/${userId}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    console.error('Error checking claim:', data.message);
+                    return;
+                }
+
+                if (!data.hasClaim) {
+                    claimBanner.style.display = 'block';
+                    claimBanner.innerHTML = `
+                        <div style="background:#fee2e2; border:2px solid #b91c1c; border-radius:12px; padding:18px 22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                            <div>
+                                <span style="font-size:24px; margin-right:10px;">⚠️</span>
+                                <span style="font-weight:700; color:#991b1b; font-size:16px;">${data.message || 'Huna claim active!'}</span>
+                                <span style="color:#7f1d1d; font-size:14px; display:block; margin-top:4px;">Hutaweza kuweka au kuhariri biashara mpaka ununue claim.</span>
+                            </div>
+                            <a href="/dashboard/claims.html" style="background:#b91c1c; color:white; padding:10px 24px; border-radius:30px; text-decoration:none; font-weight:700; white-space:nowrap;">🔑 Nunua Claim</a>
+                        </div>
+                    `;
+                } else if (data.daysRemaining <= 7) {
+                    claimBanner.style.display = 'block';
+                    const color = data.daysRemaining <= 3 ? '#b91c1c' : '#eab308';
+                    const bgColor = data.daysRemaining <= 3 ? '#fee2e2' : '#fef9c3';
+                    const borderColor = data.daysRemaining <= 3 ? '#b91c1c' : '#eab308';
+
+                    claimBanner.innerHTML = `
+                        <div style="background:${bgColor}; border:2px solid ${borderColor}; border-radius:12px; padding:18px 22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                            <div>
+                                <span style="font-size:24px; margin-right:10px;">⏳</span>
+                                <span style="font-weight:700; color:${color}; font-size:16px;">Claim yako inakaribia kuisha!</span>
+                                <span style="color:#0f172a; font-size:14px; display:block; margin-top:4px;">Siku <strong>${data.daysRemaining}</strong> zimebaki. Nunua claim mpya ili kuendelea.</span>
+                            </div>
+                            <a href="/dashboard/claims.html" style="background:#2563eb; color:white; padding:10px 24px; border-radius:30px; text-decoration:none; font-weight:700; white-space:nowrap;">🔄 Renew Now</a>
+                        </div>
+                    `;
+                } else {
+                    claimBanner.style.display = 'none';
+                }
+
+            } catch (err) {
+                console.error('Error checking claim status:', err);
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER STATS
+        // ============================================
+        function renderStats(businesses, claim) {
+            totalBusinessesEl.textContent = businesses.length;
+
+            let totalViews = 0;
+            let totalLikes = 0;
+            businesses.forEach(biz => {
+                totalViews += biz.views || 0;
+                totalLikes += biz.likes || 0;
+            });
+            totalViewsEl.textContent = totalViews.toLocaleString();
+            totalLikesEl.textContent = totalLikes.toLocaleString();
+
+            if (claim && claim.status === 'active') {
+                const daysLeft = Math.ceil((claim.expiry - new Date()) / (1000 * 60 * 60 * 24));
+                claimStatusEl.textContent = `✅ Active (siku ${daysLeft})`;
+                claimStatusEl.style.color = '#166534';
+            } else if (claim && claim.status === 'expired') {
+                claimStatusEl.textContent = '⏳ Expired';
+                claimStatusEl.style.color = '#991b1b';
+            } else {
+                claimStatusEl.textContent = '🔓 Bado Hujachukua';
+                claimStatusEl.style.color = '#854d0e';
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: RENDER BUSINESSES
+        // ============================================
+        function renderBusinesses(businesses) {
+            if (!businesses || businesses.length === 0) {
+                businessListEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <h3>Hujatengeneza biashara bado</h3>
+                        <p>Bonyeza "Add Business" ili kuanza kuweka biashara yako kwenye directory.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="business-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jina la Biashara</th>
+                            <th>Kategoria</th>
+                            <th>Views</th>
+                            <th>Likes</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            businesses.forEach((biz, index) => {
+                const statusClass = biz.is_active ? 'active' : 'pending';
+                const statusLabel = biz.is_active ? '✅ Active' : '⏳ Pending';
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${biz.name}</strong></td>
+                        <td>${biz.category || '—'}</td>
+                        <td>${biz.views || 0}</td>
+                        <td>${biz.likes || 0}</td>
+                        <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                        <td class="actions">
+                            <a href="/dashboard/edit-business.html?id=${biz.id}">✏️ Edit</a>
+                            <a href="#" class="delete" data-id="${biz.id}">🗑️ Delete</a>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            businessListEl.innerHTML = html;
+
+            // Delete business
+            document.querySelectorAll('.delete').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const bizId = btn.dataset.id;
+                    if (confirm('Je, una uhakika unataka kufuta biashara hii?')) {
+                        await deleteBusiness(bizId);
+                    }
+                });
+            });
+        }
+
+        // ============================================
+        // FUNCTIONS: DELETE BUSINESS
+        // ============================================
+        async function deleteBusiness(businessId) {
+            try {
+                const { error } = await supabase
+                    .from('businesses')
+                    .delete()
+                    .eq('id', businessId);
+
+                if (error) {
+                    console.error('Delete error:', error);
+                    alert('Kuna tatizo la kufuta biashara. Jaribu tena.');
+                    return;
+                }
+
+                alert('✅ Biashara imefutwa!');
+                window.location.reload();
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                alert('Kuna hitilafu ya mfumo. Jaribu tena.');
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: LOGOUT
+        // ============================================
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                alert('Kuna tatizo la kufunga akaunti. Jaribu tena.');
+            } else {
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+                window.location.href = '/auth/login.html';
+            }
+        }
+
+        // ============================================
+        // INIT - PAKIA DATA ZOTE
+        // ============================================
+        async function initDashboard() {
+            // 1. Check session
+            const user = await checkSession();
+            if (!user) return;
+
+            // 2. Load user data
+            const userData = await loadUserData(user.id);
+            if (userData) {
+                userNameEl.textContent = userData.full_name || 'Mfanyabiashara';
+                userEmailEl.textContent = userData.email || user.email;
+            } else {
+                userNameEl.textContent = user.email || 'Mfanyabiashara';
+                userEmailEl.textContent = user.email || '';
+            }
+
+            // 3. Load businesses
+            const businesses = await loadBusinesses(user.id);
+
+            // 4. Check claim
+            const claim = await checkClaim(user.id);
+
+            // 5. Render stats and businesses
+            renderStats(businesses, claim);
+            renderBusinesses(businesses);
+
+            // 6. Check claim status for banner
+            await checkClaimStatus(user.id);
+
+            // 7. Save user ID
+            localStorage.setItem('dvary_user_id', user.id);
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        logoutBtn.addEventListener('click', handleLogout);
+
+        // ============================================
+        // ANZA DASHBOARD
+        // ============================================
+        initDashboard();
+    </script>
+</body>
+  </html>
