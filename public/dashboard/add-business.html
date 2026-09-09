@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Business - Dvary Business</title>
+
+    <style>
+        /* ===== CSS ZOTE ZA ADD BUSINESS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .sidebar .logo span {
+            color: #60a5fa;
+        }
+
+        .sidebar .user-info {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .sidebar .user-info .name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .sidebar .user-info .email {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .sidebar nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+        .sidebar nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+        .sidebar nav a .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar .logout-btn {
+            margin-top: auto;
+            padding: 12px 16px;
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sidebar .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: calc(100% - 250px);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #0f172a;
+        }
+        .page-header h1 small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748b;
+        }
+        .page-header p {
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* ===== FORM ===== */
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 35px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .form-group label .required {
+            color: #b91c1c;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: 0.3s;
+            background: #f8fafc;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-submit {
+            background: #2563eb;
+            color: white;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-submit:hover {
+            background: #1d4ed8;
+            transform: scale(1.01);
+        }
+        .btn-submit:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-cancel:hover {
+            background: #cbd5e1;
+        }
+
+        /* ===== LOCATION BUTTON ===== */
+        .location-btn {
+            background: #22c55e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+        .location-btn:hover {
+            background: #16a34a;
+        }
+        .location-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .location-status {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 6px;
+        }
+        .location-status.success {
+            color: #166534;
+        }
+        .location-status.error {
+            color: #991b1b;
+        }
+
+        /* ===== FILE INPUTS ===== */
+        .file-input-wrapper {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .file-input-wrapper input[type="file"] {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+            cursor: pointer;
+            min-width: 200px;
+        }
+        .file-input-wrapper input[type="file"]:hover {
+            border-color: #2563eb;
+        }
+        .file-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .file-preview img,
+        .file-preview video {
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            object-fit: cover;
+        }
+        .file-preview .file-name {
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .file-preview .remove-file {
+            color: #b91c1c;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .msg {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+        .msg.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .msg.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 15px 10px;
+                align-items: center;
+            }
+            .sidebar .logo {
+                font-size: 16px;
+                text-align: center;
+            }
+            .sidebar .logo span {
+                display: none;
+            }
+            .sidebar .user-info {
+                display: none;
+            }
+            .sidebar nav a span {
+                display: none;
+            }
+            .sidebar nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .sidebar nav a .icon {
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            .main-content {
+                padding: 20px 15px;
+                max-width: calc(100% - 70px);
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .form-container {
+                padding: 20px;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            .form-actions a,
+            .form-actions button {
+                width: 100%;
+                text-align: center;
+            }
+            .file-input-wrapper {
+                flex-direction: column;
+            }
+            .file-input-wrapper input[type="file"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    SIDEBAR
+    ============================================ -->
+    <aside class="sidebar">
+        <div class="logo">Dvary<span>Business</span></div>
+        <div class="user-info" id="userInfo">
+            <div class="name" id="userName">Loading...</div>
+            <div class="email" id="userEmail">loading@email.com</div>
+        </div>
+        <nav>
+            <a href="/dashboard/"><span class="icon">📊</span><span>Dashboard</span></a>
+            <a href="/dashboard/add-business.html" class="active"><span class="icon">➕</span><span>Add Business</span></a>
+            <a href="/dashboard/claims.html"><span class="icon">🎁</span><span>Claims</span></a>
+            <a href="/dashboard/analytics.html"><span class="icon">📈</span><span>Analytics</span></a>
+            <a href="/dashboard/settings.html"><span class="icon">⚙️</span><span>Settings</span></a>
+        </nav>
+        <button class="logout-btn" id="logoutBtn"><span>🚪</span><span>Logout</span></button>
+    </aside>
+
+    <!-- ============================================
+    MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1>➕ Add Business <small>— Weka biashara yako kwenye directory</small></h1>
+            <p>Jaza maelezo ya biashara yako hapa chini. Baada ya kuweka, itaonekana kwenye homepage.</p>
+        </div>
+
+        <div class="form-container">
+            <form id="addBusinessForm">
+
+                <!-- ===== 1. JINA LA BIASHARA ===== -->
+                <div class="form-group">
+                    <label for="businessName">Jina la Biashara <span class="required">*</span></label>
+                    <input type="text" id="businessName" placeholder="Mfano: Outcrowd Studio" required />
+                </div>
+
+                <!-- ===== 2. KATEGORIA (SASA NI PICHA BADALA YA DROPDOWN) ===== -->
+                <div class="form-group">
+                    <label for="categoryImage">Picha ya Kategoria (Icon / Logo) <span class="required">*</span></label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="categoryImage" accept="image/*" required />
+                        <span style="font-size:13px; color:#64748b;">PNG, JPG, SVG (max 1MB)</span>
+                    </div>
+                    <div id="categoryPreview" class="file-preview"></div>
+                    <small style="color:#64748b; display:block; margin-top:5px;">
+                        Picha hii itaonyesha kategoria yako (mfano: 🏗️ kwa ujenzi, 💻 kwa teknolojia).
+                    </small>
+                </div>
+
+                <!-- ===== 3. MAELEZO ===== -->
+                <div class="form-group">
+                    <label for="description">Maelezo ya Biashara</label>
+                    <textarea id="description" placeholder="Eleza kuhusu biashara yako, huduma zinazotolewa, n.k."></textarea>
+                </div>
+
+                <!-- ===== 4. ANWANI / ENEO ===== -->
+                <div class="form-group">
+                    <label for="address">Anwani / Eneo</label>
+                    <input type="text" id="address" placeholder="Mfano: Dar es Salaam, Tanzania" />
+                </div>
+
+                <!-- ===== 5. LOCATION (GPS) ===== -->
+                <div class="form-group">
+                    <label>📍 Eneo Lako (GPS)</label>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <input type="text" id="locationLat" placeholder="Latitude" style="flex:1; min-width:120px;" readonly />
+                        <input type="text" id="locationLng" placeholder="Longitude" style="flex:1; min-width:120px;" readonly />
+                        <button type="button" class="location-btn" id="getLocationBtn">📡 Chukua Location</button>
+                    </div>
+                    <div id="locationStatus" class="location-status">Bonyeza kitufe ili kuchukua location yako.</div>
+                </div>
+
+                <!-- ===== 6. NAMBA YA SIMU ===== -->
+                <div class="form-group">
+                    <label for="phone">Namba ya Simu</label>
+                    <input type="tel" id="phone" placeholder="Mfano: 0712 345 678" />
+                </div>
+
+                <!-- ===== 7. WEBSITE ===== -->
+                <div class="form-group">
+                    <label for="website">Tovuti (Website)</label>
+                    <input type="url" id="website" placeholder="Mfano: https://www.biasharayako.com" />
+                </div>
+
+                <!-- ===== 8. SOCIAL MEDIA ===== -->
+                <div class="form-group">
+                    <label>🌐 Social Media Links</label>
+                    <div class="form-row">
+                        <input type="url" id="socialFacebook" placeholder="Facebook URL" />
+                        <input type="url" id="socialInstagram" placeholder="Instagram URL" />
+                    </div>
+                    <div class="form-row" style="margin-top:8px;">
+                        <input type="url" id="socialTwitter" placeholder="Twitter / X URL" />
+                        <input type="url" id="socialYouTube" placeholder="YouTube URL" />
+                    </div>
+                    <small style="color:#64748b; display:block; margin-top:5px;">Weka URL za mitandao yako ya kijamii (hiari).</small>
+                </div>
+
+                <!-- ===== 9. WORKING HOURS ===== -->
+                <div class="form-group">
+                    <label>🕐 Saa za Kazi</label>
+                    <div class="form-row">
+                        <input type="time" id="workStart" value="08:00" />
+                        <input type="time" id="workEnd" value="18:00" />
+                    </div>
+                    <small style="color:#64748b; display:block; margin-top:5px;">Chagua muda wa kuanza na kuisha kwa biashara yako.</small>
+                </div>
+
+                <!-- ===== 10. SERVICES OFFERED ===== -->
+                <div class="form-group">
+                    <label for="services">Huduma Zinazotolewa</label>
+                    <textarea id="services" placeholder="Orodhesha huduma zako, kwa mfano:&#10;• Usanifu wa nyumba&#10;• Ujenzi wa majengo&#10;• Usimamizi wa miradi"></textarea>
+                    <small style="color:#64748b; display:block; margin-top:5px;">Andika kila huduma kwenye mstari mpya.</small>
+                </div>
+
+                <!-- ===== 11. PICHA YA BIASHARA ===== -->
+                <div class="form-group">
+                    <label for="businessImage">Picha ya Biashara (Hiari)</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="businessImage" accept="image/*" />
+                        <span style="font-size:13px; color:#64748b;">PNG, JPG (max 2MB)</span>
+                    </div>
+                    <div id="businessImagePreview" class="file-preview"></div>
+                </div>
+
+                <!-- ===== 12. VIDEO YA BIASHARA ===== -->
+                <div class="form-group">
+                    <label for="businessVideo">🎥 Video ya Biashara (Hiari)</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="businessVideo" accept="video/*" />
+                        <span style="font-size:13px; color:#64748b;">MP4, WebM, MOV (max 50MB)</span>
+                    </div>
+                    <div id="videoPreview" class="file-preview"></div>
+                </div>
+
+                <!-- ===== SUBMIT ===== -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit" id="submitBtn">🚀 Weka Biashara</button>
+                    <a href="/dashboard/" class="btn-cancel">Cancel</a>
+                </div>
+
+                <div id="messageBox" class="msg"></div>
+            </form>
+        </div>
+    </main>
+
+    <!-- ============================================
+    JAVASCRIPT - Inatumia Supabase Halisi
+    ============================================ -->
+    <script type="module">
+        // ============================================
+        // INGIZA SUAPBASE CLIENT
+        // ============================================
+        import { supabase } from '/assets/js/supabase.js';
+
+        // ============================================
+        // VITAMBULISHO VYA ELEMENTS
+        // ============================================
+        const form = document.getElementById('addBusinessForm');
+        const businessNameInput = document.getElementById('businessName');
+        const categoryImageInput = document.getElementById('categoryImage');
+        const categoryPreview = document.getElementById('categoryPreview');
+        const descriptionInput = document.getElementById('description');
+        const addressInput = document.getElementById('address');
+        const locationLat = document.getElementById('locationLat');
+        const locationLng = document.getElementById('locationLng');
+        const locationStatus = document.getElementById('locationStatus');
+        const getLocationBtn = document.getElementById('getLocationBtn');
+        const phoneInput = document.getElementById('phone');
+        const websiteInput = document.getElementById('website');
+        const socialFacebook = document.getElementById('socialFacebook');
+        const socialInstagram = document.getElementById('socialInstagram');
+        const socialTwitter = document.getElementById('socialTwitter');
+        const socialYouTube = document.getElementById('socialYouTube');
+        const workStart = document.getElementById('workStart');
+        const workEnd = document.getElementById('workEnd');
+        const servicesInput = document.getElementById('services');
+        const businessImageInput = document.getElementById('businessImage');
+        const businessImagePreview = document.getElementById('businessImagePreview');
+        const businessVideoInput = document.getElementById('businessVideo');
+        const videoPreview = document.getElementById('videoPreview');
+        const submitBtn = document.getElementById('submitBtn');
+        const msgBox = document.getElementById('messageBox');
+
+        const userNameEl = document.getElementById('userName');
+        const userEmailEl = document.getElementById('userEmail');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        let currentUserId = null;
+
+        // ============================================
+        // FUNCTIONS: CHECK SESSION
+        // ============================================
+        async function checkSession() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error || !session) {
+                window.location.href = '/auth/login.html';
+                return null;
+            }
+            currentUserId = session.user.id;
+            return session.user;
+        }
+
+        // ============================================
+        // FUNCTIONS: LOAD USER DATA
+        // ============================================
+        async function loadUserData(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('full_name, email')
+                    .eq('id', userId)
+                    .single();
+                if (error) throw error;
+                return data;
+            } catch (err) {
+                console.error('Error loading user:', err);
+                return null;
+            }
+        }
+
+        // ============================================
+        // FUNCTIONS: UPLOAD FILE (Image/Video)
+        // ============================================
+        async function uploadFile(file, userId, folder) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('userId', userId);
+            formData.append('folder', folder);
+
+            const response = await fetch('/api/upload-file', {
+                method: 'POST',
+                headers: {
+                    'X-User-Id': userId
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                throw new Error(result.message || 'Upload failed');
+            }
+            return result.fileUrl;
+        }
+
+        // ============================================
+        // FUNCTIONS: SHOW MESSAGE
+        // ============================================
+        function showMessage(type, text) {
+            msgBox.className = `msg ${type}`;
+            msgBox.textContent = text;
+            msgBox.style.display = 'block';
+        }
+
+        function hideMessage() {
+            msgBox.className = 'msg';
+            msgBox.style.display = 'none';
+        }
+
+        // ============================================
+        // FUNCTIONS: PREVIEW IMAGE/VIDEO
+        // ============================================
+        function previewFile(input, previewContainer, type) {
+            const file = input.files[0];
+            if (!file) {
+                previewContainer.innerHTML = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                let html = '';
+                if (type === 'image') {
+                    html = `<img src="${e.target.result}" alt="Preview" />`;
+                } else if (type === 'video') {
+                    html = `<video src="${e.target.result}" controls muted style="max-width:200px; max-height:150px;"></video>`;
+                }
+                html += `<span class="file-name">${file.name} <span class="remove-file" onclick="this.parentElement.parentElement.innerHTML=''">✕</span></span>`;
+                previewContainer.innerHTML = html;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ============================================
+        // FUNCTIONS: GET LOCATION (GPS)
+        // ============================================
+        function getLocation() {
+            if (!navigator.geolocation) {
+                locationStatus.textContent = '❌ Kifaa chako hakina GPS.';
+                locationStatus.className = 'location-status error';
+                return;
+            }
+
+            locationStatus.textContent = '⏳ Inatafuta location yako...';
+            locationStatus.className = 'location-status';
+            getLocationBtn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    locationLat.value = position.coords.latitude;
+                    locationLng.value = position.coords.longitude;
+                    locationStatus.textContent = '✅ Location imepatikana!';
+                    locationStatus.className = 'location-status success';
+                    getLocationBtn.disabled = false;
+                },
+                (error) => {
+                    let msg = '❌ Imeshindwa kupata location. ';
+                    if (error.code === 1) msg += 'Tafadhali ruhusu GPS kwenye browser yako.';
+                    else if (error.code === 2) msg += 'Signal haipatikani. Jaribu nje ya nyumba.';
+                    else if (error.code === 3) msg += 'Imechukua muda mrefu. Jaribu tena.';
+                    locationStatus.textContent = msg;
+                    locationStatus.className = 'location-status error';
+                    getLocationBtn.disabled = false;
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+            );
+        }
+
+        // ============================================
+        // FUNCTIONS: HANDLE FORM SUBMIT
+        // ============================================
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessage();
+
+            const user = await checkSession();
+            if (!user) return;
+
+            // 1. Collect data
+            const name = businessNameInput.value.trim();
+            const description = descriptionInput.value.trim();
+            const address = addressInput.value.trim();
+            const latitude = locationLat.value.trim();
+            const longitude = locationLng.value.trim();
+            const phone = phoneInput.value.trim();
+            const website = websiteInput.value.trim();
+            const fb = socialFacebook.value.trim();
+            const ig = socialInstagram.value.trim();
+            const tw = socialTwitter.value.trim();
+            const yt = socialYouTube.value.trim();
+            const startTime = workStart.value;
+            const endTime = workEnd.value;
+            const services = servicesInput.value.trim();
+
+            const categoryFile = categoryImageInput.files[0];
+            const imageFile = businessImageInput.files[0];
+            const videoFile = businessVideoInput.files[0];
+
+            // 2. Validations
+            if (!name) {
+                showMessage('error', 'Tafadhali ingiza jina la biashara.');
+                return;
+            }
+            if (!categoryFile) {
+                showMessage('error', 'Tafadhali chagua picha ya kategoria.');
+                return;
+            }
+            if (categoryFile.size > 1 * 1024 * 1024) {
+                showMessage('error', 'Picha ya kategoria ni kubwa sana (max 1MB).');
+                return;
+            }
+            if (imageFile && imageFile.size > 2 * 1024 * 1024) {
+                showMessage('error', 'Picha ya biashara ni kubwa sana (max 2MB).');
+                return;
+            }
+            if (videoFile && videoFile.size > 50 * 1024 * 1024) {
+                showMessage('error', 'Video ni kubwa sana (max 50MB).');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Inaweka...';
+
+            try {
+                // 3. Upload files
+                const [categoryImageUrl, businessImageUrl, videoUrl] = await Promise.all([
+                    uploadFile(categoryFile, user.id, 'categories'),
+                    imageFile ? uploadFile(imageFile, user.id, 'businesses') : Promise.resolve(null),
+                    videoFile ? uploadFile(videoFile, user.id, 'videos') : Promise.resolve(null)
+                ]);
+
+                // 4. Build social media object
+                const socialMedia = {};
+                if (fb) socialMedia.facebook = fb;
+                if (ig) socialMedia.instagram = ig;
+                if (tw) socialMedia.twitter = tw;
+                if (yt) socialMedia.youtube = yt;
+
+                // 5. Build services array
+                const servicesArray = services ? services.split('\n').filter(s => s.trim()) : [];
+
+                // 6. Build working hours
+                const workingHours = {
+                    start: startTime,
+                    end: endTime
+                };
+
+                // 7. Build location object
+                const location = {};
+                if (latitude) location.lat = parseFloat(latitude);
+                if (longitude) location.lng = parseFloat(longitude);
+
+                // 8. Submit to backend
+                const response = await fetch('/api/businesses', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-User-Id': user.id
+                    },
+                    body: JSON.stringify({
+                        userId: user.id,
+                        name,
+                        description,
+                        address,
+                        location,
+                        phone,
+                        website,
+                        categoryImage: categoryImageUrl,
+                        imageUrl: businessImageUrl,
+                        videoUrl: videoUrl,
+                        socialMedia: socialMedia,
+                        workingHours: workingHours,
+                        services: servicesArray
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    if (result.requiresClaim) {
+                        showMessage('error', result.message + ' Nenda kwenye claims kupata free trial.');
+                    } else {
+                        showMessage('error', result.message || 'Kuna tatizo la kuweka biashara.');
+                    }
+                    return;
+                }
+
+                showMessage('success', '✅ Biashara imewekwa kikamilifu! Unaelekezwa kwenye dashboard...');
+                setTimeout(() => {
+                    window.location.href = '/dashboard/';
+                }, 1500);
+
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                showMessage('error', 'Kuna hitilafu ya mfumo. Jaribu tena baada ya muda.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Weka Biashara';
+            }
+        });
+
+        // ============================================
+        // FUNCTIONS: LOGOUT
+        // ============================================
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                alert('Kuna tatizo la kufunga akaunti. Jaribu tena.');
+            } else {
+                localStorage.removeItem('dvary_user_id');
+                localStorage.removeItem('dvary_user_email');
+                window.location.href = '/auth/login.html';
+            }
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        logoutBtn.addEventListener('click', handleLogout);
+        getLocationBtn.addEventListener('click', getLocation);
+
+        // Preview category image
+        categoryImageInput.addEventListener('change', (e) => {
+            previewFile(e.target, categoryPreview, 'image');
+        });
+
+        // Preview business image
+        businessImageInput.addEventListener('change', (e) => {
+            previewFile(e.target, businessImagePreview, 'image');
+        });
+
+        // Preview video
+        businessVideoInput.addEventListener('change', (e) => {
+            previewFile(e.target, videoPreview, 'video');
+        });
+
+        // ============================================
+        // INIT - LOAD USER DATA
+        // ============================================
+        async function initPage() {
+            const user = await checkSession();
+            if (!user) return;
+
+            const userData = await loadUserData(user.id);
+            if (userData) {
+                userNameEl.textContent = userData.full_name || 'Mfanyabiashara';
+                userEmailEl.textContent = userData.email || user.email;
+            } else {
+                userNameEl.textContent = user.email || 'Mfanyabiashara';
+                userEmailEl.textContent = user.email || '';
+            }
+
+            localStorage.setItem('dvary_user_id', user.id);
+        }
+
+        initPage();
+    </script>
+</body>
+  </html>
