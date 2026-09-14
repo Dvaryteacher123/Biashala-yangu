@@ -1,0 +1,1037 @@
+<%- include('../partials/header', { title }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     PRODUCT DETAIL PAGE
+     ========================================================== -->
+
+<main class="product-page">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" id="breadcrumb" style="display:none;">
+      <a href="/">Nyumbani</a>
+      <span>/</span>
+      <a href="/shop">Duka</a>
+      <span>/</span>
+      <span id="bcName">—</span>
+    </nav>
+
+    <!-- Loading -->
+    <div id="productLoading" class="loading">
+      <div class="spinner"></div> Inapakia bidhaa...
+    </div>
+
+    <!-- Not found -->
+    <div id="productNotFound" class="empty-state" style="display:none;">
+      <h3>Bidhaa haipatikani</h3>
+      <p>Bidhaa uliyotafuta haipo au imeondolewa.</p>
+      <a href="/shop" class="btn btn-primary" style="margin-top:14px;">Rudi Dukani</a>
+    </div>
+
+    <!-- Product content -->
+    <div id="productContent" class="product-detail" style="display:none;">
+
+      <!-- ============ Gallery ============ -->
+      <div class="gallery">
+        <div class="gallery-main" id="galleryMain">
+          <!-- Picha kubwa hapa -->
+        </div>
+        <div class="gallery-thumbs" id="galleryThumbs"></div>
+      </div>
+
+      <!-- ============ Info ============ -->
+      <div class="product-info">
+
+        <h1 class="p-name" id="pName">—</h1>
+
+        <div class="p-meta">
+          <span class="p-cat" id="pCat"></span>
+          <span class="p-stock" id="pStock"></span>
+        </div>
+
+        <div class="p-price-wrap">
+          <span class="p-price" id="pPrice">—</span>
+          <span class="p-old-price" id="pOldPrice" style="display:none;"></span>
+          <span class="p-discount" id="pDiscount" style="display:none;"></span>
+        </div>
+
+        <p class="p-desc" id="pDesc"></p>
+
+        <!-- Sizes -->
+        <div class="option-group" id="sizeGroup" style="display:none;">
+          <label>Ukubwa:</label>
+          <div class="option-list" id="sizeList"></div>
+        </div>
+
+        <!-- Colors -->
+        <div class="option-group" id="colorGroup" style="display:none;">
+          <label>Rangi:</label>
+          <div class="option-list" id="colorList"></div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="option-group">
+          <label>Idadi:</label>
+          <div class="qty-wrap">
+            <button type="button" id="qtyMinus">−</button>
+            <input type="number" id="qtyInput" value="1" min="1" />
+            <button type="button" id="qtyPlus">+</button>
+          </div>
+        </div>
+
+        <!-- Vitendo -->
+        <div class="actions">
+          <button class="btn btn-primary btn-lg" id="addToCartBtn">
+            🛒 Ongeza kwenye Kikapu
+          </button>
+          <button class="btn btn-outline btn-lg" id="wishlistBtn" title="Wishlist">
+            ❤️
+          </button>
+        </div>
+
+        <div id="productMsg" class="alert" style="display:none;"></div>
+
+        <!-- Info za ziada -->
+        <ul class="extra-info">
+          <li>🚚 Usafirishaji wa siku 1–3 Tanzania</li>
+          <li>🔒 Malipo salama</li>
+          <li>↩️ Kurudisha ndani ya siku 7</li>
+        </ul>
+
+      </div>
+    </div>
+
+    <!-- ============ Reviews ============ -->
+    <section class="reviews-section" id="reviewsSection" style="display:none;">
+      <h2>Maoni ya Wateja</h2>
+
+      <!-- Summary -->
+      <div class="reviews-summary" id="reviewsSummary">
+        <div class="rs-score">
+          <div class="rs-num" id="rsNum">0.0</div>
+          <div class="rs-stars" id="rsStars">☆☆☆☆☆</div>
+          <div class="rs-count" id="rsCount">Maoni 0</div>
+        </div>
+      </div>
+
+      <!-- Form ya kuongeza review (inalindwa — mtumiaji lazima awe ameingia) -->
+      <div class="review-form-wrap" id="reviewFormWrap" style="display:none;">
+        <h4>Toa maoni yako</h4>
+        <div class="star-input" id="starInput">
+          <span data-star="1">★</span>
+          <span data-star="2">★</span>
+          <span data-star="3">★</span>
+          <span data-star="4">★</span>
+          <span data-star="5">★</span>
+        </div>
+        <textarea id="reviewText" placeholder="Andika maoni yako kuhusu bidhaa hii..." rows="3"></textarea>
+        <button class="btn btn-primary" id="submitReviewBtn">Tuma Maoni</button>
+        <p id="reviewFormMsg" class="alert" style="display:none;"></p>
+      </div>
+
+      <!-- Login prompt -->
+      <div class="review-login" id="reviewLogin" style="display:none;">
+        <p><a href="/auth/login?redirect=<%= '/product/' + productId %>">Ingia</a> ili kuweka maoni yako.</p>
+      </div>
+
+      <!-- Reviews list -->
+      <div class="reviews-list" id="reviewsList"></div>
+      <p class="reviews-empty" id="reviewsEmpty" style="display:none;">
+        Hakuna maoni bado. Kuwa wa kwanza kuweka maoni!
+      </p>
+    </section>
+
+    <!-- ============ Related Products ============ -->
+    <section class="related-section" id="relatedSection" style="display:none;">
+      <div class="section-head">
+        <h2>Bidhaa Zinazofanana</h2>
+        <a href="/shop" class="see-all">Ona Zote →</a>
+      </div>
+      <div class="product-grid" id="relatedGrid"></div>
+    </section>
+
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA PRODUCT DETAIL
+     ========================================================== -->
+<style>
+  .product-page { padding: 30px 0 60px; }
+
+  /* ---------- Breadcrumb ---------- */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .breadcrumb a { color: #555; }
+  .breadcrumb a:hover { color: #e63946; }
+  .breadcrumb span:last-child { color: #111; font-weight: 600; }
+
+  /* ---------- Detail layout ---------- */
+  .product-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+  /* ---------- Gallery ---------- */
+  .gallery-main {
+    width: 100%;
+    aspect-ratio: 1 / 1.15;
+    background: #f2f2f5;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .gallery-thumbs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .gallery-thumbs .thumb {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    background: #f2f2f5;
+    transition: border-color 0.15s;
+  }
+  .gallery-thumbs .thumb.active { border-color: #111; }
+  .gallery-thumbs .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ---------- Info ---------- */
+  .p-name {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .p-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 14px;
+  }
+  .p-cat {
+    background: #f2f2f5;
+    color: #333;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  .p-stock.in { color: #2e7d32; font-weight: 600; }
+  .p-stock.out { color: #c62828; font-weight: 600; }
+
+  .p-price-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 14px 0 18px;
+    flex-wrap: wrap;
+  }
+  .p-price {
+    font-size: 28px;
+    font-weight: 800;
+    color: #e63946;
+  }
+  .p-old-price {
+    font-size: 16px;
+    color: #999;
+    text-decoration: line-through;
+  }
+  .p-discount {
+    background: #e63946;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .p-desc {
+    color: #555;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 22px;
+    white-space: pre-line;
+  }
+
+  /* ---------- Option groups ---------- */
+  .option-group {
+    margin-bottom: 18px;
+  }
+  .option-group > label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  .option-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .opt {
+    padding: 8px 14px;
+    border: 1.5px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .opt:hover { border-color: #999; }
+  .opt.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+
+  .qty-wrap {
+    display: inline-flex;
+    align-items: center;
+    border: 1.5px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .qty-wrap button {
+    width: 36px;
+    height: 36px;
+    background: #f7f7f9;
+    font-size: 18px;
+    color: #333;
+    transition: background 0.15s;
+  }
+  .qty-wrap button:hover { background: #e6e6ec; }
+  .qty-wrap input {
+    width: 50px;
+    height: 36px;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-weight: 600;
+    background: #fff;
+    -moz-appearance: textfield;
+  }
+  .qty-wrap input::-webkit-outer-spin-button,
+  .qty-wrap input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* ---------- Actions ---------- */
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin: 22px 0 14px;
+  }
+  .btn-lg {
+    padding: 14px 22px;
+    font-size: 15px;
+    border-radius: 8px;
+  }
+  #wishlistBtn {
+    padding: 14px 18px;
+    font-size: 20px;
+  }
+  #wishlistBtn.active {
+    background: #e63946;
+    color: #fff;
+    border-color: #e63946;
+  }
+
+  /* ---------- Extra info ---------- */
+  .extra-info {
+    list-style: none;
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+  }
+  .extra-info li {
+    color: #666;
+    font-size: 14px;
+    padding: 6px 0;
+  }
+
+  /* ---------- Reviews ---------- */
+  .reviews-section {
+    margin: 50px 0;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+  }
+  .reviews-section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .reviews-summary {
+    background: #f7f7f9;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .rs-num {
+    font-size: 40px;
+    font-weight: 800;
+    color: #111;
+    line-height: 1;
+  }
+  .rs-stars {
+    color: #f5a623;
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin: 6px 0;
+  }
+  .rs-count {
+    color: #777;
+    font-size: 13px;
+  }
+
+  .review-form-wrap {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+  }
+  .review-form-wrap h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .star-input {
+    display: flex;
+    gap: 4px;
+    font-size: 28px;
+    color: #ddd;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .star-input span {
+    transition: color 0.15s, transform 0.1s;
+  }
+  .star-input span.active { color: #f5a623; }
+  .star-input span:hover { transform: scale(1.1); }
+
+  #reviewText {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 12px;
+    outline: none;
+  }
+  #reviewText:focus { border-color: #111; }
+
+  .review-login {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    color: #555;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+  .review-login a { color: #e63946; font-weight: 600; }
+
+  .reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .review-item {
+    background: #fff;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .review-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .review-user {
+    font-weight: 600;
+    color: #111;
+    font-size: 14px;
+  }
+  .review-stars {
+    color: #f5a623;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  .review-text {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .review-date {
+    color: #999;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .reviews-empty {
+    color: #888;
+    text-align: center;
+    padding: 24px;
+    font-size: 14px;
+  }
+
+  /* ---------- Related ---------- */
+  .related-section {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+  }
+  .related-section .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+  }
+  .related-section .section-head h2 {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .related-section .see-all {
+    color: #e63946;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 800px) {
+    .product-detail {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .p-name { font-size: 22px; }
+    .p-price { font-size: 24px; }
+    .actions {
+      flex-direction: column;
+    }
+    .btn-lg { width: 100%; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA PRODUCT DETAIL — Firestore halisi
+     ========================================================== -->
+<script type="module">
+
+  // Product ID kutoka routes/index.routes.js
+  const PRODUCT_ID = "<%= productId %>";
+
+  // State
+  const state = {
+    product: null,
+    selectedSize: '',
+    selectedColor: '',
+    qty: 1,
+    user: null,
+    reviewRating: 0
+  };
+
+  // ==========================================================
+  // Helper: stars
+  // ==========================================================
+  function starsHTML(rating) {
+    const full = Math.round(rating);
+    return '★'.repeat(full) + '☆'.repeat(5 - full);
+  }
+
+  // ==========================================================
+  // 1. Pakia bidhaa kutoka Firestore: products/{id}
+  // ==========================================================
+  async function loadProduct() {
+    const loading = document.getElementById('productLoading');
+    const content = document.getElementById('productContent');
+    const nf      = document.getElementById('productNotFound');
+
+    try {
+      const { doc, getDoc } = window.fs;
+      const snap = await getDoc(doc(window.db, 'products', PRODUCT_ID));
+
+      loading.style.display = 'none';
+
+      if (!snap.exists()) {
+        nf.style.display = 'block';
+        return;
+      }
+
+      const p = { id: snap.id, ...snap.data() };
+      state.product = p;
+
+      renderProduct(p);
+      content.style.display = 'grid';
+      document.getElementById('breadcrumb').style.display = 'flex';
+      document.getElementById('reviewsSection').style.display = 'block';
+
+      loadReviews();
+      loadRelated(p);
+
+    } catch (err) {
+      console.error('Product error:', err);
+      loading.style.display = 'none';
+      nf.style.display = 'block';
+    }
+  }
+
+  // ==========================================================
+  // 2. Render bidhaa
+  // ==========================================================
+  function renderProduct(p) {
+    document.title = (p.name || 'Bidhaa') + ' | ClothingStore';
+    document.getElementById('bcName').textContent = p.name || 'Bidhaa';
+    document.getElementById('pName').textContent  = p.name || 'Bidhaa';
+
+    // Category
+    const catEl = document.getElementById('pCat');
+    catEl.textContent = p.categoryName || p.category || 'Bidhaa';
+
+    // Stock
+    const stock = Number(p.stock || 0);
+    const stockEl = document.getElementById('pStock');
+    if (stock > 0) {
+      stockEl.textContent = `✅ Ipo (${stock})`;
+      stockEl.className = 'p-stock in';
+    } else {
+      stockEl.textContent = '❌ Haipo stokini';
+      stockEl.className = 'p-stock out';
+      document.getElementById('addToCartBtn').disabled = true;
+      document.getElementById('addToCartBtn').textContent = 'Haipo stokini';
+    }
+
+    // Price
+    document.getElementById('pPrice').textContent =
+      `TSh ${Number(p.price || 0).toLocaleString()}`;
+    if (p.oldPrice && Number(p.oldPrice) > Number(p.price)) {
+      const oldEl = document.getElementById('pOldPrice');
+      oldEl.textContent = `TSh ${Number(p.oldPrice).toLocaleString()}`;
+      oldEl.style.display = 'inline';
+      const disc = Math.round((1 - p.price / p.oldPrice) * 100);
+      const discEl = document.getElementById('pDiscount');
+      discEl.textContent = `-${disc}%`;
+      discEl.style.display = 'inline-block';
+    }
+
+    // Description
+    document.getElementById('pDesc').textContent = p.description || '';
+
+    // Gallery
+    const images = [];
+    if (p.image) images.push(p.image);
+    if (Array.isArray(p.images)) images.push(...p.images);
+    renderGallery(images);
+
+    // Sizes
+    if (Array.isArray(p.sizes) && p.sizes.length) {
+      renderOptions('sizeList', p.sizes, 'size');
+      document.getElementById('sizeGroup').style.display = 'block';
+    }
+
+    // Colors
+    if (Array.isArray(p.colors) && p.colors.length) {
+      renderOptions('colorList', p.colors, 'color');
+      document.getElementById('colorGroup').style.display = 'block';
+    }
+  }
+
+  function renderGallery(images) {
+    const main = document.getElementById('galleryMain');
+    const thumbs = document.getElementById('galleryThumbs');
+    const fallback = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22700%22><rect fill=%22%23eee%22 width=%22600%22 height=%22700%22/><text x=%22300%22 y=%22350%22 font-size=%2224%22 fill=%22%23999%22 text-anchor=%22middle%22>Hakuna picha</text></svg>';
+
+    if (images.length === 0) {
+      main.innerHTML = `<img src="${fallback}" alt="Bidhaa" />`;
+      thumbs.innerHTML = '';
+      return;
+    }
+
+    main.innerHTML = `<img src="${images[0]}" alt="Bidhaa" id="mainImg" />`;
+    thumbs.innerHTML = images.map((img, i) =>
+      `<div class="thumb ${i === 0 ? 'active' : ''}" data-i="${i}">
+        <img src="${img}" alt="Thumb ${i + 1}" />
+      </div>`
+    ).join('');
+
+    thumbs.querySelectorAll('.thumb').forEach((t) => {
+      t.addEventListener('click', () => {
+        const i = Number(t.dataset.i);
+        document.getElementById('mainImg').src = images[i];
+        thumbs.querySelectorAll('.thumb').forEach((x) => x.classList.remove('active'));
+        t.classList.add('active');
+      });
+    });
+  }
+
+  function renderOptions(containerId, values, type) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = values.map((v) =>
+      `<button class="opt" data-type="${type}" data-value="${v}">${v}</button>`
+    ).join('');
+
+    el.querySelectorAll('.opt').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        el.querySelectorAll('.opt').forEach((x) => x.classList.remove('active'));
+        btn.classList.add('active');
+        if (type === 'size')  state.selectedSize  = btn.dataset.value;
+        if (type === 'color') state.selectedColor = btn.dataset.value;
+      });
+    });
+  }
+
+  // ==========================================================
+  // 3. Quantity
+  // ==========================================================
+  function bindQty() {
+    const input = document.getElementById('qtyInput');
+    document.getElementById('qtyMinus').addEventListener('click', () => {
+      let v = Number(input.value) || 1;
+      if (v > 1) v--;
+      input.value = v;
+      state.qty = v;
+    });
+    document.getElementById('qtyPlus').addEventListener('click', () => {
+      let v = Number(input.value) || 1;
+      v++;
+      input.value = v;
+      state.qty = v;
+    });
+    input.addEventListener('input', () => {
+      let v = Number(input.value) || 1;
+      if (v < 1) v = 1;
+      input.value = v;
+      state.qty = v;
+    });
+  }
+
+  // ==========================================================
+  // 4. Add to Cart — localStorage (data halisi)
+  // ==========================================================
+  function bindAddToCart() {
+    document.getElementById('addToCartBtn').addEventListener('click', () => {
+      const p = state.product;
+      if (!p) return;
+
+      // Lazima achague size/color kama zipo
+      if (Array.isArray(p.sizes) && p.sizes.length && !state.selectedSize) {
+        showMsg('Tafadhali chagua ukubwa.', 'error');
+        return;
+      }
+      if (Array.isArray(p.colors) && p.colors.length && !state.selectedColor) {
+        showMsg('Tafadhali chagua rangi.', 'error');
+        return;
+      }
+
+      const key = `${p.id}__${state.selectedSize}__${state.selectedColor}`;
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const existing = cart.find((x) => x.key === key);
+
+      if (existing) {
+        existing.qty += state.qty;
+      } else {
+        cart.push({
+          key,
+          id: p.id,
+          name: p.name || 'Bidhaa',
+          price: Number(p.price || 0),
+          image: p.image || (p.images && p.images[0]) || '',
+          size: state.selectedSize,
+          color: state.selectedColor,
+          qty: state.qty
+        });
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      window.dispatchEvent(new Event('cart-updated'));
+      showMsg('✅ Bidhaa imeongezwa kwenye kikapu!', 'success');
+    });
+  }
+
+  function showMsg(text, type) {
+    const el = document.getElementById('productMsg');
+    el.textContent = text;
+    el.className = 'alert ' + (type === 'error' ? 'alert-error' : 'alert-success');
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 3000);
+  }
+
+  // ==========================================================
+  // 5. Wishlist — Firestore: users/{uid}/wishlist/{productId}
+  // ==========================================================
+  async function bindWishlist() {
+    const btn = document.getElementById('wishlistBtn');
+    btn.addEventListener('click', async () => {
+      if (!state.user) {
+        window.location.href = '/auth/login?redirect=' + encodeURIComponent(location.pathname);
+        return;
+      }
+      try {
+        const { doc, setDoc, deleteDoc, getDoc, serverTimestamp } = window.fs;
+        const ref = doc(window.db, 'users', state.user.uid, 'wishlist', PRODUCT_ID);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          await deleteDoc(ref);
+          btn.classList.remove('active');
+          showMsg('Imeondolewa kwenye wishlist.', 'success');
+        } else {
+          await setDoc(ref, {
+            productId: PRODUCT_ID,
+            addedAt: serverTimestamp()
+          });
+          btn.classList.add('active');
+          showMsg('❤️ Imeongezwa kwenye wishlist!', 'success');
+        }
+      } catch (err) {
+        console.error('Wishlist error:', err);
+        showMsg('Imeshindikana. Jaribu tena.', 'error');
+      }
+    });
+  }
+
+  async function checkWishlistState() {
+    if (!state.user) return;
+    try {
+      const { doc, getDoc } = window.fs;
+      const ref = doc(window.db, 'users', state.user.uid, 'wishlist', PRODUCT_ID);
+      const snap = await getDoc(ref);
+      if (snap.exists()) document.getElementById('wishlistBtn').classList.add('active');
+    } catch (_) {}
+  }
+
+  // ==========================================================
+  // 6. Reviews — Firestore: products/{id}/reviews
+  // ==========================================================
+  async function loadReviews() {
+    const list  = document.getElementById('reviewsList');
+    const empty = document.getElementById('reviewsEmpty');
+
+    try {
+      const { collection, getDocs, query, orderBy } = window.fs;
+      let snap;
+      try {
+        snap = await getDocs(query(
+          collection(window.db, 'products', PRODUCT_ID, 'reviews'),
+          orderBy('createdAt', 'desc')
+        ));
+      } catch {
+        snap = await getDocs(collection(window.db, 'products', PRODUCT_ID, 'reviews'));
+      }
+
+      let total = 0, sum = 0;
+      const items = [];
+      snap.forEach((d) => {
+        const r = d.data();
+        const rating = Number(r.rating || 0);
+        total++;
+        sum += rating;
+        items.push(r);
+      });
+
+      // Summary
+      const avg = total ? (sum / total) : 0;
+      document.getElementById('rsNum').textContent = avg.toFixed(1);
+      document.getElementById('rsStars').textContent = starsHTML(avg);
+      document.getElementById('rsCount').textContent = `Maoni ${total}`;
+
+      if (total === 0) {
+        empty.style.display = 'block';
+        list.innerHTML = '';
+        return;
+      }
+
+      list.innerHTML = items.map((r) => {
+        const date = r.createdAt?.seconds
+          ? new Date(r.createdAt.seconds * 1000).toLocaleDateString('sw-TZ')
+          : '';
+        return `
+          <div class="review-item">
+            <div class="review-head">
+              <span class="review-user">${r.userName || 'Mteja'}</span>
+              <span class="review-stars">${starsHTML(Number(r.rating || 0))}</span>
+            </div>
+            <p class="review-text">${(r.text || '').replace(/</g, '&lt;')}</p>
+            ${date ? `<div class="review-date">${date}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+
+    } catch (err) {
+      console.error('Reviews error:', err);
+    }
+  }
+
+  function bindReviewForm() {
+    const starInput = document.getElementById('starInput');
+    starInput.querySelectorAll('span').forEach((s) => {
+      s.addEventListener('click', () => {
+        state.reviewRating = Number(s.dataset.star);
+        starInput.querySelectorAll('span').forEach((x) => {
+          x.classList.toggle('active', Number(x.dataset.star) <= state.reviewRating);
+        });
+      });
+    });
+
+    document.getElementById('submitReviewBtn').addEventListener('click', async () => {
+      const msg = document.getElementById('reviewFormMsg');
+      const text = document.getElementById('reviewText').value.trim();
+
+      if (!state.reviewRating) {
+        msg.textContent = 'Tafadhali chagua nyota.';
+        msg.className = 'alert alert-error';
+        msg.style.display = 'block';
+        return;
+      }
+      if (!text) {
+        msg.textContent = 'Tafadhali andika maoni yako.';
+        msg.className = 'alert alert-error';
+        msg.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('submitReviewBtn');
+      btn.disabled = true;
+      btn.textContent = 'Inatuma...';
+
+      try {
+        const { collection, addDoc, serverTimestamp } = window.fs;
+        await addDoc(collection(window.db, 'products', PRODUCT_ID, 'reviews'), {
+          userId: state.user.uid,
+          userName: state.user.displayName || state.user.email.split('@')[0],
+          rating: state.reviewRating,
+          text,
+          createdAt: serverTimestamp()
+        });
+
+        msg.textContent = '✅ Asante kwa maoni yako!';
+        msg.className = 'alert alert-success';
+        msg.style.display = 'block';
+
+        document.getElementById('reviewText').value = '';
+        state.reviewRating = 0;
+        starInput.querySelectorAll('span').forEach((x) => x.classList.remove('active'));
+
+        loadReviews();
+
+      } catch (err) {
+        console.error('Review submit error:', err);
+        msg.textContent = 'Imeshindikana kutuma. Jaribu tena.';
+        msg.className = 'alert alert-error';
+        msg.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Tuma Maoni';
+      }
+    });
+  }
+
+  // ==========================================================
+  // 7. Related products (same category)
+  // ==========================================================
+  async function loadRelated(p) {
+    if (!p.category) return;
+    try {
+      const { collection, query, where, limit, getDocs } = window.fs;
+      const snap = await getDocs(query(
+        collection(window.db, 'products'),
+        where('category', '==', p.category),
+        limit(6)
+      ));
+
+      const items = snap.docs
+        .map((d) => ({ id: d.id, ...d.data() }))
+        .filter((x) => x.id !== PRODUCT_ID)
+        .slice(0, 4);
+
+      if (items.length === 0) return;
+
+      const fallback = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22240%22><rect fill=%22%23eee%22 width=%22200%22 height=%22240%22/></svg>';
+      document.getElementById('relatedGrid').innerHTML = items.map((x) => `
+        <a href="/product/${x.id}" class="product-card">
+          <img src="${x.image || fallback}" alt="${x.name || ''}" loading="lazy" />
+          <div class="info">
+            <div class="name">${x.name || 'Bidhaa'}</div>
+            <div class="price">TSh ${Number(x.price || 0).toLocaleString()}</div>
+          </div>
+        </a>
+      `).join('');
+
+      document.getElementById('relatedSection').style.display = 'block';
+    } catch (err) {
+      console.error('Related error:', err);
+    }
+  }
+
+  // ==========================================================
+  // 8. User state (Firebase Auth)
+  // ==========================================================
+  function initUser() {
+    window.authFns.onAuthStateChanged(window.auth, (user) => {
+      state.user = user;
+      const formWrap = document.getElementById('reviewFormWrap');
+      const loginBox = document.getElementById('reviewLogin');
+
+      if (user) {
+        formWrap.style.display = 'block';
+        loginBox.style.display = 'none';
+        checkWishlistState();
+      } else {
+        formWrap.style.display = 'none';
+        loginBox.style.display = 'block';
+      }
+    });
+  }
+
+  // ==========================================================
+  // 9. Boot
+  // ==========================================================
+  function boot() {
+    bindQty();
+    bindAddToCart();
+    bindWishlist();
+    bindReviewForm();
+    initUser();
+    loadProduct();
+  }
+
+  if (window.fs && window.db) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
