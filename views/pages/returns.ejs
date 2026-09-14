@@ -1,0 +1,561 @@
+<%- include('../partials/header', { title, description }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     RETURNS PAGE — Firestore: pages/returns
+     ========================================================== -->
+
+<main class="returns-page">
+
+  <!-- ============ Hero ============ -->
+  <section class="rt-hero">
+    <div class="container">
+      <div class="hero-inner">
+        <span class="hero-badge">🔄 Kurudisha</span>
+        <h1 id="rtTitle">Sera ya Kurudisha Bidhaa</h1>
+        <p id="rtIntro" class="hero-sub">Inapakia...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Loading ============ -->
+  <div id="rtLoading" class="container" style="padding:40px 0;">
+    <div class="loading">
+      <div class="spinner"></div> Inapakia maudhui...
+    </div>
+  </div>
+
+  <!-- ============ Empty ============ -->
+  <div id="rtEmpty" class="container" style="display:none;padding:40px 0;">
+    <div class="empty-state">
+      <h3>Maudhui yataonekana hapa</h3>
+      <p>
+        Sera ya kurudisha bado haijawekwa. Msimamizi anaweza kuiweka kupitia
+        Firestore collection <code>pages/returns</code>.
+      </p>
+      <a href="/contact" class="btn btn-primary" style="margin-top:14px;">Wasiliana Nasi</a>
+    </div>
+  </div>
+
+  <!-- ============ Content ============ -->
+  <div id="rtContent" style="display:none;">
+    <div class="container narrow">
+
+      <!-- Highlights -->
+      <section class="highlights" id="hlSection" style="display:none;">
+        <div class="highlights-grid" id="hlGrid"></div>
+      </section>
+
+      <!-- Conditions (vinginevyo hairudishwi) -->
+      <section class="cond-section" id="condSection" style="display:none;">
+        <h2>✅ Masharti ya Kurudisha</h2>
+        <ul class="cond-list" id="condList"></ul>
+      </section>
+
+      <!-- Steps -->
+      <section class="steps-section" id="stepsSection" style="display:none;">
+        <h2>🛠️ Jinsi ya Kurudisha</h2>
+        <div class="steps-list" id="stepsList"></div>
+      </section>
+
+      <!-- Exceptions (bidhaa zisizorudishwa) -->
+      <section class="excep-section" id="excepSection" style="display:none;">
+        <h2>🚫 Bidhaa Zisizorudishwa</h2>
+        <ul class="excep-list" id="excepList"></ul>
+      </section>
+
+      <!-- Body / long text -->
+      <section class="body-section" id="bodySection" style="display:none;">
+        <div class="prose" id="bodyText"></div>
+      </section>
+
+      <!-- Timeline ya muda -->
+      <section class="timeline-section" id="timelineSection" style="display:none;">
+        <h2>⏱️ Muda wa Kurudisha</h2>
+        <div class="timeline-table-wrap">
+          <table class="timeline-table">
+            <thead>
+              <tr>
+                <th>Aina ya Bidhaa</th>
+                <th>Muda</th>
+                <th>Hali</th>
+              </tr>
+            </thead>
+            <tbody id="timelineBody"></tbody>
+          </table>
+        </div>
+        <p class="timeline-note" id="timelineNote" style="display:none;"></p>
+      </section>
+
+      <!-- Contact CTA -->
+      <section class="rt-cta">
+        <h3>Unataka kurudisha bidhaa?</h3>
+        <p>Wasiliana nasi na tutakusaidia kuanza mchakato wa kurudisha.</p>
+        <div class="cta-actions">
+          <a href="/contact" class="btn btn-primary">Anza Kurudisha</a>
+          <a href="/account/orders" class="btn btn-outline">Oda Zangu</a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA RETURNS PAGE
+     ========================================================== -->
+<style>
+  .returns-page { padding-bottom: 40px; }
+
+  /* ---------- Hero ---------- */
+  .rt-hero {
+    background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+    color: #fff;
+    padding: 55px 0;
+    text-align: center;
+  }
+  .hero-inner { max-width: 700px; margin: 0 auto; }
+  .hero-badge {
+    display: inline-block;
+    background: #e63946;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .rt-hero h1 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .hero-sub {
+    color: #ccc;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .container.narrow { max-width: 860px; }
+
+  /* ---------- Highlights ---------- */
+  .highlights { padding: 30px 0 10px; }
+  .highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .highlight-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 20px;
+    text-align: center;
+  }
+  .hl-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .hl-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+  }
+  .hl-text {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* ---------- Sections base ---------- */
+  .cond-section,
+  .steps-section,
+  .excep-section,
+  .body-section,
+  .timeline-section {
+    padding: 30px 0 10px;
+  }
+  .cond-section h2,
+  .steps-section h2,
+  .excep-section h2,
+  .timeline-section h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 16px;
+  }
+
+  /* ---------- Conditions list ---------- */
+  .cond-list {
+    list-style: none;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 6px 0;
+  }
+  .cond-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f4f4f6;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+  }
+  .cond-list li:last-child { border-bottom: none; }
+  .cond-list li::before {
+    content: '✓';
+    color: #2e7d32;
+    background: #e8f5e9;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ---------- Exceptions list ---------- */
+  .excep-list {
+    list-style: none;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 6px 0;
+  }
+  .excep-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f4f4f6;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+  }
+  .excep-list li:last-child { border-bottom: none; }
+  .excep-list li::before {
+    content: '✕';
+    color: #c62828;
+    background: #fdecea;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ---------- Steps ---------- */
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .step-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 18px 20px;
+  }
+  .step-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .step-body { flex: 1; min-width: 0; }
+  .step-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+  }
+  .step-text {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  /* ---------- Body prose ---------- */
+  .prose {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .prose p { margin-bottom: 14px; }
+  .prose h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #111;
+    margin: 22px 0 10px;
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: 22px;
+    margin-bottom: 14px;
+  }
+  .prose li { margin-bottom: 6px; }
+
+  /* ---------- Timeline table ---------- */
+  .timeline-table-wrap {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  .timeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .timeline-table thead {
+    background: #f7f7f9;
+  }
+  .timeline-table th {
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #eee;
+  }
+  .timeline-table td {
+    padding: 14px 18px;
+    color: #333;
+    border-bottom: 1px solid #f4f4f6;
+  }
+  .timeline-table tbody tr:last-child td { border-bottom: none; }
+  .timeline-table tbody tr:hover { background: #fafafc; }
+  .timeline-table td:nth-child(2) {
+    font-weight: 700;
+    color: #e63946;
+  }
+  .timeline-note {
+    font-size: 13px;
+    color: #888;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* ---------- CTA ---------- */
+  .rt-cta {
+    margin: 50px 0 0;
+    background: linear-gradient(135deg, #e63946 0%, #c53030 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 34px 24px;
+    text-align: center;
+  }
+  .rt-cta h3 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .rt-cta p {
+    color: #ffe5e7;
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+  .cta-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .rt-cta .btn-primary {
+    background: #fff;
+    color: #e63946;
+  }
+  .rt-cta .btn-primary:hover {
+    background: #ffe5e7;
+    color: #111;
+  }
+  .rt-cta .btn-outline {
+    border-color: #fff;
+    color: #fff;
+  }
+  .rt-cta .btn-outline:hover {
+    background: #fff;
+    color: #e63946;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 600px) {
+    .rt-hero h1 { font-size: 24px; }
+    .timeline-table th,
+    .timeline-table td { padding: 12px 12px; font-size: 13px; }
+    .step-item { padding: 16px; }
+    .cond-list li,
+    .excep-list li { padding: 12px 16px; font-size: 13px; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA RETURNS — Firestore: pages/returns
+     Document structure inayotarajiwa:
+       title, intro,
+       highlights: [{ icon, title, text }],
+       conditions: ["...", "..."],
+       steps: [{ title, text }],
+       exceptions: ["...", "..."],
+       body: "paragraph 1\n\n## Heading\n\n- Bullet 1",
+       timeline: [{ type, time, status }],
+       timelineNote
+     Kila kitu ni hiari.
+     ========================================================== -->
+<script type="module">
+
+  async function loadReturns() {
+    const loading = document.getElementById('rtLoading');
+    const empty   = document.getElementById('rtEmpty');
+    const content = document.getElementById('rtContent');
+
+    try {
+      const { doc, getDoc } = window.fs;
+      const snap = await getDoc(doc(window.db, 'pages', 'returns'));
+
+      loading.style.display = 'none';
+
+      if (!snap.exists()) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      render(snap.data());
+      content.style.display = 'block';
+
+    } catch (err) {
+      console.error('Returns error:', err);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+    }
+  }
+
+  function render(data) {
+    // Title + intro
+    if (data.title) document.getElementById('rtTitle').textContent = data.title;
+    if (data.intro) document.getElementById('rtIntro').textContent = data.intro;
+    else document.getElementById('rtIntro').style.display = 'none';
+
+    // Highlights
+    if (Array.isArray(data.highlights) && data.highlights.length) {
+      document.getElementById('hlSection').style.display = 'block';
+      document.getElementById('hlGrid').innerHTML = data.highlights.map((h) => `
+        <div class="highlight-card">
+          ${h.icon ? `<div class="hl-icon">${escapeHtml(h.icon)}</div>` : ''}
+          <div class="hl-title">${escapeHtml(h.title || '')}</div>
+          <div class="hl-text">${escapeHtml(h.text || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    // Conditions
+    if (Array.isArray(data.conditions) && data.conditions.length) {
+      document.getElementById('condSection').style.display = 'block';
+      document.getElementById('condList').innerHTML = data.conditions
+        .map((c) => `<li>${escapeHtml(c)}</li>`).join('');
+    }
+
+    // Steps
+    if (Array.isArray(data.steps) && data.steps.length) {
+      document.getElementById('stepsSection').style.display = 'block';
+      document.getElementById('stepsList').innerHTML = data.steps.map((s, i) => `
+        <div class="step-item">
+          <div class="step-num">${i + 1}</div>
+          <div class="step-body">
+            <div class="step-title">${escapeHtml(s.title || '')}</div>
+            <div class="step-text">${escapeHtml(s.text || '')}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Exceptions
+    if (Array.isArray(data.exceptions) && data.exceptions.length) {
+      document.getElementById('excepSection').style.display = 'block';
+      document.getElementById('excepList').innerHTML = data.exceptions
+        .map((e) => `<li>${escapeHtml(e)}</li>`).join('');
+    }
+
+    // Body
+    if (data.body) {
+      document.getElementById('bodySection').style.display = 'block';
+      document.getElementById('bodyText').innerHTML = parseBody(data.body);
+    }
+
+    // Timeline table
+    if (Array.isArray(data.timeline) && data.timeline.length) {
+      document.getElementById('timelineSection').style.display = 'block';
+      document.getElementById('timelineBody').innerHTML = data.timeline.map((t) => `
+        <tr>
+          <td>${escapeHtml(t.type || '')}</td>
+          <td>${escapeHtml(t.time || '')}</td>
+          <td>${escapeHtml(t.status || '')}</td>
+        </tr>
+      `).join('');
+
+      if (data.timelineNote) {
+        document.getElementById('timelineNote').style.display = 'block';
+        document.getElementById('timelineNote').textContent = data.timelineNote;
+      }
+    }
+  }
+
+  // Markdown ndogo: ## Heading, "- item" bullet, newlines
+  function parseBody(body) {
+    return body.split('\n\n').map((p) => {
+      const t = p.trim();
+      if (!t) return '';
+      if (t.startsWith('## ')) {
+        return `<h3>${escapeHtml(t.slice(3))}</h3>`;
+      }
+      const lines = t.split('\n');
+      if (lines.every((l) => l.trim().startsWith('- '))) {
+        return `<ul>${lines.map((l) => `<li>${escapeHtml(l.trim().slice(2))}</li>`).join('')}</ul>`;
+      }
+      return `<p>${escapeHtml(t).replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+  }
+
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function boot() { loadReturns(); }
+
+  if (window.fs && window.db) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
