@@ -1,0 +1,473 @@
+<%- include('../partials/header', { title }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     WISHLIST PAGE — Firestore: users/{uid}/wishlist
+     Mtumiaji LAZIMA awe ameingia
+     ========================================================== -->
+
+<main class="wishlist-page">
+  <div class="container">
+
+    <div class="wishlist-head">
+      <h1>❤️ Wishlist Yangu</h1>
+      <a href="/shop" class="continue-link">← Endelea Kununua</a>
+    </div>
+
+    <!-- Loading -->
+    <div id="wishLoading" class="loading">
+      <div class="spinner"></div> Inapakia wishlist...
+    </div>
+
+    <!-- Login required -->
+    <div id="wishLogin" class="empty-state" style="display:none;">
+      <h3>Ingia ili kuona wishlist yako</h3>
+      <p>Wishlist inahifadhiwa kwenye akaunti yako. Ingia ili kuiona.</p>
+      <a id="wishLoginLink" href="/auth/login" class="btn btn-primary" style="margin-top:14px;">
+        Ingia / Jiunge
+      </a>
+    </div>
+
+    <!-- Empty -->
+    <div id="wishEmpty" class="empty-state" style="display:none;">
+      <h3>Wishlist yako ni tupu</h3>
+      <p>Bado hujahifadhi bidhaa yoyote. Bonyeza ❤️ kwenye bidhaa ili kuihifadhi hapa.</p>
+      <a href="/shop" class="btn btn-primary" style="margin-top:14px;">
+        Anza Kununua
+      </a>
+    </div>
+
+    <!-- Grid -->
+    <div id="wishGrid" class="product-grid" style="display:none;"></div>
+
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA WISHLIST
+     ========================================================== -->
+<style>
+  .wishlist-page { padding: 30px 0 60px; min-height: 60vh; }
+
+  .wishlist-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .wishlist-head h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #111;
+  }
+  .continue-link {
+    color: #e63946;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .continue-link:hover { text-decoration: underline; }
+
+  /* ---------- Wishlist card ---------- */
+  .wish-card {
+    position: relative;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  .wish-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  }
+  .wish-card img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    background: #eee;
+  }
+  .wish-card .info {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .wish-card .name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #111;
+    margin-bottom: 4px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-height: 38px;
+  }
+  .wish-card .price {
+    color: #e63946;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  .wish-card .old-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 13px;
+    margin-left: 6px;
+    font-weight: 400;
+  }
+  .wish-card .stock {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .wish-card .stock.in  { color: #2e7d32; font-weight: 600; }
+  .wish-card .stock.out { color: #c62828; font-weight: 600; }
+
+  .wish-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+  }
+  .wish-actions .btn {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+  .wish-actions .add-cart {
+    background: #111;
+    color: #fff;
+    transition: background 0.15s;
+  }
+  .wish-actions .add-cart:hover { background: #333; }
+  .wish-actions .add-cart:disabled {
+    background: #4caf50;
+    cursor: default;
+  }
+  .wish-actions .remove-wish {
+    flex: 0 0 40px;
+    background: #f7f7f9;
+    color: #999;
+    font-size: 16px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .wish-actions .remove-wish:hover {
+    background: #fdecea;
+    color: #dc3545;
+  }
+
+  /* Badge ya wishlist */
+  .wish-card .wish-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.95);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    z-index: 2;
+  }
+
+  /* Product grid override kwa wishlist */
+  #wishGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+  }
+  @media (max-width: 600px) {
+    #wishGrid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .wish-card img { height: 180px; }
+  }
+
+  /* Msg ya muda */
+  .wish-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #111;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+  .wish-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .wish-toast.success { background: #2e7d32; }
+  .wish-toast.error   { background: #c62828; }
+</style>
+
+<!-- Toast element -->
+<div class="wish-toast" id="wishToast"></div>
+
+<!-- ==========================================================
+     JAVASCRIPT YA WISHLIST — Firestore halisi
+     ========================================================== -->
+<script type="module">
+
+  const fmt = (n) => `TSh ${Number(n || 0).toLocaleString()}`;
+  const fallbackImg = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22240%22><rect fill=%22%23eee%22 width=%22200%22 height=%22240%22/><text x=%22100%22 y=%22125%22 font-size=%2216%22 fill=%22%23999%22 text-anchor=%22middle%22>Hakuna picha</text></svg>';
+
+  // State
+  const state = {
+    user: null,
+    wishlist: [] // [{ productId, product }]
+  };
+
+  // ==========================================================
+  // Toast helper
+  // ==========================================================
+  function toast(text, type = 'success') {
+    const el = document.getElementById('wishToast');
+    el.textContent = text;
+    el.className = 'wish-toast show ' + type;
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  // ==========================================================
+  // 1. Pakia wishlist kutoka Firestore: users/{uid}/wishlist
+  //    Kisha chukua kila products/{productId}
+  // ==========================================================
+  async function loadWishlist() {
+    const loading = document.getElementById('wishLoading');
+    const login   = document.getElementById('wishLogin');
+    const empty   = document.getElementById('wishEmpty');
+    const grid    = document.getElementById('wishGrid');
+
+    loading.style.display = 'flex';
+    login.style.display = 'none';
+    empty.style.display = 'none';
+    grid.style.display = 'none';
+
+    if (!state.user) {
+      loading.style.display = 'none';
+      login.style.display = 'block';
+      document.getElementById('wishLoginLink').href =
+        '/auth/login?redirect=' + encodeURIComponent('/wishlist');
+      return;
+    }
+
+    try {
+      const { collection, getDocs, doc, getDoc, query, orderBy } = window.fs;
+
+      // Subcollection: users/{uid}/wishlist
+      let snap;
+      try {
+        snap = await getDocs(query(
+          collection(window.db, 'users', state.user.uid, 'wishlist'),
+          orderBy('addedAt', 'desc')
+        ));
+      } catch {
+        snap = await getDocs(collection(window.db, 'users', state.user.uid, 'wishlist'));
+      }
+
+      loading.style.display = 'none';
+
+      if (snap.empty) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      // Chukua taarifa za kila bidhaa
+      const promises = snap.docs.map(async (d) => {
+        const productId = d.id;
+        try {
+          const psnap = await getDoc(doc(window.db, 'products', productId));
+          if (psnap.exists()) {
+            return { productId, product: { id: psnap.id, ...psnap.data() } };
+          }
+        } catch (_) {}
+        return null;
+      });
+
+      const results = await Promise.all(promises);
+      state.wishlist = results.filter(Boolean);
+
+      if (state.wishlist.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      renderWishlist();
+      grid.style.display = 'grid';
+
+    } catch (err) {
+      console.error('Wishlist error:', err);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+    }
+  }
+
+  // ==========================================================
+  // 2. Render
+  // ==========================================================
+  function renderWishlist() {
+    const grid = document.getElementById('wishGrid');
+
+    grid.innerHTML = state.wishlist.map(({ product: p }) => {
+      const img = p.image || (p.images && p.images[0]) || fallbackImg;
+      const price = Number(p.price || 0).toLocaleString();
+      const oldPrice = p.oldPrice && Number(p.oldPrice) > Number(p.price)
+        ? `<span class="old-price">TSh ${Number(p.oldPrice).toLocaleString()}</span>`
+        : '';
+      const stock = Number(p.stock || 0);
+      const stockHtml = stock > 0
+        ? `<div class="stock in">✅ Ipo (${stock})</div>`
+        : `<div class="stock out">❌ Haipo stokini</div>`;
+      const addCartDisabled = stock > 0 ? '' : 'disabled';
+
+      return `
+        <div class="wish-card" data-id="${p.id}">
+          <span class="wish-badge">❤️</span>
+          <a href="/product/${p.id}">
+            <img src="${img}" alt="${p.name || ''}" loading="lazy" />
+          </a>
+          <div class="info">
+            <a href="/product/${p.id}" class="name">${p.name || 'Bidhaa'}</a>
+            <div class="price">TSh ${price} ${oldPrice}</div>
+            ${stockHtml}
+            <div class="wish-actions">
+              <button class="add-cart" ${addCartDisabled} data-id="${p.id}">
+                ${stock > 0 ? '🛒 Ongeza' : 'Haipo'}
+              </button>
+              <button class="remove-wish" data-id="${p.id}" title="Ondoa">✕</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    bindCardEvents();
+  }
+
+  // ==========================================================
+  // 3. Events za kadi
+  // ==========================================================
+  function bindCardEvents() {
+    // Add to Cart
+    document.querySelectorAll('.wish-actions .add-cart').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const item = state.wishlist.find((x) => x.product.id === id);
+        if (!item) return;
+        addToCart(item.product);
+        btn.disabled = true;
+        btn.textContent = '✅ Imeongezwa';
+        toast('Imeongezwa kwenye kikapu 🛒', 'success');
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = '🛒 Ongeza';
+        }, 1200);
+      });
+    });
+
+    // Remove from wishlist
+    document.querySelectorAll('.remove-wish').forEach((btn) => {
+      btn.addEventListener('click', () => removeFromWishlist(btn.dataset.id));
+    });
+  }
+
+  // ==========================================================
+  // 4. Add to Cart (localStorage)
+  // ==========================================================
+  function addToCart(p) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    // Wishlist huongeza bila size/color
+    const key = `${p.id}____`;
+    const existing = cart.find((x) => (x.key || (x.id + '__' + (x.size || '') + '__' + (x.color || ''))) === key);
+    if (existing) {
+      existing.qty = (existing.qty || 1) + 1;
+    } else {
+      cart.push({
+        key,
+        id: p.id,
+        name: p.name || 'Bidhaa',
+        price: Number(p.price || 0),
+        image: p.image || (p.images && p.images[0]) || '',
+        size: '',
+        color: '',
+        qty: 1
+      });
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cart-updated'));
+  }
+
+  // ==========================================================
+  // 5. Ondoa kutoka wishlist — Firestore deleteDoc
+  // ==========================================================
+  async function removeFromWishlist(productId) {
+    if (!state.user) return;
+
+    const card = document.querySelector(`.wish-card[data-id="${productId}"]`);
+    if (card) card.style.opacity = '0.5';
+
+    try {
+      const { doc, deleteDoc } = window.fs;
+      await deleteDoc(doc(window.db, 'users', state.user.uid, 'wishlist', productId));
+
+      // Ondoa kutoka state + render upya
+      state.wishlist = state.wishlist.filter((x) => x.product.id !== productId);
+
+      if (state.wishlist.length === 0) {
+        document.getElementById('wishGrid').style.display = 'none';
+        document.getElementById('wishEmpty').style.display = 'block';
+      } else {
+        renderWishlist();
+      }
+      toast('Imeondolewa kwenye wishlist', 'success');
+    } catch (err) {
+      console.error('Remove wishlist error:', err);
+      if (card) card.style.opacity = '1';
+      toast('Imeshindikana kuondoa. Jaribu tena.', 'error');
+    }
+  }
+
+  // ==========================================================
+  // 6. Firebase Auth
+  // ==========================================================
+  function initAuth() {
+    window.authFns.onAuthStateChanged(window.auth, (user) => {
+      state.user = user;
+      loadWishlist();
+    });
+  }
+
+  // ==========================================================
+  // 7. Boot
+  // ==========================================================
+  function boot() {
+    initAuth();
+  }
+
+  if (window.fs && window.db) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
