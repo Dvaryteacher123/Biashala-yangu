@@ -1,0 +1,476 @@
+<%- include('../partials/header', { title, description }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     TERMS PAGE — Firestore: pages/terms
+     ========================================================== -->
+
+<main class="terms-page">
+
+  <!-- ============ Hero ============ -->
+  <section class="tm-hero">
+    <div class="container">
+      <div class="hero-inner">
+        <span class="hero-badge">📜 Masharti</span>
+        <h1 id="tmTitle">Masharti na Vigezo</h1>
+        <p id="tmIntro" class="hero-sub">Inapakia...</p>
+        <p class="tm-updated" id="tmUpdated" style="display:none;">
+          Ilisasishwa mwisho: <span id="tmUpdatedDate">—</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Loading ============ -->
+  <div id="tmLoading" class="container" style="padding:40px 0;">
+    <div class="loading">
+      <div class="spinner"></div> Inapakia maudhui...
+    </div>
+  </div>
+
+  <!-- ============ Empty ============ -->
+  <div id="tmEmpty" class="container" style="display:none;padding:40px 0;">
+    <div class="empty-state">
+      <h3>Maudhui yataonekana hapa</h3>
+      <p>
+        Masharti na vigezo bado hayajawekwa. Msimamizi anaweza kuyaweka kupitia
+        Firestore collection <code>pages/terms</code>.
+      </p>
+      <a href="/contact" class="btn btn-primary" style="margin-top:14px;">Wasiliana Nasi</a>
+    </div>
+  </div>
+
+  <!-- ============ Content ============ -->
+  <div id="tmContent" style="display:none;">
+    <div class="container">
+      <div class="tm-layout">
+
+        <!-- ============ TOC ============ -->
+        <aside class="tm-toc" id="tmToc" style="display:none;">
+          <h3>Yaliyomo</h3>
+          <nav id="tmTocNav"></nav>
+        </aside>
+
+        <!-- ============ Sections ============ -->
+        <section class="tm-body" id="tmBody"></section>
+
+      </div>
+
+      <!-- Agreement card -->
+      <div class="tm-agree">
+        <div class="tm-agree-inner">
+          <div class="tm-agree-icon">✅</div>
+          <div>
+            <h3>Unakubaliana na masharti haya?</h3>
+            <p>
+              Kwa kutumia tovuti yetu, unakubali masharti yaliyoorodheshwa hapo juu.
+              Kama hukubaliani, tafadhali usitumie huduma zetu.
+              Kwa maswali, <a href="/contact">wasiliana nasi</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA TERMS PAGE
+     ========================================================== -->
+<style>
+  .terms-page { padding-bottom: 40px; }
+
+  /* ---------- Hero ---------- */
+  .tm-hero {
+    background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+    color: #fff;
+    padding: 55px 0;
+    text-align: center;
+  }
+  .hero-inner { max-width: 720px; margin: 0 auto; }
+  .hero-badge {
+    display: inline-block;
+    background: #e63946;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .tm-hero h1 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .hero-sub {
+    color: #ccc;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .tm-updated {
+    color: #999;
+    font-size: 13px;
+    margin-top: 14px;
+  }
+  .tm-updated span {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* ---------- Layout ---------- */
+  .tm-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 34px;
+    padding: 40px 0 20px;
+    align-items: start;
+  }
+
+  /* ---------- TOC ---------- */
+  .tm-toc {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 20px 18px;
+    position: sticky;
+    top: 90px;
+  }
+  .tm-toc h3 {
+    font-size: 13px;
+    font-weight: 800;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f3;
+  }
+  .tm-toc nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tm-toc a {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    padding: 7px 10px;
+    border-radius: 6px;
+    line-height: 1.4;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tm-toc a:hover {
+    background: #f2f2f5;
+    color: #111;
+  }
+  .tm-toc a.active {
+    background: #111;
+    color: #fff;
+    font-weight: 600;
+  }
+  .tm-toc a.sub {
+    padding-left: 22px;
+    font-size: 12px;
+    color: #777;
+  }
+
+  /* ---------- Sections ---------- */
+  .tm-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+
+  .tm-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 26px 28px;
+    scroll-margin-top: 90px;
+  }
+  .tm-section h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f3;
+  }
+  .tm-section .sec-num {
+    color: #e63946;
+    margin-right: 8px;
+  }
+  .tm-section p {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 12px;
+  }
+  .tm-section ul,
+  .tm-section ol {
+    padding-left: 22px;
+    margin-bottom: 12px;
+  }
+  .tm-section li {
+    color: #444;
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 6px;
+  }
+
+  /* Subsections */
+  .tm-subsection {
+    margin-top: 16px;
+    padding-left: 14px;
+    border-left: 3px solid #f0f0f3;
+  }
+  .tm-subsection h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 8px;
+  }
+  .tm-subsection p,
+  .tm-subsection li {
+    font-size: 14px;
+  }
+
+  /* ---------- Agree card ---------- */
+  .tm-agree {
+    padding: 30px 0 20px;
+  }
+  .tm-agree-inner {
+    background: #e8f5e9;
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .tm-agree-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .tm-agree-inner h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1b5e20;
+    margin-bottom: 6px;
+  }
+  .tm-agree-inner p {
+    color: #2e7d32;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .tm-agree-inner a {
+    color: #e63946;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .tm-layout {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .tm-toc { position: static; }
+    .tm-toc nav {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tm-toc a {
+      background: #f2f2f5;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+    .tm-toc a.sub { padding-left: 12px; }
+  }
+  @media (max-width: 600px) {
+    .tm-hero h1 { font-size: 24px; }
+    .tm-section { padding: 20px 18px; }
+    .tm-section h2 { font-size: 17px; }
+    .tm-agree-inner { flex-direction: column; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA TERMS — Firestore: pages/terms
+     Document structure inayotarajiwa:
+       title, intro, updatedAt,
+       sections: [
+         {
+           title: "...",
+           content: "paragraph 1\n\n- bullet\n\n1. numbered",
+           subsections: [{ title: "...", content: "..." }]
+         }
+       ]
+     ========================================================== -->
+<script type="module">
+
+  async function loadTerms() {
+    const loading = document.getElementById('tmLoading');
+    const empty   = document.getElementById('tmEmpty');
+    const content = document.getElementById('tmContent');
+
+    try {
+      const { doc, getDoc } = window.fs;
+      const snap = await getDoc(doc(window.db, 'pages', 'terms'));
+
+      loading.style.display = 'none';
+
+      if (!snap.exists()) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      render(snap.data());
+      content.style.display = 'block';
+
+    } catch (err) {
+      console.error('Terms error:', err);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+    }
+  }
+
+  function render(data) {
+    if (data.title) document.getElementById('tmTitle').textContent = data.title;
+    if (data.intro) document.getElementById('tmIntro').textContent = data.intro;
+    else document.getElementById('tmIntro').style.display = 'none';
+
+    // Updated date
+    if (data.updatedAt) {
+      let d = data.updatedAt;
+      if (typeof d === 'object' && d.seconds) d = new Date(d.seconds * 1000);
+      else if (typeof d === 'string') d = new Date(d);
+      if (!isNaN(d)) {
+        document.getElementById('tmUpdated').style.display = 'block';
+        document.getElementById('tmUpdatedDate').textContent =
+          d.toLocaleDateString('sw-TZ', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+    }
+
+    const sections = Array.isArray(data.sections) ? data.sections : [];
+    const body = document.getElementById('tmBody');
+    const tocNav = document.getElementById('tmTocNav');
+
+    if (sections.length === 0) {
+      body.innerHTML = `<div class="tm-section"><p>Hakuna maudhui bado.</p></div>`;
+      return;
+    }
+
+    body.innerHTML = sections.map((s, i) => {
+      const id = `sec-${i + 1}`;
+      const num = `${i + 1}.`;
+      const contentHTML = parseContent(s.content || '');
+      const subsectionsHTML = (Array.isArray(s.subsections) ? s.subsections : []).map((sub, j) => `
+        <div class="tm-subsection" id="${id}-sub-${j + 1}">
+          <h3>${escapeHtml(sub.title || '')}</h3>
+          ${parseContent(sub.content || '')}
+        </div>
+      `).join('');
+
+      return `
+        <article class="tm-section" id="${id}">
+          <h2><span class="sec-num">${num}</span>${escapeHtml(s.title || '')}</h2>
+          ${contentHTML}
+          ${subsectionsHTML}
+        </article>
+      `;
+    }).join('');
+
+    // TOC
+    document.getElementById('tmToc').style.display = 'block';
+    let tocHTML = '';
+    sections.forEach((s, i) => {
+      const id = `sec-${i + 1}`;
+      tocHTML += `<a href="#${id}" data-target="${id}">${escapeHtml(s.title || '')}</a>`;
+      const subs = Array.isArray(s.subsections) ? s.subsections : [];
+      subs.forEach((sub, j) => {
+        tocHTML += `<a href="#${id}-sub-${j + 1}" class="sub" data-target="${id}-sub-${j + 1}">${escapeHtml(sub.title || '')}</a>`;
+      });
+    });
+    tocNav.innerHTML = tocHTML;
+
+    bindTOC();
+  }
+
+  function parseContent(text) {
+    if (!text) return '';
+    return text.split('\n\n').map((p) => {
+      const t = p.trim();
+      if (!t) return '';
+      if (t.startsWith('## ')) {
+        return `<h3 style="font-size:15px;font-weight:700;color:#222;margin:18px 0 8px;">${escapeHtml(t.slice(3))}</h3>`;
+      }
+      const lines = t.split('\n');
+      if (lines.every((l) => l.trim().startsWith('- '))) {
+        return `<ul>${lines.map((l) => `<li>${escapeHtml(l.trim().slice(2))}</li>`).join('')}</ul>`;
+      }
+      if (lines.every((l) => /^\d+\.\s/.test(l.trim()))) {
+        return `<ol>${lines.map((l) => `<li>${escapeHtml(l.trim().replace(/^\d+\.\s/, ''))}</li>`).join('')}</ol>`;
+      }
+      return `<p>${escapeHtml(t).replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+  }
+
+  function bindTOC() {
+    document.querySelectorAll('#tmTocNav a').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const el = document.getElementById(a.dataset.target);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.replaceState(null, '', '#' + a.dataset.target);
+        }
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          document.querySelectorAll('#tmTocNav a').forEach((a) => {
+            a.classList.toggle('active', a.dataset.target === id);
+          });
+        }
+      });
+    }, { rootMargin: '-90px 0px -60% 0px', threshold: 0 });
+
+    document.querySelectorAll('.tm-section, .tm-subsection').forEach((s) => {
+      observer.observe(s);
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function boot() { loadTerms(); }
+
+  if (window.fs && window.db) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
