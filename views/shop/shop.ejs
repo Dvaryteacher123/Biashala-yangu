@@ -1,0 +1,576 @@
+<%- include('../partials/header', { title, description }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     SHOP PAGE — Duka lote lenye filter, search, sorting
+     ========================================================== -->
+
+<main class="shop-page">
+  <div class="container">
+
+    <!-- ============ Kichwa ============ -->
+    <div class="shop-head">
+      <div>
+        <h1 id="shopTitle">Duka</h1>
+        <p class="shop-sub" id="shopSub">Bidhaa zote za duka</p>
+      </div>
+      <div class="shop-controls">
+        <label for="sortSelect" class="sort-label">Panga kwa:</label>
+        <select id="sortSelect">
+          <option value="newest">Mpya kwanza</option>
+          <option value="price_asc">Bei: Chini → Juu</option>
+          <option value="price_desc">Bei: Juu → Chini</option>
+          <option value="name_asc">Jina: A → Z</option>
+          <option value="featured">Zilizochaguliwa</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ============ Layout: Sidebar + Grid ============ -->
+    <div class="shop-layout">
+
+      <!-- ---------- Sidebar Filters ---------- -->
+      <aside class="shop-filters">
+        <div class="filter-box">
+          <h4>Tafuta</h4>
+          <input
+            type="text"
+            id="filterSearch"
+            placeholder="Jina la bidhaa..."
+            value="<%= query.q %>"
+          />
+        </div>
+
+        <div class="filter-box">
+          <h4>Makundi</h4>
+          <div id="filterCategoriesLoading" class="loading-sm">Inapakia...</div>
+          <ul class="filter-cats" id="filterCategories"></ul>
+        </div>
+
+        <div class="filter-box">
+          <h4>Bei (TSh)</h4>
+          <div class="price-range">
+            <input type="number" id="priceMin" placeholder="Kutoka" min="0" />
+            <span>—</span>
+            <input type="number" id="priceMax" placeholder="Hadi" min="0" />
+          </div>
+          <button class="btn btn-outline btn-full" id="applyPriceBtn">Weka Bei</button>
+        </div>
+
+        <button class="btn btn-danger btn-full" id="clearFiltersBtn">
+          Safisha Vichujio
+        </button>
+      </aside>
+
+      <!-- ---------- Bidhaa ---------- -->
+      <section class="shop-products">
+        <!-- Loading -->
+        <div id="shopLoading" class="loading">
+          <div class="spinner"></div> Inapakia bidhaa...
+        </div>
+
+        <!-- Grid -->
+        <div class="product-grid" id="shopGrid" style="display:none;"></div>
+
+        <!-- Empty -->
+        <div class="empty-state" id="shopEmpty" style="display:none;">
+          <h3>Hakuna bidhaa zilizopatikana</h3>
+          <p>Jaribu kubadilisha vichujio au tafuta jina lingine.</p>
+        </div>
+
+        <!-- Idadi -->
+        <p class="results-count" id="resultsCount" style="display:none;"></p>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA SHOP PAGE
+     ========================================================== -->
+<style>
+  .shop-page { padding: 30px 0 50px; }
+
+  /* ---------- Kichwa ---------- */
+  .shop-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+  }
+  .shop-head h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+  }
+  .shop-sub {
+    color: #777;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .shop-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sort-label {
+    font-size: 14px;
+    color: #555;
+  }
+  .shop-controls select {
+    padding: 9px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #fff;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* ---------- Layout ---------- */
+  .shop-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 26px;
+  }
+
+  /* ---------- Filters ---------- */
+  .shop-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .filter-box {
+    background: #fff;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .filter-box h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #111;
+  }
+  .filter-box input[type="text"],
+  .filter-box input[type="number"] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    background: #f9f9fb;
+  }
+  .filter-box input:focus { border-color: #111; background: #fff; }
+
+  .filter-cats {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .filter-cats li a {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #444;
+    transition: background 0.15s;
+  }
+  .filter-cats li a:hover { background: #f2f2f5; }
+  .filter-cats li a.active {
+    background: #111;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .loading-sm {
+    font-size: 13px;
+    color: #888;
+  }
+
+  .price-range {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .price-range input { flex: 1; min-width: 0; }
+  .price-range span { color: #888; font-size: 13px; }
+
+  .btn-full {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ---------- Bidhaa ---------- */
+  .shop-products { min-height: 300px; }
+
+  .results-count {
+    color: #666;
+    font-size: 13px;
+    margin-top: 16px;
+    text-align: right;
+  }
+
+  /* Product card button ya Add to Cart */
+  .product-card .add-cart {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    background: #111;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .product-card .add-cart:hover { background: #333; }
+  .product-card .add-cart:disabled {
+    background: #4caf50;
+    cursor: default;
+  }
+  .product-card .badge-featured {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #e63946;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 2;
+  }
+  .product-card { position: relative; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 800px) {
+    .shop-layout {
+      grid-template-columns: 1fr;
+    }
+    .shop-filters {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA SHOP PAGE — Firestore + Filter + Cart
+     ========================================================== -->
+<script type="module">
+
+  // ==========================================================
+  // Vigezo kutoka URL (kutoka routes/index.routes.js)
+  // ==========================================================
+  const params = new URLSearchParams(location.search);
+  const state = {
+    q:        params.get('q')        || '<%= query.q %>'        || '',
+    category: params.get('category') || '<%= query.category %>' || '',
+    sort:     params.get('sort')     || '<%= query.sort %>'     || 'newest',
+    priceMin: null,
+    priceMax: null
+  };
+
+  // Weka thamani kwenye form fields
+  document.getElementById('sortSelect').value = state.sort;
+  document.getElementById('filterSearch').value = state.q;
+
+  // ==========================================================
+  // Helper: product card (pamoja na Add to Cart)
+  // ==========================================================
+  function productCardHTML(p) {
+    const img = p.image || (p.images && p.images[0]) || '';
+    const price = Number(p.price || 0).toLocaleString();
+    const oldPrice = p.oldPrice
+      ? `<span class="old-price" style="text-decoration:line-through;color:#999;font-size:13px;margin-left:6px;">TSh ${Number(p.oldPrice).toLocaleString()}</span>`
+      : '';
+    const badge = p.featured ? `<span class="badge-featured">Featured</span>` : '';
+    const fallback = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22240%22><rect fill=%22%23eee%22 width=%22200%22 height=%22240%22/><text x=%22100%22 y=%22125%22 font-size=%2216%22 fill=%22%23999%22 text-anchor=%22middle%22>Hakuna picha</text></svg>';
+
+    return `
+      <div class="product-card">
+        ${badge}
+        <a href="/product/${p.id}">
+          <img src="${img || fallback}" alt="${p.name || 'Bidhaa'}" loading="lazy" />
+        </a>
+        <div class="info">
+          <div class="name">${p.name || 'Bidhaa'}</div>
+          <div class="price">TSh ${price} ${oldPrice}</div>
+          <button class="add-cart" data-id="${p.id}" data-name="${(p.name || '').replace(/"/g, '&quot;')}" data-price="${p.price || 0}" data-image="${img}">
+            🛒 Ongeza kwenye Kikapu
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ==========================================================
+  // 1. Categories kwa sidebar filter (Firestore: categories)
+  // ==========================================================
+  async function loadCategories() {
+    const loading = document.getElementById('filterCategoriesLoading');
+    const list    = document.getElementById('filterCategories');
+    try {
+      const { collection, getDocs } = window.fs;
+      const snap = await getDocs(collection(window.db, 'categories'));
+
+      loading.style.display = 'none';
+
+      let html = `<li><a href="#" data-cat="" class="${!state.category ? 'active' : ''}">Zote</a></li>`;
+      snap.forEach((d) => {
+        const c = d.data();
+        const isActive = state.category === d.id ? 'active' : '';
+        html += `<li><a href="#" data-cat="${d.id}" class="${isActive}">${c.name || 'Bila jina'}</a></li>`;
+      });
+      list.innerHTML = html;
+
+      // Bonyeza category
+      list.querySelectorAll('a').forEach((a) => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          state.category = a.dataset.cat || '';
+          list.querySelectorAll('a').forEach((x) => x.classList.remove('active'));
+          a.classList.add('active');
+          updateURL();
+          loadProducts();
+        });
+      });
+    } catch (err) {
+      console.error('Categories error:', err);
+      loading.textContent = 'Imeshindikana';
+    }
+  }
+
+  // ==========================================================
+  // 2. Products kutoka Firestore (kisha filter + sort client-side)
+  //    Hii inaruhusu search bora bila kuwa na index nyingi.
+  // ==========================================================
+  let allProducts = []; // cache
+
+  async function loadProducts() {
+    const loading = document.getElementById('shopLoading');
+    const grid    = document.getElementById('shopGrid');
+    const empty   = document.getElementById('shopEmpty');
+    const count   = document.getElementById('resultsCount');
+
+    loading.style.display = 'flex';
+    grid.style.display = 'none';
+    empty.style.display = 'none';
+    count.style.display = 'none';
+
+    try {
+      // Cache: kama tumeisha soma mara moja, tumia cache
+      if (allProducts.length === 0) {
+        const { collection, getDocs } = window.fs;
+        const snap = await getDocs(collection(window.db, 'products'));
+        allProducts = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      }
+
+      // Filter
+      let filtered = allProducts.slice();
+
+      if (state.category) {
+        filtered = filtered.filter((p) => p.category === state.category);
+      }
+      if (state.q) {
+        const q = state.q.toLowerCase();
+        filtered = filtered.filter((p) =>
+          (p.name || '').toLowerCase().includes(q) ||
+          (p.description || '').toLowerCase().includes(q)
+        );
+      }
+      if (state.priceMin != null) {
+        filtered = filtered.filter((p) => Number(p.price || 0) >= state.priceMin);
+      }
+      if (state.priceMax != null) {
+        filtered = filtered.filter((p) => Number(p.price || 0) <= state.priceMax);
+      }
+
+      // Sort
+      switch (state.sort) {
+        case 'price_asc':
+          filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+          break;
+        case 'price_desc':
+          filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+          break;
+        case 'name_asc':
+          filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+          break;
+        case 'featured':
+          filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+          break;
+        case 'newest':
+        default:
+          filtered.sort((a, b) => {
+            const ta = a.createdAt?.seconds || 0;
+            const tb = b.createdAt?.seconds || 0;
+            return tb - ta;
+          });
+      }
+
+      loading.style.display = 'none';
+
+      if (filtered.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(productCardHTML).join('');
+      grid.style.display = 'grid';
+      count.textContent = `Bidhaa ${filtered.length}`;
+      count.style.display = 'block';
+
+      // Add to Cart kwa kila card
+      attachCartHandlers();
+
+    } catch (err) {
+      console.error('Products error:', err);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+    }
+  }
+
+  // ==========================================================
+  // 3. Add to Cart — localStorage (data halisi ya mtumiaji)
+  // ==========================================================
+  function attachCartHandlers() {
+    document.querySelectorAll('.add-cart').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const item = {
+          id:    btn.dataset.id,
+          name:  btn.dataset.name,
+          price: Number(btn.dataset.price || 0),
+          image: btn.dataset.image || '',
+          qty:   1
+        };
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const existing = cart.find((x) => x.id === item.id);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          cart.push(item);
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        // Update navbar
+        window.dispatchEvent(new Event('cart-updated'));
+
+        // Feedback kwa mtumiaji
+        btn.disabled = true;
+        btn.textContent = '✅ Imeongezwa';
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = '🛒 Ongeza kwenye Kikapu';
+        }, 1200);
+      });
+    });
+  }
+
+  // ==========================================================
+  // 4. Update URL — ili refresh ibaki na filters zile zile
+  // ==========================================================
+  function updateURL() {
+    const p = new URLSearchParams();
+    if (state.q)        p.set('q', state.q);
+    if (state.category) p.set('category', state.category);
+    if (state.sort && state.sort !== 'newest') p.set('sort', state.sort);
+    const qs = p.toString();
+    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    updateHeading();
+  }
+
+  function updateHeading() {
+    const title = document.getElementById('shopTitle');
+    const sub   = document.getElementById('shopSub');
+    if (state.q) {
+      title.textContent = `Matokeo ya "${state.q}"`;
+      sub.textContent = 'Bidhaa zilizopatikana kutoka utafutaji wako';
+    } else if (state.category) {
+      title.textContent = 'Kundi: ' + state.category;
+      sub.textContent = 'Bidhaa zote za kundi hili';
+    } else {
+      title.textContent = 'Duka';
+      sub.textContent = 'Bidhaa zote za duka';
+    }
+  }
+
+  // ==========================================================
+  // 5. Events
+  // ==========================================================
+  function bindEvents() {
+    // Sort
+    document.getElementById('sortSelect').addEventListener('change', (e) => {
+      state.sort = e.target.value;
+      updateURL();
+      loadProducts();
+    });
+
+    // Search (debounced)
+    let searchTimer;
+    document.getElementById('filterSearch').addEventListener('input', (e) => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        state.q = e.target.value.trim();
+        updateURL();
+        loadProducts();
+      }, 350);
+    });
+
+    // Price
+    document.getElementById('applyPriceBtn').addEventListener('click', () => {
+      const min = document.getElementById('priceMin').value;
+      const max = document.getElementById('priceMax').value;
+      state.priceMin = min !== '' ? Number(min) : null;
+      state.priceMax = max !== '' ? Number(max) : null;
+      loadProducts();
+    });
+
+    // Clear
+    document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+      state.q = '';
+      state.category = '';
+      state.sort = 'newest';
+      state.priceMin = null;
+      state.priceMax = null;
+      document.getElementById('filterSearch').value = '';
+      document.getElementById('priceMin').value = '';
+      document.getElementById('priceMax').value = '';
+      document.getElementById('sortSelect').value = 'newest';
+      document.querySelectorAll('#filterCategories a').forEach((a) => a.classList.remove('active'));
+      const first = document.querySelector('#filterCategories a[data-cat=""]');
+      if (first) first.classList.add('active');
+      updateURL();
+      loadProducts();
+    });
+  }
+
+  // ==========================================================
+  // 6. Anzisha
+  // ==========================================================
+  function boot() {
+    updateHeading();
+    bindEvents();
+    loadCategories();
+    loadProducts();
+  }
+
+  if (window.fs && window.db) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
