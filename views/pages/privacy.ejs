@@ -1,0 +1,485 @@
+<%- include('../partials/header', { title, description }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     PRIVACY PAGE — Firestore: pages/privacy
+     ========================================================== -->
+
+<main class="privacy-page">
+
+  <!-- ============ Hero ============ -->
+  <section class="pp-hero">
+    <div class="container">
+      <div class="hero-inner">
+        <span class="hero-badge">🔒 Faragha</span>
+        <h1 id="ppTitle">Sera ya Faragha</h1>
+        <p id="ppIntro" class="hero-sub">Inapakia...</p>
+        <p class="pp-updated" id="ppUpdated" style="display:none;">
+          Ilisasishwa mwisho: <span id="ppUpdatedDate">—</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Loading ============ -->
+  <div id="ppLoading" class="container" style="padding:40px 0;">
+    <div class="loading">
+      <div class="spinner"></div> Inapakia maudhui...
+    </div>
+  </div>
+
+  <!-- ============ Empty ============ -->
+  <div id="ppEmpty" class="container" style="display:none;padding:40px 0;">
+    <div class="empty-state">
+      <h3>Maudhui yataonekana hapa</h3>
+      <p>
+        Sera ya faragha bado haijawekwa. Msimamizi anaweza kuiweka kupitia
+        Firestore collection <code>pages/privacy</code>.
+      </p>
+      <a href="/contact" class="btn btn-primary" style="margin-top:14px;">Wasiliana Nasi</a>
+    </div>
+  </div>
+
+  <!-- ============ Content ============ -->
+  <div id="ppContent" style="display:none;">
+    <div class="container">
+      <div class="pp-layout">
+
+        <!-- ============ TOC (Table of Contents) ============ -->
+        <aside class="pp-toc" id="ppToc" style="display:none;">
+          <h3>Yaliyomo</h3>
+          <nav id="ppTocNav"></nav>
+        </aside>
+
+        <!-- ============ Sections ============ -->
+        <section class="pp-body" id="ppBody"></section>
+
+      </div>
+
+      <!-- Contact card -->
+      <div class="pp-contact">
+        <div class="pp-contact-inner">
+          <div class="pp-contact-icon">📧</div>
+          <div>
+            <h3>Una swali kuhusu sera hii?</h3>
+            <p>
+              Kama una swali lolote kuhusu jinsi tunavyolinda taarifa zako,
+              wasiliana nasi kwa <a href="/contact">ukurasa wa mawasiliano</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA PRIVACY PAGE
+     ========================================================== -->
+<style>
+  .privacy-page { padding-bottom: 40px; }
+
+  /* ---------- Hero ---------- */
+  .pp-hero {
+    background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+    color: #fff;
+    padding: 55px 0;
+    text-align: center;
+  }
+  .hero-inner { max-width: 720px; margin: 0 auto; }
+  .hero-badge {
+    display: inline-block;
+    background: #e63946;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .pp-hero h1 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .hero-sub {
+    color: #ccc;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .pp-updated {
+    color: #999;
+    font-size: 13px;
+    margin-top: 14px;
+  }
+  .pp-updated span {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* ---------- Layout ---------- */
+  .pp-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 34px;
+    padding: 40px 0 20px;
+    align-items: start;
+  }
+
+  /* ---------- TOC ---------- */
+  .pp-toc {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 20px 18px;
+    position: sticky;
+    top: 90px;
+  }
+  .pp-toc h3 {
+    font-size: 13px;
+    font-weight: 800;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f3;
+  }
+  .pp-toc nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .pp-toc a {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    padding: 7px 10px;
+    border-radius: 6px;
+    line-height: 1.4;
+    transition: background 0.15s, color 0.15s;
+  }
+  .pp-toc a:hover {
+    background: #f2f2f5;
+    color: #111;
+  }
+  .pp-toc a.active {
+    background: #111;
+    color: #fff;
+    font-weight: 600;
+  }
+  .pp-toc a.sub {
+    padding-left: 22px;
+    font-size: 12px;
+    color: #777;
+  }
+
+  /* ---------- Sections ---------- */
+  .pp-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+
+  .pp-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 26px 28px;
+    scroll-margin-top: 90px;
+  }
+  .pp-section h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f3;
+  }
+  .pp-section .sec-num {
+    color: #e63946;
+    margin-right: 8px;
+  }
+  .pp-section p {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 12px;
+  }
+  .pp-section ul,
+  .pp-section ol {
+    padding-left: 22px;
+    margin-bottom: 12px;
+  }
+  .pp-section li {
+    color: #444;
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 6px;
+  }
+
+  /* Subsections */
+  .pp-subsection {
+    margin-top: 16px;
+    padding-left: 14px;
+    border-left: 3px solid #f0f0f3;
+  }
+  .pp-subsection h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 8px;
+  }
+  .pp-subsection p,
+  .pp-subsection li {
+    font-size: 14px;
+  }
+
+  /* ---------- Contact card ---------- */
+  .pp-contact {
+    padding: 30px 0 20px;
+  }
+  .pp-contact-inner {
+    background: #f7f7f9;
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .pp-contact-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .pp-contact-inner h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 6px;
+  }
+  .pp-contact-inner p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .pp-contact-inner a {
+    color: #e63946;
+    font-weight: 600;
+  }
+  .pp-contact-inner a:hover { text-decoration: underline; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .pp-layout {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .pp-toc {
+      position: static;
+    }
+    .pp-toc nav {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .pp-toc a {
+      background: #f2f2f5;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+    .pp-toc a.sub { padding-left: 12px; }
+  }
+  @media (max-width: 600px) {
+    .pp-hero h1 { font-size: 24px; }
+    .pp-section { padding: 20px 18px; }
+    .pp-section h2 { font-size: 17px; }
+    .pp-contact-inner { flex-direction: column; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA PRIVACY — Firestore: pages/privacy
+     Document structure inayotarajiwa:
+       title, intro, updatedAt (Timestamp au ISO string),
+       sections: [
+         {
+           title: "1. Taarifa Tunazokusanya",
+           content: "paragraph 1\n\n- bullet 1\n- bullet 2\n\n## Subtitle\n...",
+           subsections: [
+             { title: "1.1 Taarifa Binafsi", content: "..." }
+           ]
+         }
+       ]
+     ========================================================== -->
+<script type="module">
+
+  async function loadPrivacy() {
+    const loading = document.getElementById('ppLoading');
+    const empty   = document.getElementById('ppEmpty');
+    const content = document.getElementById('ppContent');
+
+    try {
+      const { doc, getDoc } = window.fs;
+      const snap = await getDoc(doc(window.db, 'pages', 'privacy'));
+
+      loading.style.display = 'none';
+
+      if (!snap.exists()) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      render(snap.data());
+      content.style.display = 'block';
+
+    } catch (err) {
+      console.error('Privacy error:', err);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+    }
+  }
+
+  function render(data) {
+    // Title + intro
+    if (data.title) document.getElementById('ppTitle').textContent = data.title;
+    if (data.intro) document.getElementById('ppIntro').textContent = data.intro;
+    else document.getElementById('ppIntro').style.display = 'none';
+
+    // Updated date
+    if (data.updatedAt) {
+      let d = data.updatedAt;
+      if (typeof d === 'object' && d.seconds) d = new Date(d.seconds * 1000);
+      else if (typeof d === 'string') d = new Date(d);
+      if (!isNaN(d)) {
+        document.getElementById('ppUpdated').style.display = 'block';
+        document.getElementById('ppUpdatedDate').textContent =
+          d.toLocaleDateString('sw-TZ', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+    }
+
+    // Sections
+    const sections = Array.isArray(data.sections) ? data.sections : [];
+    const body = document.getElementById('ppBody');
+    const tocNav = document.getElementById('ppTocNav');
+
+    if (sections.length === 0) {
+      body.innerHTML = `<div class="pp-section"><p>Hakuna maudhui bado.</p></div>`;
+      return;
+    }
+
+    body.innerHTML = sections.map((s, i) => {
+      const id = `sec-${i + 1}`;
+      const num = `${i + 1}.`;
+      const contentHTML = parseContent(s.content || '');
+      const subsectionsHTML = (Array.isArray(s.subsections) ? s.subsections : []).map((sub, j) => `
+        <div class="pp-subsection" id="${id}-sub-${j + 1}">
+          <h3>${escapeHtml(sub.title || '')}</h3>
+          ${parseContent(sub.content || '')}
+        </div>
+      `).join('');
+
+      return `
+        <article class="pp-section" id="${id}">
+          <h2><span class="sec-num">${num}</span>${escapeHtml(s.title || '')}</h2>
+          ${contentHTML}
+          ${subsectionsHTML}
+        </article>
+      `;
+    }).join('');
+
+    // TOC
+    document.getElementById('ppToc').style.display = 'block';
+    let tocHTML = '';
+    sections.forEach((s, i) => {
+      const id = `sec-${i + 1}`;
+      tocHTML += `<a href="#${id}" data-target="${id}">${escapeHtml(s.title || '')}</a>`;
+      const subs = Array.isArray(s.subsections) ? s.subsections : [];
+      subs.forEach((sub, j) => {
+        tocHTML += `<a href="#${id}-sub-${j + 1}" class="sub" data-target="${id}-sub-${j + 1}">${escapeHtml(sub.title || '')}</a>`;
+      });
+    });
+    tocNav.innerHTML = tocHTML;
+
+    // Smooth scroll + active highlight
+    bindTOC();
+  }
+
+  // Markdown ndogo: ## Heading, "- item" bullet, newlines
+  function parseContent(text) {
+    if (!text) return '';
+    return text.split('\n\n').map((p) => {
+      const t = p.trim();
+      if (!t) return '';
+      if (t.startsWith('## ')) {
+        return `<h3 style="font-size:15px;font-weight:700;color:#222;margin:18px 0 8px;">${escapeHtml(t.slice(3))}</h3>`;
+      }
+      const lines = t.split('\n');
+      if (lines.every((l) => l.trim().startsWith('- '))) {
+        return `<ul>${lines.map((l) => `<li>${escapeHtml(l.trim().slice(2))}</li>`).join('')}</ul>`;
+      }
+      if (lines.every((l) => /^\d+\.\s/.test(l.trim()))) {
+        return `<ol>${lines.map((l) => `<li>${escapeHtml(l.trim().replace(/^\d+\.\s/, ''))}</li>`).join('')}</ol>`;
+      }
+      return `<p>${escapeHtml(t).replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+  }
+
+  // Smooth scroll + active link on scroll
+  function bindTOC() {
+    document.querySelectorAll('#ppTocNav a').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const el = document.getElementById(a.dataset.target);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.replaceState(null, '', '#' + a.dataset.target);
+        }
+      });
+    });
+
+    // IntersectionObserver kwa highlight
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          document.querySelectorAll('#ppTocNav a').forEach((a) => {
+            a.classList.toggle('active', a.dataset.target === id);
+          });
+        }
+      });
+    }, { rootMargin: '-90px 0px -60% 0px', threshold: 0 });
+
+    document.querySelectorAll('.pp-section, .pp-subsection').forEach((s) => {
+      observer.observe(s);
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function boot() { loadPrivacy(); }
+
+  if (window.fs && window.db) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
