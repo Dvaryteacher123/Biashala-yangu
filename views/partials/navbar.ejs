@@ -1,0 +1,395 @@
+<!-- ==========================================================
+     NAVBAR — Menu ya juu inayoonekana kila ukurasa
+     ========================================================== -->
+<header class="site-header">
+  <div class="container nav-wrap">
+
+    <!-- Logo -->
+    <a href="/" class="logo">
+      <span class="logo-icon">👕</span>
+      <span class="logo-text">Clothing<strong>Store</strong></span>
+    </a>
+
+    <!-- Menu Links (Desktop) -->
+    <nav class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/shop">Shop</a>
+      <a href="/about">Kuhusu</a>
+      <a href="/contact">Mawasiliano</a>
+    </nav>
+
+    <!-- Search -->
+    <form class="search-box" action="/shop" method="GET">
+      <input
+        type="text"
+        name="q"
+        placeholder="Tafuta nguo..."
+        aria-label="Tafuta bidhaa"
+      />
+      <button type="submit" aria-label="Tafuta">🔍</button>
+    </form>
+
+    <!-- Vitendo vya upande wa kulia -->
+    <div class="nav-actions">
+
+      <!-- Wishlist -->
+      <a href="/wishlist" class="icon-btn" title="Wishlist">
+        ❤️
+      </a>
+
+      <!-- Cart -->
+      <a href="/cart" class="icon-btn cart-btn" title="Kikapu">
+        🛒
+        <span class="cart-count" id="navCartCount">0</span>
+      </a>
+
+      <!-- User Menu (Firebase Auth inajaza hapa) -->
+      <div class="user-menu" id="navUserMenu">
+        <a href="/auth/login" class="btn btn-primary btn-sm">Ingia</a>
+      </div>
+
+      <!-- Hamburger (Mobile) -->
+      <button class="hamburger" id="navHamburger" aria-label="Menu">
+        ☰
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<!-- ==========================================================
+     CSS YA NAVBAR
+     ========================================================== -->
+<style>
+  .site-header {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .nav-wrap {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 16px;
+  }
+
+  /* ---------- Logo ---------- */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+  }
+  .logo-icon { font-size: 24px; }
+  .logo-text strong { color: #e63946; }
+
+  /* ---------- Nav Links ---------- */
+  .nav-links {
+    display: flex;
+    gap: 20px;
+    margin-left: 10px;
+  }
+  .nav-links a {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    padding: 6px 0;
+    position: relative;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: #e63946; }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: #e63946;
+    transition: width 0.2s;
+  }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* ---------- Search ---------- */
+  .search-box {
+    flex: 1;
+    display: flex;
+    max-width: 340px;
+    margin-left: auto;
+    border: 1px solid #ddd;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #f7f7f9;
+  }
+  .search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 9px 16px;
+    font-size: 14px;
+    background: transparent;
+  }
+  .search-box button {
+    padding: 0 16px;
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+  }
+  .search-box button:hover { background: #333; }
+
+  /* ---------- Nav Actions ---------- */
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f2f2f5;
+    font-size: 18px;
+    transition: background 0.2s;
+  }
+  .icon-btn:hover { background: #e6e6ec; }
+
+  .cart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #e63946;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+  }
+
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 6px;
+  }
+
+  /* ---------- User Menu ---------- */
+  .user-menu { position: relative; }
+
+  .user-avatar-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 4px;
+    border-radius: 24px;
+    background: #f2f2f5;
+    transition: background 0.2s;
+  }
+  .user-avatar-btn:hover { background: #e6e6ec; }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .user-name {
+    font-size: 14px;
+    font-weight: 500;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .user-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    min-width: 200px;
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .user-dropdown.open { display: flex; }
+
+  .user-dropdown a,
+  .user-dropdown button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    background: transparent;
+    transition: background 0.15s;
+  }
+  .user-dropdown a:hover,
+  .user-dropdown button:hover { background: #f2f2f5; }
+
+  .user-dropdown .danger { color: #dc3545; }
+
+  /* ---------- Hamburger ---------- */
+  .hamburger {
+    display: none;
+    background: transparent;
+    font-size: 22px;
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+  .hamburger:hover { background: #f2f2f5; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .search-box { max-width: 220px; }
+    .nav-links { gap: 14px; }
+  }
+
+  @media (max-width: 768px) {
+    .nav-wrap { flex-wrap: wrap; }
+    .search-box {
+      order: 3;
+      max-width: 100%;
+      width: 100%;
+      margin: 8px 0 0;
+      flex: 0 0 100%;
+    }
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      order: 4;
+      flex: 0 0 100%;
+      margin: 8px 0 0;
+      border-top: 1px solid #eee;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a {
+      padding: 12px 4px;
+      border-bottom: 1px solid #f2f2f5;
+    }
+    .hamburger { display: inline-flex; }
+    .user-name { display: none; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA NAVBAR
+     - Cart count kutoka localStorage
+     - User state kutoka Firebase Auth (halisi, si ya uongo)
+     ========================================================== -->
+<script type="module">
+  // ==========================================================
+  // 1. Cart count kutoka localStorage
+  // ==========================================================
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const total = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+    const el = document.getElementById('navCartCount');
+    if (el) {
+      el.textContent = total;
+      el.style.display = total > 0 ? 'inline-flex' : 'none';
+    }
+  }
+  updateCartCount();
+  window.addEventListener('storage', updateCartCount);
+  window.addEventListener('cart-updated', updateCartCount);
+
+  // ==========================================================
+  // 2. Mobile hamburger
+  // ==========================================================
+  const hamburger = document.getElementById('navHamburger');
+  const navLinks = document.getElementById('navLinks');
+  if (hamburger && navLinks) {
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+  }
+
+  // ==========================================================
+  // 3. User Menu — inasubiri Firebase iwe tayari
+  // ==========================================================
+  function renderUserMenu(user) {
+    const menu = document.getElementById('navUserMenu');
+    if (!menu) return;
+
+    if (!user) {
+      menu.innerHTML = `<a href="/auth/login" class="btn btn-primary btn-sm">Ingia</a>`;
+      return;
+    }
+
+    const initial = (user.displayName || user.email || '?')
+      .charAt(0)
+      .toUpperCase();
+    const name = user.displayName || user.email.split('@')[0];
+
+    menu.innerHTML = `
+      <button class="user-avatar-btn" id="navUserBtn">
+        <span class="user-avatar">${initial}</span>
+        <span class="user-name">${name}</span>
+      </button>
+      <div class="user-dropdown" id="navUserDropdown">
+        <a href="/account/profile">👤 Wasifu Wangu</a>
+        <a href="/account/orders">📦 Oda Zangu</a>
+        <a href="/account/addresses">📍 Anwani Zangu</a>
+        <a href="/wishlist">❤️ Wishlist</a>
+        <hr style="border:none;border-top:1px solid #eee;margin:4px 0;" />
+        <button class="danger" id="navLogoutBtn">🚪 Toka</button>
+      </div>
+    `;
+
+    const btn = document.getElementById('navUserBtn');
+    const drop = document.getElementById('navUserDropdown');
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      drop.classList.toggle('open');
+    });
+    document.addEventListener('click', () => drop.classList.remove('open'));
+
+    document.getElementById('navLogoutBtn').addEventListener('click', async () => {
+      await window.authFns.signOut(window.auth);
+      window.location.href = '/';
+    });
+  }
+
+  // Subiri Firebase iwe tayari (header.ejs inatuma event hii)
+  function initAuth() {
+    window.authFns.onAuthStateChanged(window.auth, (user) => {
+      renderUserMenu(user);
+    });
+  }
+
+  if (window.auth) {
+    initAuth();
+  } else {
+    window.addEventListener('firebase-ready', initAuth, { once: true });
+  }
+</script>
