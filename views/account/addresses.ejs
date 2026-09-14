@@ -1,0 +1,778 @@
+<%- include('../partials/header', { title, description }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     ADDRESSES PAGE — Firestore users/{uid}/addresses
+     Mtumiaji LAZIMA awe ameingia
+     ========================================================== -->
+
+<main class="addr-page">
+  <div class="container">
+
+    <!-- Loading -->
+    <div id="addrLoading" class="loading">
+      <div class="spinner"></div> Inapakia anwani...
+    </div>
+
+    <!-- Login required -->
+    <div id="addrLogin" class="empty-state" style="display:none;">
+      <h3>Ingia ili kuona anwani zako</h3>
+      <p>Anwani zako zote ziko kwenye akaunti yako.</p>
+      <a id="addrLoginLink" href="/auth/login" class="btn btn-primary" style="margin-top:14px;">
+        Ingia / Jiunge
+      </a>
+    </div>
+
+    <!-- Content -->
+    <div id="addrContent" style="display:none;">
+
+      <div class="addr-head">
+        <h1>📍 Anwani Zangu</h1>
+        <button class="btn btn-primary" id="addAddrBtn">
+          ➕ Ongeza Anwani Mpya
+        </button>
+      </div>
+
+      <!-- Empty -->
+      <div id="addrEmpty" class="empty-state" style="display:none;">
+        <h3>Hakuna anwani bado</h3>
+        <p>Bado hujaongeza anwani yoyote. Ongeza moja kuanza.</p>
+        <button class="btn btn-primary" id="addAddrBtnEmpty" style="margin-top:14px;">
+          ➕ Ongeza Anwani
+        </button>
+      </div>
+
+      <!-- Grid ya anwani -->
+      <div id="addrGrid" class="addr-grid" style="display:none;"></div>
+
+    </div>
+
+    <!-- ============ Modal ya kuongeza/kubadilisha ============ -->
+    <div id="addrModal" class="addr-modal-overlay" style="display:none;">
+      <div class="addr-modal">
+        <button class="addr-close" id="addrModalClose" aria-label="Funga">✕</button>
+
+        <h3 id="modalTitle">Ongeza Anwani Mpya</h3>
+
+        <form id="addrForm" class="addr-form">
+
+          <!-- Jina la mpokeaji -->
+          <div class="field">
+            <label for="aName">Jina la Mpokeaji *</label>
+            <input type="text" id="aName" placeholder="Jina kamili" required />
+          </div>
+
+          <!-- Simu -->
+          <div class="field">
+            <label for="aPhone">Namba ya Simu *</label>
+            <input type="tel" id="aPhone" placeholder="+255 7XX XXX XXX" required />
+          </div>
+
+          <!-- Mkoa + Mji -->
+          <div class="field-grid">
+            <div class="field">
+              <label for="aRegion">Mkoa *</label>
+              <select id="aRegion" required>
+                <option value="">— Chagua Mkoa —</option>
+                <option>Dar es Salaam</option>
+                <option>Arusha</option>
+                <option>Mwanza</option>
+                <option>Dodoma</option>
+                <option>Mbeya</option>
+                <option>Tanga</option>
+                <option>Zanzibar</option>
+                <option>Morogoro</option>
+                <option>Kilimanjaro</option>
+                <option>Tabora</option>
+                <option>Kigoma</option>
+                <option>Mtwara</option>
+                <option>Songwe</option>
+                <option>Ruvuma</option>
+                <option>Iringa</option>
+                <option>Singida</option>
+                <option>Shinyanga</option>
+                <option>Simiyu</option>
+                <option>Geita</option>
+                <option>Katavi</option>
+                <option>Njombe</option>
+                <option>Lindi</option>
+                <option>Pwani</option>
+                <option>Rukwa</option>
+                <option>Manyara</option>
+                <option>Mara</option>
+                <option>Kagera</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="aCity">Mji / Wilaya *</label>
+              <input type="text" id="aCity" required />
+            </div>
+          </div>
+
+          <!-- Mtaa -->
+          <div class="field">
+            <label for="aStreet">Mtaa / Kijiji *</label>
+            <input type="text" id="aStreet" placeholder="Mtaa, nyumba namba..." required />
+          </div>
+
+          <!-- Maelezo -->
+          <div class="field">
+            <label for="aNotes">Maelezo ya Ziada (si lazima)</label>
+            <textarea id="aNotes" rows="2" placeholder="Mfano: karibu na kanisa, nyumba ya rangi ya bluu..."></textarea>
+          </div>
+
+          <!-- Label -->
+          <div class="field">
+            <label for="aLabel">Aina ya Anwani</label>
+            <select id="aLabel">
+              <option value="home">🏠 Nyumbani</option>
+              <option value="work">🏢 Kazini</option>
+              <option value="other">📍 Nyingine</option>
+            </select>
+          </div>
+
+          <!-- Default checkbox -->
+          <label class="check">
+            <input type="checkbox" id="aDefault" />
+            <span>Weka kama anwani ya kawaida (default)</span>
+          </label>
+
+          <p id="addrMsg" class="alert" style="display:none;"></p>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" id="cancelBtn">Ghairi</button>
+            <button type="submit" class="btn btn-primary" id="saveAddrBtn">
+              💾 Hifadhi
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA ADDRESSES PAGE
+     ========================================================== -->
+<style>
+  .addr-page { padding: 30px 0 60px; min-height: 60vh; }
+
+  .addr-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .addr-head h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #111;
+  }
+
+  /* ---------- Grid ya anwani ---------- */
+  .addr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .addr-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 20px;
+    position: relative;
+    transition: box-shadow 0.15s, transform 0.15s;
+    border: 2px solid transparent;
+  }
+  .addr-card:hover {
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+  .addr-card.is-default {
+    border-color: #111;
+  }
+
+  .addr-label-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .addr-type {
+    display: inline-block;
+    background: #f2f2f5;
+    color: #333;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .addr-default-badge {
+    display: inline-block;
+    background: #111;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .addr-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+  }
+  .addr-phone {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .addr-lines {
+    color: #444;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .addr-notes {
+    display: block;
+    color: #888;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 6px;
+  }
+
+  .addr-actions {
+    display: flex;
+    gap: 8px;
+    padding-top: 14px;
+    border-top: 1px solid #f0f0f3;
+    flex-wrap: wrap;
+  }
+  .addr-actions button {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-set-default {
+    background: #f2f2f5;
+    color: #333;
+  }
+  .btn-set-default:hover { background: #e6e6ec; }
+
+  .btn-edit {
+    background: #e3f2fd;
+    color: #0d47a1;
+  }
+  .btn-edit:hover { background: #c9e4fb; }
+
+  .btn-delete {
+    background: #fdecea;
+    color: #c62828;
+  }
+  .btn-delete:hover { background: #f9d5d2; }
+
+  /* ---------- Modal ---------- */
+  .addr-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .addr-modal {
+    background: #fff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 26px 24px;
+    position: relative;
+    animation: slideUp 0.25s;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(24px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  .addr-modal h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 20px;
+    padding-right: 30px;
+  }
+  .addr-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f2f2f5;
+    color: #333;
+    font-size: 15px;
+    transition: background 0.15s;
+  }
+  .addr-close:hover { background: #e6e6ec; }
+
+  /* Form */
+  .addr-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e0e0e5;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: #fafafc;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: #111;
+    background: #fff;
+  }
+  .field textarea { resize: vertical; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #444;
+    cursor: pointer;
+  }
+  .check input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 6px;
+  }
+  .form-actions .btn {
+    padding: 11px 20px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 600px) {
+    .addr-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .addr-head .btn { width: 100%; }
+    .field-grid { grid-template-columns: 1fr; }
+    .addr-modal { padding: 22px 18px; }
+    .form-actions { flex-direction: column-reverse; }
+    .form-actions .btn { width: 100%; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA ADDRESSES — Firestore users/{uid}/addresses
+     ========================================================== -->
+<script type="module">
+
+  const TZ_REGIONS = [
+    'Dar es Salaam','Arusha','Mwanza','Dodoma','Mbeya','Tanga','Zanzibar',
+    'Morogoro','Kilimanjaro','Tabora','Kigoma','Mtwara','Songwe','Ruvuma',
+    'Iringa','Singida','Shinyanga','Simiyu','Geita','Katavi','Njombe',
+    'Lindi','Pwani','Rukwa','Manyara','Mara','Kagera'
+  ];
+
+  // State
+  const state = {
+    user: null,
+    addresses: [], // [{ id, ...data }]
+    editingId: null
+  };
+
+  // ==========================================================
+  // Helpers
+  // ==========================================================
+  function normalizePhone(raw) {
+    if (!raw) return '';
+    let p = raw.replace(/[\s\-()]/g, '');
+    if (p.startsWith('+')) p = p.slice(1);
+    if (p.startsWith('0')) p = '255' + p.slice(1);
+    return p;
+  }
+  function isValidTzPhone(raw) {
+    const p = normalizePhone(raw);
+    return /^255\d{9}$/.test(p);
+  }
+  function showMsg(el, text, type = 'error') {
+    el.textContent = text;
+    el.className = 'alert ' + (type === 'error' ? 'alert-error' : 'alert-success');
+    el.style.display = 'block';
+  }
+  function hideMsg(el) { el.style.display = 'none'; }
+
+  const TYPE_LABEL = { home: '🏠 Nyumbani', work: '🏢 Kazini', other: '📍 Nyingine' };
+
+  // ==========================================================
+  // 1. Pakia anwani kutoka Firestore: users/{uid}/addresses
+  // ==========================================================
+  async function loadAddresses() {
+    const loading = document.getElementById('addrLoading');
+    const login   = document.getElementById('addrLogin');
+    const content = document.getElementById('addrContent');
+
+    loading.style.display = 'flex';
+    login.style.display = 'none';
+    content.style.display = 'none';
+
+    if (!state.user) {
+      loading.style.display = 'none';
+      login.style.display = 'block';
+      document.getElementById('addrLoginLink').href =
+        '/auth/login?redirect=' + encodeURIComponent('/account/addresses');
+      return;
+    }
+
+    try {
+      const { collection, getDocs } = window.fs;
+      const snap = await getDocs(collection(window.db, 'users', state.user.uid, 'addresses'));
+
+      state.addresses = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+      // Sort: default kwanza, kisha createdAt desc
+      state.addresses.sort((a, b) => {
+        if (a.isDefault && !b.isDefault) return -1;
+        if (!a.isDefault && b.isDefault) return 1;
+        const ta = a.createdAt?.seconds || 0;
+        const tb = b.createdAt?.seconds || 0;
+        return tb - ta;
+      });
+
+      loading.style.display = 'none';
+      content.style.display = 'block';
+
+      renderAddresses();
+
+    } catch (err) {
+      console.error('Load addresses error:', err);
+      loading.style.display = 'none';
+      content.style.display = 'block';
+      document.getElementById('addrEmpty').style.display = 'block';
+    }
+  }
+
+  // ==========================================================
+  // 2. Render
+  // ==========================================================
+  function renderAddresses() {
+    const grid = document.getElementById('addrGrid');
+    const empty = document.getElementById('addrEmpty');
+
+    if (state.addresses.length === 0) {
+      grid.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+    grid.style.display = 'grid';
+
+    grid.innerHTML = state.addresses.map((a) => {
+      const label = TYPE_LABEL[a.label] || TYPE_LABEL.other;
+      return `
+        <div class="addr-card ${a.isDefault ? 'is-default' : ''}" data-id="${a.id}">
+          <div class="addr-label-row">
+            <span class="addr-type">${label}</span>
+            ${a.isDefault ? '<span class="addr-default-badge">Default</span>' : ''}
+          </div>
+          <div class="addr-name">${a.name || '—'}</div>
+          <div class="addr-phone">📞 ${a.phone || '—'}</div>
+          <div class="addr-lines">
+            ${a.street || ''}<br>
+            ${a.city || ''}${a.region ? ', ' + a.region : ''}
+            ${a.notes ? `<span class="addr-notes">📝 ${a.notes}</span>` : ''}
+          </div>
+          <div class="addr-actions">
+            ${!a.isDefault ? `<button class="btn-set-default" data-act="default" data-id="${a.id}">Weka Default</button>` : ''}
+            <button class="btn-edit" data-act="edit" data-id="${a.id}">✏️ Badili</button>
+            <button class="btn-delete" data-act="delete" data-id="${a.id}">🗑️ Futa</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Bind events
+    grid.querySelectorAll('[data-act]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const act = btn.dataset.act;
+        if (act === 'default') setDefault(id);
+        if (act === 'edit')    openEditModal(id);
+        if (act === 'delete')  deleteAddress(id);
+      });
+    });
+  }
+
+  // ==========================================================
+  // 3. Modal open/close
+  // ==========================================================
+  function openAddModal() {
+    state.editingId = null;
+    document.getElementById('modalTitle').textContent = 'Ongeza Anwani Mpya';
+    document.getElementById('addrForm').reset();
+    hideMsg(document.getElementById('addrMsg'));
+    document.getElementById('addrModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openEditModal(id) {
+    const a = state.addresses.find((x) => x.id === id);
+    if (!a) return;
+
+    state.editingId = id;
+    document.getElementById('modalTitle').textContent = 'Badili Anwani';
+
+    document.getElementById('aName').value    = a.name || '';
+    document.getElementById('aPhone').value   = a.phone || '';
+    document.getElementById('aRegion').value  = a.region || '';
+    document.getElementById('aCity').value    = a.city || '';
+    document.getElementById('aStreet').value  = a.street || '';
+    document.getElementById('aNotes').value   = a.notes || '';
+    document.getElementById('aLabel').value   = a.label || 'home';
+    document.getElementById('aDefault').checked = !!a.isDefault;
+
+    hideMsg(document.getElementById('addrMsg'));
+    document.getElementById('addrModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('addrModal').style.display = 'none';
+    document.body.style.overflow = '';
+    state.editingId = null;
+  }
+
+  // ==========================================================
+  // 4. Save (ongeza au badili) — Firestore halisi
+  // ==========================================================
+  async function saveAddress(e) {
+    e.preventDefault();
+    const msg = document.getElementById('addrMsg');
+    const btn = document.getElementById('saveAddrBtn');
+    hideMsg(msg);
+
+    const name   = document.getElementById('aName').value.trim();
+    const phoneRaw = document.getElementById('aPhone').value.trim();
+    const region = document.getElementById('aRegion').value;
+    const city   = document.getElementById('aCity').value.trim();
+    const street = document.getElementById('aStreet').value.trim();
+    const notes  = document.getElementById('aNotes').value.trim();
+    const label  = document.getElementById('aLabel').value;
+    const isDefault = document.getElementById('aDefault').checked;
+
+    // Validation
+    if (!name || name.length < 3) {
+      showMsg(msg, 'Jina la mpokeaji liwe herufi 3+.'); return;
+    }
+    if (!phoneRaw || !isValidTzPhone(phoneRaw)) {
+      showMsg(msg, 'Namba ya simu si sahihi. Tumia mfano: 0712345678.'); return;
+    }
+    if (!region || !city || !street) {
+      showMsg(msg, 'Jaza mkoa, mji na mtaa.'); return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Inahifadhi...';
+
+    try {
+      const { collection, doc, addDoc, updateDoc, setDoc, getDocs, serverTimestamp } = window.fs;
+      const col = collection(window.db, 'users', state.user.uid, 'addresses');
+
+      const payload = {
+        name,
+        phone: normalizePhone(phoneRaw),
+        region,
+        city,
+        street,
+        notes,
+        label,
+        isDefault,
+        updatedAt: serverTimestamp()
+      };
+
+      // Kama isDefault, ondoa default kwa wengine kwanza
+      if (isDefault) {
+        const snap = await getDocs(col);
+        const ops = [];
+        snap.forEach((d) => {
+          if (d.data().isDefault && d.id !== state.editingId) {
+            ops.push(updateDoc(d.ref, { isDefault: false }));
+          }
+        });
+        await Promise.all(ops);
+      }
+
+      if (state.editingId) {
+        // Update
+        await setDoc(doc(window.db, 'users', state.user.uid, 'addresses', state.editingId), payload, { merge: true });
+      } else {
+        // Add
+        payload.createdAt = serverTimestamp();
+        const ref = await addDoc(col, payload);
+
+        // Kama ni default au ni ya kwanza tu, weka default
+        if (!isDefault && state.addresses.length === 0) {
+          await setDoc(ref, { isDefault: true }, { merge: true });
+        }
+      }
+
+      closeModal();
+      await loadAddresses();
+
+    } catch (err) {
+      console.error('Save address error:', err);
+      showMsg(msg, 'Imeshindikana kuhifadhi. Jaribu tena.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '💾 Hifadhi';
+    }
+  }
+
+  // ==========================================================
+  // 5. Weka default
+  // ==========================================================
+  async function setDefault(id) {
+    try {
+      const { collection, doc, getDocs, updateDoc } = window.fs;
+      const col = collection(window.db, 'users', state.user.uid, 'addresses');
+      const snap = await getDocs(col);
+
+      const ops = [];
+      snap.forEach((d) => {
+        const shouldBeDefault = d.id === id;
+        if (d.data().isDefault !== shouldBeDefault) {
+          ops.push(updateDoc(d.ref, { isDefault: shouldBeDefault }));
+        }
+      });
+      await Promise.all(ops);
+
+      await loadAddresses();
+    } catch (err) {
+      console.error('Set default error:', err);
+    }
+  }
+
+  // ==========================================================
+  // 6. Futa anwani
+  // ==========================================================
+  async function deleteAddress(id) {
+    if (!confirm('Una uhakika unataka kufuta anwani hii?')) return;
+
+    try {
+      const { doc, deleteDoc } = window.fs;
+      await deleteDoc(doc(window.db, 'users', state.user.uid, 'addresses', id));
+      await loadAddresses();
+    } catch (err) {
+      console.error('Delete address error:', err);
+      alert('Imeshindikana kufuta. Jaribu tena.');
+    }
+  }
+
+  // ==========================================================
+  // 7. Events
+  // ==========================================================
+  function bindEvents() {
+    document.getElementById('addAddrBtn').addEventListener('click', openAddModal);
+    document.getElementById('addAddrBtnEmpty').addEventListener('click', openAddModal);
+    document.getElementById('addrModalClose').addEventListener('click', closeModal);
+    document.getElementById('cancelBtn').addEventListener('click', closeModal);
+
+    // Click nje ya modal
+    document.getElementById('addrModal').addEventListener('click', (e) => {
+      if (e.target.id === 'addrModal') closeModal();
+    });
+
+    // Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('addrModal');
+        if (modal && modal.style.display !== 'none') closeModal();
+      }
+    });
+
+    // Form
+    document.getElementById('addrForm').addEventListener('submit', saveAddress);
+  }
+
+  // ==========================================================
+  // 8. Auth
+  // ==========================================================
+  function initAuth() {
+    window.authFns.onAuthStateChanged(window.auth, (user) => {
+      state.user = user;
+      loadAddresses();
+    });
+  }
+
+  // ==========================================================
+  // 9. Boot
+  // ==========================================================
+  function boot() {
+    bindEvents();
+    initAuth();
+  }
+
+  if (window.auth && window.fs) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
