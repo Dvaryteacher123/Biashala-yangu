@@ -1,0 +1,724 @@
+<%- include('../partials/header', { title }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     CART PAGE — Inasoma localStorage (data halisi ya mtumiaji)
+     ========================================================== -->
+
+<main class="cart-page">
+  <div class="container">
+
+    <div class="cart-head">
+      <h1>🛒 Kikapu Changu</h1>
+      <a href="/shop" class="continue-link">← Endelea Kununua</a>
+    </div>
+
+    <!-- Loading (muda mfupi sana kwa localStorage) -->
+    <div id="cartLoading" class="loading">
+      <div class="spinner"></div> Inapakia kikapu...
+    </div>
+
+    <!-- Empty -->
+    <div id="cartEmpty" class="empty-state" style="display:none;">
+      <h3>Kikapu chako ni tupu</h3>
+      <p>Bado hujaongeza bidhaa yoyote kwenye kikapu.</p>
+      <a href="/shop" class="btn btn-primary" style="margin-top:14px;">
+        Anza Kununua
+      </a>
+    </div>
+
+    <!-- Cart content -->
+    <div id="cartContent" class="cart-layout" style="display:none;">
+
+      <!-- ============ Bidhaa ============ -->
+      <section class="cart-items">
+        <div class="cart-items-head">
+          <span>Bidhaa</span>
+          <span>Bei</span>
+          <span>Idadi</span>
+          <span>Jumla</span>
+          <span></span>
+        </div>
+        <div id="cartItemsList"></div>
+
+        <div class="cart-actions">
+          <button class="btn btn-outline" id="clearCartBtn">
+            🗑️ Safisha Kikapu
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ Muhtasari ============ -->
+      <aside class="cart-summary">
+        <h3>Muhtasari wa Oda</h3>
+
+        <!-- Coupon -->
+        <div class="coupon-box">
+          <label for="couponInput">Una kodi ya punguzo?</label>
+          <div class="coupon-form">
+            <input type="text" id="couponInput" placeholder="Weka code..." />
+            <button id="applyCouponBtn">Tumia</button>
+          </div>
+          <p id="couponMsg" class="coupon-msg" style="display:none;"></p>
+          <div id="appliedCoupon" class="applied-coupon" style="display:none;">
+            <span id="appliedCouponLabel">—</span>
+            <button id="removeCouponBtn" title="Ondoa">✕</button>
+          </div>
+        </div>
+
+        <!-- Lines -->
+        <div class="summary-lines">
+          <div class="sum-line">
+            <span>Subtotal</span>
+            <span id="sumSubtotal">TSh 0</span>
+          </div>
+          <div class="sum-line" id="sumDiscountLine" style="display:none;">
+            <span>Punguzo</span>
+            <span id="sumDiscount" class="discount">- TSh 0</span>
+          </div>
+          <div class="sum-line">
+            <span>Usafirishaji</span>
+            <span id="sumShipping">TSh 0</span>
+          </div>
+          <div class="sum-line total">
+            <span>Jumla</span>
+            <span id="sumTotal">TSh 0</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full btn-lg" id="checkoutBtn">
+          Nenda Checkout →
+        </button>
+
+        <p class="secure-note">🔒 Malipo yako ni salama</p>
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA CART PAGE
+     ========================================================== -->
+<style>
+  .cart-page { padding: 30px 0 60px; }
+
+  /* ---------- Kichwa ---------- */
+  .cart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .cart-head h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #111;
+  }
+  .continue-link {
+    color: #e63946;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .continue-link:hover { text-decoration: underline; }
+
+  /* ---------- Layout ---------- */
+  .cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 26px;
+    align-items: start;
+  }
+
+  /* ---------- Bidhaa ---------- */
+  .cart-items {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+
+  .cart-items-head {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr 1fr 40px;
+    gap: 12px;
+    padding: 14px 18px;
+    background: #f7f7f9;
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr 1fr 40px;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 18px;
+    border-top: 1px solid #f0f0f3;
+  }
+
+  .ci-product {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .ci-product img {
+    width: 70px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f2f2f5;
+    flex-shrink: 0;
+  }
+  .ci-info { min-width: 0; }
+  .ci-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #111;
+    margin-bottom: 4px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .ci-variants {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .ci-variant {
+    background: #f2f2f5;
+    color: #555;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+
+  .ci-price {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .ci-qty {
+    display: inline-flex;
+    align-items: center;
+    border: 1.5px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .ci-qty button {
+    width: 30px;
+    height: 32px;
+    background: #f7f7f9;
+    font-size: 16px;
+    color: #333;
+    transition: background 0.15s;
+  }
+  .ci-qty button:hover { background: #e6e6ec; }
+  .ci-qty input {
+    width: 42px;
+    height: 32px;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-weight: 600;
+    background: #fff;
+    -moz-appearance: textfield;
+  }
+  .ci-qty input::-webkit-outer-spin-button,
+  .ci-qty input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .ci-total {
+    font-weight: 700;
+    color: #e63946;
+    font-size: 15px;
+  }
+
+  .ci-remove {
+    background: transparent;
+    color: #999;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .ci-remove:hover {
+    background: #fdecea;
+    color: #dc3545;
+  }
+
+  .cart-actions {
+    padding: 14px 18px;
+    border-top: 1px solid #f0f0f3;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .cart-actions .btn { font-size: 13px; padding: 8px 14px; }
+
+  /* ---------- Muhtasari ---------- */
+  .cart-summary {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 22px;
+    position: sticky;
+    top: 90px;
+  }
+  .cart-summary h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #111;
+  }
+
+  /* Coupon */
+  .coupon-box {
+    padding: 12px 0 18px;
+    border-bottom: 1px solid #f0f0f3;
+    margin-bottom: 16px;
+  }
+  .coupon-box label {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .coupon-form {
+    display: flex;
+    background: #f7f7f9;
+    border: 1px solid #e0e0e5;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .coupon-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 10px 12px;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+  .coupon-form button {
+    padding: 0 16px;
+    background: #111;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .coupon-form button:hover { background: #333; }
+  .coupon-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .coupon-msg {
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .coupon-msg.ok  { color: #2e7d32; }
+  .coupon-msg.err { color: #c62828; }
+
+  .applied-coupon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #e8f5e9;
+    color: #1b5e20;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+  .applied-coupon button {
+    background: transparent;
+    color: #1b5e20;
+    font-size: 14px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+  }
+  .applied-coupon button:hover { background: rgba(0,0,0,0.08); }
+
+  /* Summary lines */
+  .summary-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #f0f0f3;
+    margin-bottom: 18px;
+  }
+  .sum-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+  }
+  .sum-line.discount span:last-child { color: #2e7d32; }
+  .sum-line.total {
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f3;
+    font-size: 18px;
+    font-weight: 800;
+    color: #111;
+    margin-top: 6px;
+  }
+  .sum-line.total span:last-child { color: #e63946; }
+
+  .btn-lg {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+  .secure-note {
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    margin-top: 12px;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .cart-layout {
+      grid-template-columns: 1fr;
+    }
+    .cart-summary {
+      position: static;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .cart-items-head { display: none; }
+    .cart-item {
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        "product remove"
+        "price   price"
+        "qty     total";
+      gap: 10px;
+      padding: 14px;
+    }
+    .ci-product { grid-area: product; }
+    .ci-price   { grid-area: price; color: #777; font-size: 13px; }
+    .ci-qty     { grid-area: qty; }
+    .ci-total   { grid-area: total; text-align: right; }
+    .ci-remove  { grid-area: remove; }
+    .ci-price::before { content: 'Bei: '; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA CART — localStorage (data halisi)
+     ========================================================== -->
+<script type="module">
+
+  // ==========================================================
+  // Shipping constants (unaweza kubadilisha hapa baadaye)
+  // ==========================================================
+  const SHIPPING_FLAT = 5000;        // TSh — usafirishaji wa kawaida
+  const FREE_SHIPPING_FROM = 100000; // TSh — bure kama subtotal inafikia
+
+  // State
+  let cart = [];
+  let appliedCoupon = null; // { code, type, value, minSubtotal }
+
+  // ==========================================================
+  // Helpers
+  // ==========================================================
+  const fmt = (n) => `TSh ${Number(n || 0).toLocaleString()}`;
+  const fallbackImg = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22160%22><rect fill=%22%23eee%22 width=%22140%22 height=%22160%22/><text x=%2270%22 y=%2285%22 font-size=%2213%22 fill=%22%23999%22 text-anchor=%22middle%22>Hakuna picha</text></svg>';
+
+  function loadCart() {
+    cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (!Array.isArray(cart)) cart = [];
+  }
+  function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cart-updated'));
+  }
+
+  // ==========================================================
+  // 1. Render cart
+  // ==========================================================
+  function renderCart() {
+    const loading = document.getElementById('cartLoading');
+    const empty   = document.getElementById('cartEmpty');
+    const content = document.getElementById('cartContent');
+
+    loading.style.display = 'none';
+
+    if (cart.length === 0) {
+      empty.style.display = 'block';
+      content.style.display = 'none';
+      return;
+    }
+
+    empty.style.display = 'none';
+    content.style.display = 'grid';
+
+    // Items
+    const list = document.getElementById('cartItemsList');
+    list.innerHTML = cart.map((item, i) => {
+      const lineTotal = Number(item.price || 0) * Number(item.qty || 1);
+      const variants = [];
+      if (item.size)  variants.push(`<span class="ci-variant">Ukubwa: ${item.size}</span>`);
+      if (item.color) variants.push(`<span class="ci-variant">Rangi: ${item.color}</span>`);
+
+      return `
+        <div class="cart-item" data-i="${i}">
+          <div class="ci-product">
+            <a href="/product/${item.id}">
+              <img src="${item.image || fallbackImg}" alt="${item.name || ''}" />
+            </a>
+            <div class="ci-info">
+              <a href="/product/${item.id}" class="ci-name">${item.name || 'Bidhaa'}</a>
+              <div class="ci-variants">${variants.join('')}</div>
+            </div>
+          </div>
+          <div class="ci-price">${fmt(item.price)}</div>
+          <div class="ci-qty">
+            <button data-act="minus" data-i="${i}" aria-label="Punguza">−</button>
+            <input type="number" min="1" value="${item.qty}" data-i="${i}" class="qty-input" />
+            <button data-act="plus" data-i="${i}" aria-label="Ongeza">+</button>
+          </div>
+          <div class="ci-total">${fmt(lineTotal)}</div>
+          <button class="ci-remove" data-i="${i}" aria-label="Ondoa">✕</button>
+        </div>
+      `;
+    }).join('');
+
+    updateSummary();
+    bindItemEvents();
+  }
+
+  // ==========================================================
+  // 2. Events za items
+  // ==========================================================
+  function bindItemEvents() {
+    document.querySelectorAll('.ci-qty button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.i);
+        const act = btn.dataset.act;
+        if (act === 'plus')  cart[i].qty = (cart[i].qty || 1) + 1;
+        if (act === 'minus') {
+          cart[i].qty = (cart[i].qty || 1) - 1;
+          if (cart[i].qty < 1) cart[i].qty = 1;
+        }
+        saveCart();
+        renderCart();
+      });
+    });
+
+    document.querySelectorAll('.qty-input').forEach((input) => {
+      input.addEventListener('change', () => {
+        const i = Number(input.dataset.i);
+        let v = Number(input.value) || 1;
+        if (v < 1) v = 1;
+        cart[i].qty = v;
+        saveCart();
+        renderCart();
+      });
+    });
+
+    document.querySelectorAll('.ci-remove').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.i);
+        cart.splice(i, 1);
+        saveCart();
+        renderCart();
+      });
+    });
+  }
+
+  // ==========================================================
+  // 3. Summary
+  // ==========================================================
+  function calcSubtotal() {
+    return cart.reduce((s, it) => s + Number(it.price || 0) * Number(it.qty || 1), 0);
+  }
+
+  function calcDiscount(subtotal) {
+    if (!appliedCoupon) return 0;
+    if (appliedCoupon.minSubtotal && subtotal < appliedCoupon.minSubtotal) return 0;
+    if (appliedCoupon.type === 'percent') {
+      return Math.round(subtotal * (appliedCoupon.value / 100));
+    }
+    if (appliedCoupon.type === 'fixed') {
+      return Math.min(appliedCoupon.value, subtotal);
+    }
+    return 0;
+  }
+
+  function updateSummary() {
+    const subtotal = calcSubtotal();
+    const discount = calcDiscount(subtotal);
+    const afterDiscount = subtotal - discount;
+
+    // Shipping: bure kama subtotal inafikia kiwango
+    let shipping = SHIPPING_FLAT;
+    if (afterDiscount >= FREE_SHIPPING_FROM) shipping = 0;
+
+    const total = afterDiscount + shipping;
+
+    document.getElementById('sumSubtotal').textContent = fmt(subtotal);
+
+    const discLine = document.getElementById('sumDiscountLine');
+    if (discount > 0) {
+      document.getElementById('sumDiscount').textContent = `- ${fmt(discount)}`;
+      discLine.style.display = 'flex';
+    } else {
+      discLine.style.display = 'none';
+    }
+
+    document.getElementById('sumShipping').textContent =
+      shipping === 0 ? 'BURE' : fmt(shipping);
+
+    document.getElementById('sumTotal').textContent = fmt(total);
+  }
+
+  // ==========================================================
+  // 4. Clear cart
+  // ==========================================================
+  function bindClearCart() {
+    document.getElementById('clearCartBtn').addEventListener('click', () => {
+      if (!confirm('Una uhakika unataka kufuta kikapu chote?')) return;
+      cart = [];
+      appliedCoupon = null;
+      saveCart();
+      renderCart();
+    });
+  }
+
+  // ==========================================================
+  // 5. Coupon — Firestore: coupons/{CODE}
+  //    Document: { code, type: "percent"|"fixed", value, minSubtotal, active }
+  // ==========================================================
+  function bindCoupon() {
+    const input = document.getElementById('couponInput');
+    const btn   = document.getElementById('applyCouponBtn');
+    const msg   = document.getElementById('couponMsg');
+    const applied = document.getElementById('appliedCoupon');
+    const label = document.getElementById('appliedCouponLabel');
+
+    btn.addEventListener('click', async () => {
+      const code = input.value.trim().toUpperCase();
+      msg.style.display = 'none';
+
+      if (!code) {
+        showCouponMsg('Weka code kwanza.', 'err');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = '...';
+
+      try {
+        const { doc, getDoc } = window.fs;
+        const snap = await getDoc(doc(window.db, 'coupons', code));
+
+        if (!snap.exists()) {
+          showCouponMsg('Code haipo au imeisha muda wake.', 'err');
+          return;
+        }
+
+        const c = snap.data();
+        if (c.active === false) {
+          showCouponMsg('Code hii imezimwa.', 'err');
+          return;
+        }
+
+        const subtotal = calcSubtotal();
+        if (c.minSubtotal && subtotal < c.minSubtotal) {
+          showCouponMsg(`Code hii inahitaji manunuzi ya ${fmt(c.minSubtotal)}.`, 'err');
+          return;
+        }
+
+        appliedCoupon = {
+          code,
+          type: c.type || 'percent',
+          value: Number(c.value || 0),
+          minSubtotal: Number(c.minSubtotal || 0)
+        };
+
+        label.textContent = `${code} imetumika`;
+        applied.style.display = 'flex';
+        msg.style.display = 'none';
+        input.value = '';
+        updateSummary();
+
+        // Save kwa checkout
+        sessionStorage.setItem('appliedCoupon', JSON.stringify(appliedCoupon));
+
+      } catch (err) {
+        console.error('Coupon error:', err);
+        showCouponMsg('Imeshindikana kuangalia code. Jaribu tena.', 'err');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Tumia';
+      }
+    });
+
+    document.getElementById('removeCouponBtn').addEventListener('click', () => {
+      appliedCoupon = null;
+      applied.style.display = 'none';
+      sessionStorage.removeItem('appliedCoupon');
+      updateSummary();
+    });
+
+    function showCouponMsg(text, type) {
+      msg.textContent = text;
+      msg.className = 'coupon-msg ' + type;
+      msg.style.display = 'block';
+    }
+  }
+
+  // ==========================================================
+  // 6. Checkout button
+  // ==========================================================
+  function bindCheckout() {
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      if (cart.length === 0) return;
+      window.location.href = '/checkout';
+    });
+  }
+
+  // ==========================================================
+  // 7. Boot
+  // ==========================================================
+  function boot() {
+    loadCart();
+
+    // Rudisha coupon iliyotumika (kama ipo)
+    try {
+      const stored = sessionStorage.getItem('appliedCoupon');
+      if (stored) {
+        appliedCoupon = JSON.parse(stored);
+        document.getElementById('appliedCouponLabel').textContent =
+          `${appliedCoupon.code} imetumika`;
+        document.getElementById('appliedCoupon').style.display = 'flex';
+      }
+    } catch (_) {}
+
+    renderCart();
+    bindClearCart();
+    bindCoupon();
+    bindCheckout();
+  }
+
+  boot();
+
+</script>
