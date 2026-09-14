@@ -1,0 +1,766 @@
+<%- include('../partials/header', { title, description }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     ACCOUNT ORDERS PAGE — Firestore orders where userId == uid
+     ========================================================== -->
+
+<main class="orders-page">
+  <div class="container">
+
+    <!-- Loading -->
+    <div id="ordLoading" class="loading">
+      <div class="spinner"></div> Inapakia oda zako...
+    </div>
+
+    <!-- Login required -->
+    <div id="ordLogin" class="empty-state" style="display:none;">
+      <h3>Ingia ili kuona oda zako</h3>
+      <p>Historia ya oda inahifadhiwa kwenye akaunti yako.</p>
+      <a id="ordLoginLink" href="/auth/login" class="btn btn-primary" style="margin-top:14px;">
+        Ingia / Jiunge
+      </a>
+    </div>
+
+    <!-- Content -->
+    <div id="ordContent" style="display:none;">
+
+      <div class="orders-head">
+        <h1>📦 Oda Zangu</h1>
+        <a href="/shop" class="continue-link">← Endelea Kununua</a>
+      </div>
+
+      <!-- ============ Tabs (filters) ============ -->
+      <div class="tabs" id="ordTabs">
+        <button class="tab active" data-filter="all">Zote <span class="tab-count" id="cntAll">0</span></button>
+        <button class="tab" data-filter="pending">Zinasubiri <span class="tab-count" id="cntPending">0</span></button>
+        <button class="tab" data-filter="processing">Zinasindikwa <span class="tab-count" id="cntProcessing">0</span></button>
+        <button class="tab" data-filter="shipped">Zimesafirishwa <span class="tab-count" id="cntShipped">0</span></button>
+        <button class="tab" data-filter="delivered">Zimefika <span class="tab-count" id="cntDelivered">0</span></button>
+      </div>
+
+      <!-- ============ Empty ============ -->
+      <div id="ordEmpty" class="empty-state" style="display:none;">
+        <h3>Hakuna oda bado</h3>
+        <p>Hujaweka oda yoyote. Anza kununua bidhaa zetu bora.</p>
+        <a href="/shop" class="btn btn-primary" style="margin-top:14px;">Anza Kununua</a>
+      </div>
+
+      <!-- ============ List ============ -->
+      <div id="ordList" class="orders-list"></div>
+
+      <!-- ============ Detail (modal-style) ============ -->
+      <div id="ordDetailOverlay" class="ord-detail-overlay" style="display:none;">
+        <div class="ord-detail-modal">
+          <button class="ord-close" id="ordCloseBtn" aria-label="Funga">✕</button>
+          <div id="ordDetailBody"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA ORDERS PAGE
+     ========================================================== -->
+<style>
+  .orders-page { padding: 30px 0 60px; min-height: 60vh; }
+
+  .orders-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .orders-head h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #111;
+  }
+  .continue-link {
+    color: #e63946;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .continue-link:hover { text-decoration: underline; }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 22px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+  .tabs::-webkit-scrollbar { height: 6px; }
+  .tabs::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+  .tab {
+    padding: 9px 16px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1.5px solid #e0e0e5;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    white-space: nowrap;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .tab:hover { border-color: #999; color: #111; }
+  .tab.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+  .tab-count {
+    display: inline-block;
+    background: rgba(0,0,0,0.08);
+    color: inherit;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 11px;
+    margin-left: 4px;
+  }
+  .tab.active .tab-count {
+    background: rgba(255,255,255,0.2);
+  }
+
+  /* ---------- Orders list ---------- */
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .order-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .order-card:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  }
+
+  .order-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f3;
+    flex-wrap: wrap;
+  }
+  .oc-head-left { min-width: 0; }
+  .oc-num {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-weight: 700;
+    color: #111;
+    font-size: 15px;
+    letter-spacing: 0.03em;
+  }
+  .oc-date {
+    color: #888;
+    font-size: 12px;
+    margin-top: 3px;
+  }
+  .oc-head-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+  .status-badge.pending    { background: #fff3cd; color: #856404; }
+  .status-badge.processing { background: #cfe2ff; color: #084298; }
+  .status-badge.shipped    { background: #e3f2fd; color: #0d47a1; }
+  .status-badge.delivered  { background: #e8f5e9; color: #1b5e20; }
+  .status-badge.cancelled  { background: #fdecea; color: #b71c1c; }
+
+  .oc-total {
+    font-size: 16px;
+    font-weight: 800;
+    color: #e63946;
+    white-space: nowrap;
+  }
+
+  /* Items preview */
+  .order-card-body {
+    padding: 14px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .oc-items {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+  }
+  .oc-thumb {
+    width: 48px;
+    height: 56px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f2f2f5;
+    flex-shrink: 0;
+  }
+  .oc-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .oc-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 56px;
+    background: #f2f2f5;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #666;
+  }
+
+  .oc-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn-sm {
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+  .btn-view {
+    background: #111;
+    color: #fff;
+  }
+  .btn-view:hover { background: #333; }
+  .btn-track {
+    background: #f2f2f5;
+    color: #333;
+  }
+  .btn-track:hover { background: #e6e6ec; }
+
+  /* ---------- Detail modal ---------- */
+  .ord-detail-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .ord-detail-modal {
+    background: #fff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    position: relative;
+    animation: slideUp 0.25s;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(24px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  .ord-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f2f2f5;
+    color: #333;
+    font-size: 15px;
+    transition: background 0.15s;
+  }
+  .ord-close:hover { background: #e6e6ec; }
+
+  /* Detail content */
+  .od-head {
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f3;
+    margin-bottom: 18px;
+  }
+  .od-num {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 17px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 4px;
+  }
+  .od-date {
+    color: #888;
+    font-size: 12px;
+  }
+
+  .od-section {
+    margin-bottom: 18px;
+  }
+  .od-section h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+
+  .od-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f7f7f9;
+  }
+  .od-item:last-child { border-bottom: none; }
+  .od-item img {
+    width: 52px;
+    height: 62px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #eee;
+    flex-shrink: 0;
+  }
+  .od-item .meta { flex: 1; min-width: 0; }
+  .od-item .name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 3px;
+  }
+  .od-item .vars {
+    font-size: 12px;
+    color: #888;
+  }
+  .od-item .qty {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+  }
+  .od-item .line {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e63946;
+    white-space: nowrap;
+  }
+
+  .od-address {
+    background: #fafafc;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+  }
+  .od-address strong { color: #111; display: block; margin-bottom: 4px; }
+
+  .od-summary-lines {
+    background: #fafafc;
+    padding: 14px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .od-sum-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #555;
+  }
+  .od-sum-line.total {
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e5;
+    margin-top: 4px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #111;
+  }
+  .od-sum-line.total span:last-child { color: #e63946; }
+
+  .od-payment {
+    font-size: 13px;
+    color: #666;
+    margin-top: 10px;
+  }
+  .od-payment strong { color: #111; text-transform: capitalize; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 600px) {
+    .order-card-head { padding: 14px; }
+    .order-card-body { padding: 12px 14px; }
+    .oc-head-right { flex-direction: column; align-items: flex-end; gap: 6px; }
+    .oc-actions { width: 100%; }
+    .oc-actions .btn { flex: 1; }
+    .ord-detail-modal { padding: 20px 16px; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA ORDERS — Firestore halisi
+     ========================================================== -->
+<script type="module">
+
+  const fmt = (n) => `TSh ${Number(n || 0).toLocaleString()}`;
+  const fallbackImg = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2262%22><rect fill=%22%23eee%22 width=%2252%22 height=%2262%22/></svg>';
+
+  // State
+  const state = {
+    user: null,
+    orders: [],   // zote
+    filter: 'all'
+  };
+
+  const STATUS_LABEL = {
+    pending:    'Zinasubiri',
+    processing: 'Zinasindikwa',
+    shipped:    'Zimesafirishwa',
+    delivered:  'Zimefika',
+    cancelled:  'Imefutwa'
+  };
+
+  // ==========================================================
+  // 1. Pakia oda kutoka Firestore orders where userId == uid
+  // ==========================================================
+  async function loadOrders() {
+    const loading = document.getElementById('ordLoading');
+    const login   = document.getElementById('ordLogin');
+    const content = document.getElementById('ordContent');
+
+    loading.style.display = 'flex';
+    login.style.display = 'none';
+    content.style.display = 'none';
+
+    if (!state.user) {
+      loading.style.display = 'none';
+      login.style.display = 'block';
+      document.getElementById('ordLoginLink').href =
+        '/auth/login?redirect=' + encodeURIComponent('/account/orders');
+      return;
+    }
+
+    try {
+      const { collection, query, where, getDocs, orderBy } = window.fs;
+
+      let snap;
+      try {
+        snap = await getDocs(query(
+          collection(window.db, 'orders'),
+          where('userId', '==', state.user.uid),
+          orderBy('createdAt', 'desc')
+        ));
+      } catch {
+        // fallback kama index haipo
+        snap = await getDocs(query(
+          collection(window.db, 'orders'),
+          where('userId', '==', state.user.uid)
+        ));
+      }
+
+      state.orders = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+      // Sort client-side kama fallback ilitumika
+      state.orders.sort((a, b) => {
+        const ta = a.createdAt?.seconds || 0;
+        const tb = b.createdAt?.seconds || 0;
+        return tb - ta;
+      });
+
+      loading.style.display = 'none';
+      content.style.display = 'block';
+
+      updateCounts();
+      renderList();
+
+    } catch (err) {
+      console.error('Orders error:', err);
+      loading.style.display = 'none';
+      content.style.display = 'block';
+      document.getElementById('ordEmpty').style.display = 'block';
+    }
+  }
+
+  // ==========================================================
+  // 2. Hesabu kwa tabs
+  // ==========================================================
+  function updateCounts() {
+    const counts = {
+      all: state.orders.length,
+      pending: 0, processing: 0, shipped: 0, delivered: 0
+    };
+    state.orders.forEach((o) => {
+      const s = (o.status || 'pending').toLowerCase();
+      if (counts[s] != null) counts[s]++;
+    });
+    document.getElementById('cntAll').textContent        = counts.all;
+    document.getElementById('cntPending').textContent    = counts.pending;
+    document.getElementById('cntProcessing').textContent = counts.processing;
+    document.getElementById('cntShipped').textContent    = counts.shipped;
+    document.getElementById('cntDelivered').textContent  = counts.delivered;
+  }
+
+  // ==========================================================
+  // 3. Render list
+  // ==========================================================
+  function renderList() {
+    const list = document.getElementById('ordList');
+    const empty = document.getElementById('ordEmpty');
+
+    let items = state.orders;
+    if (state.filter !== 'all') {
+      items = items.filter((o) => (o.status || 'pending').toLowerCase() === state.filter);
+    }
+
+    if (items.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      empty.querySelector('h3').textContent =
+        state.filter === 'all' ? 'Hakuna oda bado' : 'Hakuna oda katika hali hii';
+      return;
+    }
+
+    empty.style.display = 'none';
+
+    list.innerHTML = items.map((o) => {
+      const status = (o.status || 'pending').toLowerCase();
+      const dateStr = o.createdAt?.seconds
+        ? new Date(o.createdAt.seconds * 1000).toLocaleDateString('sw-TZ', {
+            day: 'numeric', month: 'short', year: 'numeric'
+          })
+        : '—';
+
+      // Preview ya items (max 4 + "more")
+      const orderItems = Array.isArray(o.items) ? o.items : [];
+      const preview = orderItems.slice(0, 4).map((it) => `
+        <div class="oc-thumb">
+          <img src="${it.image || fallbackImg}" alt="" />
+        </div>
+      `).join('');
+      const more = orderItems.length > 4
+        ? `<div class="oc-more">+${orderItems.length - 4}</div>`
+        : '';
+
+      return `
+        <div class="order-card" data-id="${o.id}">
+          <div class="order-card-head">
+            <div class="oc-head-left">
+              <div class="oc-num">${o.orderNumber || o.id}</div>
+              <div class="oc-date">${dateStr}</div>
+            </div>
+            <div class="oc-head-right">
+              <span class="status-badge ${status}">${STATUS_LABEL[status] || status}</span>
+              <span class="oc-total">${fmt(o.total)}</span>
+            </div>
+          </div>
+          <div class="order-card-body">
+            <div class="oc-items">${preview}${more}</div>
+            <div class="oc-actions">
+              <button class="btn btn-sm btn-view" data-act="view" data-id="${o.id}">
+                Angalia
+              </button>
+              <a class="btn btn-sm btn-track" href="/order-tracking?id=${o.orderNumber || o.id}">
+                Fuatilia
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Bonyeza "Angalia" / card
+    list.querySelectorAll('[data-act="view"]').forEach((b) => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openDetail(b.dataset.id);
+      });
+    });
+    list.querySelectorAll('.order-card').forEach((c) => {
+      c.style.cursor = 'pointer';
+      c.addEventListener('click', (e) => {
+        if (e.target.closest('a')) return;
+        openDetail(c.dataset.id);
+      });
+    });
+  }
+
+  // ==========================================================
+  // 4. Detail modal
+  // ==========================================================
+  function openDetail(orderId) {
+    const order = state.orders.find((o) => o.id === orderId);
+    if (!order) return;
+
+    const status = (order.status || 'pending').toLowerCase();
+    const dateStr = order.createdAt?.seconds
+      ? new Date(order.createdAt.seconds * 1000).toLocaleString('sw-TZ')
+      : '—';
+
+    const items = Array.isArray(order.items) ? order.items : [];
+    const itemsHTML = items.map((it) => {
+      const vars = [];
+      if (it.size)  vars.push(`Ukubwa: ${it.size}`);
+      if (it.color) vars.push(`Rangi: ${it.color}`);
+      const lineTotal = it.lineTotal || (Number(it.price || 0) * Number(it.qty || 1));
+      return `
+        <div class="od-item">
+          <img src="${it.image || fallbackImg}" alt="" />
+          <div class="meta">
+            <div class="name">${it.name || 'Bidhaa'}</div>
+            ${vars.length ? `<div class="vars">${vars.join(' • ')}</div>` : ''}
+            <div class="qty">Idadi: ${it.qty || 1} × ${fmt(it.price)}</div>
+          </div>
+          <div class="line">${fmt(lineTotal)}</div>
+        </div>
+      `;
+    }).join('');
+
+    const c = order.customer || {};
+    const addressHTML = `
+      <strong>${c.name || ''}</strong>
+      ${c.phone ? `📞 ${c.phone}<br>` : ''}
+      ${c.email ? `✉️ ${c.email}<br>` : ''}
+      ${c.street ? `${c.street}, ` : ''}${c.city || ''}${c.region ? `, ${c.region}` : ''}
+      ${c.notes ? `<br><em style="color:#888;font-size:12px;">Maelezo: ${c.notes}</em>` : ''}
+    `;
+
+    const discount = Number(order.discount || 0);
+    const summaryHTML = `
+      <div class="od-sum-line">
+        <span>Subtotal</span>
+        <span>${fmt(order.subtotal)}</span>
+      </div>
+      ${discount > 0 ? `
+        <div class="od-sum-line">
+          <span>Punguzo${order.coupon ? ` (${order.coupon})` : ''}</span>
+          <span style="color:#2e7d32;">- ${fmt(discount)}</span>
+        </div>
+      ` : ''}
+      <div class="od-sum-line">
+        <span>Usafirishaji</span>
+        <span>${Number(order.shipping || 0) === 0 ? 'BURE' : fmt(order.shipping)}</span>
+      </div>
+      <div class="od-sum-line total">
+        <span>Jumla</span>
+        <span>${fmt(order.total)}</span>
+      </div>
+    `;
+
+    const body = document.getElementById('ordDetailBody');
+    body.innerHTML = `
+      <div class="od-head">
+        <div class="od-num">${order.orderNumber || order.id}</div>
+        <div class="od-date">${dateStr}</div>
+        <div style="margin-top:10px;">
+          <span class="status-badge ${status}">${STATUS_LABEL[status] || status}</span>
+        </div>
+      </div>
+
+      <div class="od-section">
+        <h4>Bidhaa (${items.length})</h4>
+        ${itemsHTML || '<p style="color:#888;font-size:13px;">Hakuna bidhaa kwenye oda hii.</p>'}
+      </div>
+
+      <div class="od-section">
+        <h4>Anwani ya Kupokelea</h4>
+        <div class="od-address">${addressHTML}</div>
+      </div>
+
+      <div class="od-section">
+        <h4>Muhtasari wa Malipo</h4>
+        <div class="od-summary-lines">${summaryHTML}</div>
+        <p class="od-payment">
+          Njia ya malipo: <strong>${order.paymentMethod || '—'}</strong>
+          &nbsp;•&nbsp;
+          Hali ya malipo: <strong>${order.paymentStatus || '—'}</strong>
+        </p>
+      </div>
+    `;
+
+    document.getElementById('ordDetailOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDetail() {
+    document.getElementById('ordDetailOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  // ==========================================================
+  // 5. Events
+  // ==========================================================
+  function bindEvents() {
+    // Close modal
+    document.getElementById('ordCloseBtn').addEventListener('click', closeDetail);
+    document.getElementById('ordDetailOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'ordDetailOverlay') closeDetail();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDetail();
+    });
+
+    // Tabs
+    document.querySelectorAll('#ordTabs .tab').forEach((t) => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('#ordTabs .tab').forEach((x) => x.classList.remove('active'));
+        t.classList.add('active');
+        state.filter = t.dataset.filter;
+        renderList();
+      });
+    });
+  }
+
+  // ==========================================================
+  // 6. Auth
+  // ==========================================================
+  function initAuth() {
+    window.authFns.onAuthStateChanged(window.auth, (user) => {
+      state.user = user;
+      loadOrders();
+    });
+  }
+
+  // ==========================================================
+  // 7. Boot
+  // ==========================================================
+  function boot() {
+    bindEvents();
+    initAuth();
+  }
+
+  if (window.auth && window.fs) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
