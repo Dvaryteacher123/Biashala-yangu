@@ -1,0 +1,1140 @@
+<%- include('../partials/header', { title, description }) %>
+
+<!-- ==========================================================
+     ADMIN PRODUCT ADD — Full Width Layout
+     Firestore: products (addDoc) + Storage (uploadBytes)
+     ========================================================== -->
+
+<%- include('../partials/admin-sidebar') %>
+
+<main class="admin-main">
+
+  <!-- Topbar -->
+  <div class="admin-topbar">
+    <div class="topbar-left">
+      <a href="/admin/products" class="back-link">← Rudi kwa Bidhaa</a>
+      <h1>➕ Ongeza Bidhaa Mpya</h1>
+      <p class="topbar-sub">Jaza taarifa za bidhaa na uhifadhi</p>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form id="productForm" class="prod-form" novalidate>
+
+    <div class="form-layout">
+
+      <!-- ============ Kushoto: Info ============ -->
+      <div class="form-col-main">
+
+        <!-- Basic info -->
+        <div class="form-card">
+          <h3>📝 Taarifa za Msingi</h3>
+
+          <div class="field">
+            <label for="pName">Jina la Bidhaa *</label>
+            <input type="text" id="pName" placeholder="Mfano: T-shirt ya Pamba" required />
+            <small class="field-hint">Jina fupi, la kuvutia, lenye maneno 3–6.</small>
+          </div>
+
+          <div class="field">
+            <label for="pDesc">Maelezo *</label>
+            <textarea id="pDesc" rows="5" placeholder="Eleza bidhaa kwa undani — aina ya kitambaa, ukubwa unaopatikana, jinsi ya kuitunza..." required></textarea>
+            <small class="field-hint">Maelezo mazuri yanasaidia wateja kuamua.</small>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="pCategory">Kundi *</label>
+              <select id="pCategory" required>
+                <option value="">— Inapakia makundi —</option>
+              </select>
+              <small class="field-hint">
+                Haupati kundi lako? <a href="/admin/categories" target="_blank">Ongeza kundi jipya</a>.
+              </small>
+            </div>
+
+            <div class="field">
+              <label for="pStock">Stoko *</label>
+              <input type="number" id="pStock" min="0" value="0" required />
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="pPrice">Bei (TSh) *</label>
+              <input type="number" id="pPrice" min="0" step="100" placeholder="25000" required />
+            </div>
+            <div class="field">
+              <label for="pOldPrice">Bei ya Awali (hiari)</label>
+              <input type="number" id="pOldPrice" min="0" step="100" placeholder="35000" />
+              <small class="field-hint">Ikiwekwa, itaonyeshwa kama bei ya awali (imevuka).</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Images -->
+        <div class="form-card">
+          <h3>🖼️ Picha za Bidhaa</h3>
+
+          <div class="field">
+            <label>Pakia Picha (unaweza kuchagua nyingi)</label>
+            <div class="upload-zone" id="uploadZone">
+              <input type="file" id="fileInput" accept="image/*" multiple hidden />
+              <div class="upload-inner">
+                <div class="upload-icon">📸</div>
+                <p><strong>Bonyeza</strong> kuchagua picha au buruta hapa</p>
+                <p class="upload-hint">PNG, JPG, WEBP — max 5MB kwa picha</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview grid -->
+          <div class="preview-grid" id="previewGrid" style="display:none;"></div>
+
+          <!-- Or use URL -->
+          <details class="url-details">
+            <summary>Au weka URL ya picha</summary>
+            <div class="field" style="margin-top:12px;">
+              <input type="url" id="pImageUrl" placeholder="https://..." />
+              <small class="field-hint">Inafaa kama picha ipo kwenye server nyingine.</small>
+            </div>
+          </details>
+        </div>
+
+        <!-- Variants -->
+        <div class="form-card">
+          <h3>🎨 Ukubwa na Rangi</h3>
+
+          <div class="field">
+            <label>Ukubwa Unaopatikana</label>
+            <div class="chips-input" id="sizesWrap">
+              <div class="chips" id="sizesChips"></div>
+              <div class="chips-input-row">
+                <input type="text" id="sizeInput" placeholder="Mfano: S, M, L, XL" />
+                <button type="button" class="btn-add-chip" id="addSizeBtn">➕</button>
+              </div>
+              <div class="chip-suggestions">
+                <button type="button" class="chip-suggest" data-size="XS">XS</button>
+                <button type="button" class="chip-suggest" data-size="S">S</button>
+                <button type="button" class="chip-suggest" data-size="M">M</button>
+                <button type="button" class="chip-suggest" data-size="L">L</button>
+                <button type="button" class="chip-suggest" data-size="XL">XL</button>
+                <button type="button" class="chip-suggest" data-size="XXL">XXL</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Rangi Zinazopatikana</label>
+            <div class="chips-input" id="colorsWrap">
+              <div class="chips" id="colorsChips"></div>
+              <div class="chips-input-row">
+                <input type="text" id="colorInput" placeholder="Mfano: Nyeusi, Nyeupe, Blu" />
+                <button type="button" class="btn-add-chip" id="addColorBtn">➕</button>
+              </div>
+              <div class="chip-suggestions">
+                <button type="button" class="chip-suggest" data-color="Nyeusi">Nyeusi</button>
+                <button type="button" class="chip-suggest" data-color="Nyeupe">Nyeupe</button>
+                <button type="button" class="chip-suggest" data-color="Bluu">Bluu</button>
+                <button type="button" class="chip-suggest" data-color="Nyekundu">Nyekundu</button>
+                <button type="button" class="chip-suggest" data-color="Kijani">Kijani</button>
+                <button type="button" class="chip-suggest" data-color="Kijivu">Kijivu</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============ Kulia: Sidebar options ============ -->
+      <aside class="form-col-side">
+
+        <!-- Publish card -->
+        <div class="form-card">
+          <h3>🚀 Uchapishaji</h3>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-full" id="saveBtn">
+              💾 Hifadhi Bidhaa
+            </button>
+            <button type="button" class="btn btn-outline btn-full" id="draftBtn">
+              📝 Hifadhi kama Draft
+            </button>
+            <a href="/admin/products" class="btn btn-ghost btn-full">Ghairi</a>
+          </div>
+
+          <p id="formMsg" class="alert" style="display:none;"></p>
+        </div>
+
+        <!-- Options -->
+        <div class="form-card">
+          <h3>⚙️ Chaguzi</h3>
+
+          <label class="check-row">
+            <input type="checkbox" id="pFeatured" />
+            <div>
+              <strong>Featured</strong>
+              <small>Onyesha kwenye ukurasa wa nyumbani</small>
+            </div>
+          </label>
+
+          <label class="check-row">
+            <input type="checkbox" id="pActive" checked />
+            <div>
+              <strong>Inaonekana dukani</strong>
+              <small>Wateja wanaweza kuiona na kuinunua</small>
+            </div>
+          </label>
+        </div>
+
+        <!-- Preview -->
+        <div class="form-card">
+          <h3>👁️ Onyesho</h3>
+          <div class="product-preview" id="productPreview">
+            <div class="pv-image" id="pvImage">
+              <span>Hakuna picha</span>
+            </div>
+            <div class="pv-info">
+              <div class="pv-name" id="pvName">Jina la bidhaa</div>
+              <div class="pv-price" id="pvPrice">TSh 0</div>
+              <div class="pv-cat" id="pvCat" style="display:none;"></div>
+            </div>
+          </div>
+          <p class="pv-hint">Hii ni jinsi bidhaa itakavyoonekana kwa mteja.</p>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </form>
+</main>
+
+<!-- ==========================================================
+     CSS YA ADMIN PRODUCT ADD
+     ========================================================== -->
+<style>
+  body { background: #f4f5f7; }
+
+  .admin-main {
+    margin-left: 250px;
+    padding: 26px 30px 50px;
+    min-height: 100vh;
+    width: calc(100% - 250px);
+    box-sizing: border-box;
+  }
+
+  /* ---------- Topbar ---------- */
+  .admin-topbar {
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e6e6eb;
+  }
+  .back-link {
+    display: inline-block;
+    color: #e63946;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .back-link:hover { text-decoration: underline; }
+  .topbar-left h1 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 4px;
+  }
+  .topbar-sub { color: #777; font-size: 13px; }
+
+  /* ---------- Form Layout ---------- */
+  .form-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 22px;
+    align-items: start;
+  }
+  .form-col-main { display: flex; flex-direction: column; gap: 20px; }
+  .form-col-side { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 20px; }
+
+  /* ---------- Form cards ---------- */
+  .form-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    padding: 22px;
+  }
+  .form-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f3;
+  }
+
+  /* Fields */
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e0e0e5;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: #fafafc;
+    transition: border-color 0.15s, background 0.15s;
+    box-sizing: border-box;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: #111;
+    background: #fff;
+  }
+  .field textarea { resize: vertical; }
+  .field-hint {
+    display: block;
+    color: #888;
+    font-size: 12px;
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+  .field-hint a { color: #e63946; font-weight: 600; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* ---------- Upload Zone ---------- */
+  .upload-zone {
+    border: 2px dashed #d0d0d8;
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    background: #fafafc;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .upload-zone:hover,
+  .upload-zone.dragover {
+    border-color: #111;
+    background: #f2f2f5;
+  }
+  .upload-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  .upload-inner p {
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .upload-hint {
+    color: #999 !important;
+    font-size: 12px !important;
+  }
+
+  /* Preview grid */
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f2f2f5;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .preview-item .pv-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.65);
+    color: #fff;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .preview-item .pv-remove:hover { background: #dc3545; }
+  .preview-item .pv-cover {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    background: #111;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .preview-item.is-cover {
+    outline: 3px solid #111;
+    outline-offset: 2px;
+  }
+
+  /* URL details */
+  .url-details {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f3;
+  }
+  .url-details summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    padding: 4px 0;
+  }
+  .url-details summary:hover { color: #111; }
+
+  /* ---------- Chips input ---------- */
+  .chips-input {
+    background: #fafafc;
+    border: 1.5px solid #e0e0e5;
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+    min-height: 24px;
+  }
+  .chips:empty::before {
+    content: 'Hakuna bado';
+    color: #bbb;
+    font-size: 13px;
+  }
+  .chip-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #111;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .chip-item button {
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .chip-item button:hover { background: rgba(255,255,255,0.2); }
+
+  .chips-input-row {
+    display: flex;
+    gap: 8px;
+  }
+  .chips-input-row input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e5;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    background: #fff;
+    font-family: inherit;
+  }
+  .chips-input-row input:focus { border-color: #111; }
+
+  .btn-add-chip {
+    padding: 0 14px;
+    background: #111;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: background 0.15s;
+  }
+  .btn-add-chip:hover { background: #333; }
+
+  .chip-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f3;
+  }
+  .chip-suggest {
+    background: #fff;
+    border: 1px solid #e0e0e5;
+    border-radius: 14px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .chip-suggest:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    border: none;
+  }
+  .btn-full { width: 100%; }
+  .btn-primary {
+    background: #111;
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) { background: #333; }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-outline {
+    background: #fff;
+    color: #333;
+    border: 1.5px solid #e0e0e5;
+  }
+  .btn-outline:hover { background: #f2f2f5; }
+  .btn-ghost {
+    background: transparent;
+    color: #888;
+    font-weight: 500;
+  }
+  .btn-ghost:hover { color: #111; background: #f2f2f5; }
+
+  .form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ---------- Options ---------- */
+  .check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #fafafc;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: background 0.15s;
+  }
+  .check-row:last-child { margin-bottom: 0; }
+  .check-row:hover { background: #f2f2f5; }
+  .check-row input {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    cursor: pointer;
+    accent-color: #111;
+  }
+  .check-row div { flex: 1; min-width: 0; }
+  .check-row strong {
+    display: block;
+    font-size: 13px;
+    color: #111;
+    margin-bottom: 2px;
+  }
+  .check-row small {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    line-height: 1.4;
+  }
+
+  /* ---------- Preview ---------- */
+  .product-preview {
+    background: #fafafc;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .pv-image {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #f2f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+    font-size: 13px;
+    background-size: cover;
+    background-position: center;
+  }
+  .pv-info {
+    padding: 12px;
+  }
+  .pv-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pv-price {
+    font-size: 15px;
+    font-weight: 800;
+    color: #e63946;
+  }
+  .pv-cat {
+    display: inline-block;
+    margin-top: 6px;
+    background: #fff;
+    color: #666;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 10px;
+  }
+  .pv-hint {
+    font-size: 11px;
+    color: #999;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  /* ---------- Alert ---------- */
+  .alert {
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+  .alert-error   { background: #fdecea; color: #b71c1c; }
+  .alert-success { background: #e8f5e9; color: #1b5e20; }
+  .alert-info    { background: #e3f2fd; color: #0d47a1; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1000px) {
+    .form-layout { grid-template-columns: 1fr; }
+    .form-col-side { position: static; }
+  }
+  @media (max-width: 900px) {
+    .admin-main {
+      margin-left: 0;
+      width: 100%;
+      padding: 70px 14px 40px;
+    }
+    .field-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA PRODUCT ADD — Firestore + Storage halisi
+     ========================================================== -->
+<script type="module">
+
+  // State
+  const state = {
+    images: [], // [{ file?, url, isUploaded }]
+    sizes: [],
+    colors: [],
+    submitting: false
+  };
+
+  // Elements
+  const form = document.getElementById('productForm');
+  const msg  = document.getElementById('formMsg');
+
+  // ==========================================================
+  // Helpers
+  // ==========================================================
+  function showMsg(text, type = 'error') {
+    msg.textContent = text;
+    msg.className = 'alert alert-' + (type === 'success' ? 'success' : type === 'info' ? 'info' : 'error');
+    msg.style.display = 'block';
+    msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function hideMsg() { msg.style.display = 'none'; }
+
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ==========================================================
+  // 1. Pakia categories kwenye select
+  // ==========================================================
+  async function loadCategories() {
+    const sel = document.getElementById('pCategory');
+    try {
+      const { collection, getDocs, query, orderBy } = window.fs;
+      let snap;
+      try {
+        snap = await getDocs(query(collection(window.db, 'categories'), orderBy('name')));
+      } catch {
+        snap = await getDocs(collection(window.db, 'categories'));
+      }
+
+      if (snap.empty) {
+        sel.innerHTML = '<option value="">— Hakuna makundi —</option>';
+        const opt = document.createElement('option');
+        opt.value = '__none__';
+        opt.disabled = true;
+        opt.textContent = 'Ongeza kundi kwanza kwenye /admin/categories';
+        sel.appendChild(opt);
+        return;
+      }
+
+      sel.innerHTML = '<option value="">— Chagua Kundi —</option>';
+      snap.forEach((d) => {
+        const c = d.data();
+        const opt = document.createElement('option');
+        opt.value = d.id;
+        opt.textContent = c.name || d.id;
+        opt.dataset.name = c.name || d.id;
+        sel.appendChild(opt);
+      });
+    } catch (err) {
+      console.error('Load categories error:', err);
+      sel.innerHTML = '<option value="">— Tatizo la kupakia —</option>';
+    }
+  }
+
+  // ==========================================================
+  // 2. Images — Upload Zone
+  // ==========================================================
+  function bindUploadZone() {
+    const zone = document.getElementById('uploadZone');
+    const input = document.getElementById('fileInput');
+
+    zone.addEventListener('click', () => input.click());
+
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      zone.classList.add('dragover');
+    });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    input.addEventListener('change', (e) => {
+      handleFiles(e.target.files);
+      input.value = ''; // ruhusu kuchagua tena same file
+    });
+  }
+
+  function handleFiles(files) {
+    if (!files || files.length === 0) return;
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    Array.from(files).forEach((file) => {
+      if (!file.type.startsWith('image/')) {
+        showMsg(`"${file.name}" si picha.`, 'error');
+        return;
+      }
+      if (file.size > maxSize) {
+        showMsg(`"${file.name}" ni kubwa sana (max 5MB).`, 'error');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        state.images.push({
+          file,
+          url: ev.target.result, // preview URL (dataURL)
+          isUploaded: false
+        });
+        renderPreviews();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // URL ya picha
+  function bindUrlInput() {
+    const urlInput = document.getElementById('pImageUrl');
+    let timer;
+    urlInput.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const url = urlInput.value.trim();
+        if (!url) return;
+        if (!/^https?:\/\//i.test(url)) return;
+        // Ongeza kama URL image (bila file)
+        state.images.push({ url, isUploaded: true, external: true });
+        renderPreviews();
+        urlInput.value = '';
+      }, 400);
+    });
+  }
+
+  function renderPreviews() {
+    const grid = document.getElementById('previewGrid');
+    if (state.images.length === 0) {
+      grid.style.display = 'none';
+      grid.innerHTML = '';
+      updateMainPreview();
+      return;
+    }
+    grid.style.display = 'grid';
+    grid.innerHTML = state.images.map((img, i) => `
+      <div class="preview-item ${i === 0 ? 'is-cover' : ''}" data-i="${i}">
+        <img src="${img.url}" alt="Preview ${i + 1}" />
+        ${i === 0 ? '<span class="pv-cover">Cover</span>' : ''}
+        <button type="button" class="pv-remove" data-remove="${i}">✕</button>
+      </div>
+    `).join('');
+
+    grid.querySelectorAll('[data-remove]').forEach((b) => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const i = Number(b.dataset.remove);
+        state.images.splice(i, 1);
+        renderPreviews();
+      });
+    });
+
+    // Click kubadilisha cover
+    grid.querySelectorAll('.preview-item').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('.pv-remove')) return;
+        const i = Number(el.dataset.i);
+        if (i === 0) return;
+        const [img] = state.images.splice(i, 1);
+        state.images.unshift(img);
+        renderPreviews();
+      });
+    });
+
+    updateMainPreview();
+  }
+
+  function updateMainPreview() {
+    const pv = document.getElementById('pvImage');
+    if (state.images.length > 0) {
+      pv.style.backgroundImage = `url('${state.images[0].url}')`;
+      pv.innerHTML = '';
+    } else {
+      pv.style.backgroundImage = '';
+      pv.innerHTML = '<span>Hakuna picha</span>';
+    }
+  }
+
+  // ==========================================================
+  // 3. Chips input (sizes + colors)
+  // ==========================================================
+  function bindChips() {
+    // Sizes
+    const addSize = () => {
+      const input = document.getElementById('sizeInput');
+      const v = input.value.trim();
+      if (!v) return;
+      v.split(',').map((s) => s.trim()).filter(Boolean).forEach((s) => {
+        if (!state.sizes.includes(s)) state.sizes.push(s);
+      });
+      input.value = '';
+      renderChips('sizes');
+    };
+    document.getElementById('addSizeBtn').addEventListener('click', addSize);
+    document.getElementById('sizeInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); addSize(); }
+    });
+    document.querySelectorAll('[data-size]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const s = b.dataset.size;
+        if (!state.sizes.includes(s)) {
+          state.sizes.push(s);
+          renderChips('sizes');
+        }
+      });
+    });
+
+    // Colors
+    const addColor = () => {
+      const input = document.getElementById('colorInput');
+      const v = input.value.trim();
+      if (!v) return;
+      v.split(',').map((c) => c.trim()).filter(Boolean).forEach((c) => {
+        if (!state.colors.includes(c)) state.colors.push(c);
+      });
+      input.value = '';
+      renderChips('colors');
+    };
+    document.getElementById('addColorBtn').addEventListener('click', addColor);
+    document.getElementById('colorInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); addColor(); }
+    });
+    document.querySelectorAll('[data-color]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const c = b.dataset.color;
+        if (!state.colors.includes(c)) {
+          state.colors.push(c);
+          renderChips('colors');
+        }
+      });
+    });
+  }
+
+  function renderChips(type) {
+    const isSize = type === 'sizes';
+    const arr = isSize ? state.sizes : state.colors;
+    const container = document.getElementById(isSize ? 'sizesChips' : 'colorsChips');
+
+    container.innerHTML = arr.map((v, i) => `
+      <span class="chip-item">
+        ${escapeHtml(v)}
+        <button type="button" data-chip="${type}" data-i="${i}">✕</button>
+      </span>
+    `).join('');
+
+    container.querySelectorAll('[data-chip]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const arr2 = b.dataset.chip === 'sizes' ? state.sizes : state.colors;
+        arr2.splice(Number(b.dataset.i), 1);
+        renderChips(type);
+      });
+    });
+  }
+
+  // ==========================================================
+  // 4. Live preview
+  // ==========================================================
+  function bindLivePreview() {
+    const nameEl = document.getElementById('pName');
+    const priceEl = document.getElementById('pPrice');
+    const catEl = document.getElementById('pCategory');
+
+    const update = () => {
+      document.getElementById('pvName').textContent =
+        nameEl.value.trim() || 'Jina la bidhaa';
+      const price = Number(priceEl.value || 0);
+      document.getElementById('pvPrice').textContent = `TSh ${price.toLocaleString()}`;
+
+      const catLabel = catEl.options[catEl.selectedIndex]?.text || '';
+      const pvCat = document.getElementById('pvCat');
+      if (catEl.value && catLabel !== '— Chagua Kundi —') {
+        pvCat.textContent = catLabel;
+        pvCat.style.display = 'inline-block';
+      } else {
+        pvCat.style.display = 'none';
+      }
+    };
+
+    nameEl.addEventListener('input', update);
+    priceEl.addEventListener('input', update);
+    catEl.addEventListener('change', update);
+  }
+
+  // ==========================================================
+  // 5. Upload picha Storage
+  // ==========================================================
+  async function uploadImages() {
+    const urls = [];
+    const { storageRef, uploadBytes, getDownloadURL } = window.storageFns;
+
+    for (const img of state.images) {
+      if (img.external || img.isUploaded) {
+        urls.push(img.url);
+        continue;
+      }
+      // Upload file mpya
+      const ext = (img.file.name.split('.').pop() || 'jpg').toLowerCase();
+      const fileName = `products/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const ref = storageRef(window.storage, fileName);
+      await uploadBytes(ref, img.file);
+      const url = await getDownloadURL(ref);
+      urls.push(url);
+      img.url = url;
+      img.isUploaded = true;
+    }
+    return urls;
+  }
+
+  // ==========================================================
+  // 6. Submit
+  // ==========================================================
+  function bindSubmit() {
+    const saveBtn = document.getElementById('saveBtn');
+    const draftBtn = document.getElementById('draftBtn');
+
+    saveBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      submit(false);
+    });
+    draftBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      submit(true);
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      submit(false);
+    });
+  }
+
+  async function submit(isDraft) {
+    if (state.submitting) return;
+    hideMsg();
+
+    const name     = document.getElementById('pName').value.trim();
+    const desc     = document.getElementById('pDesc').value.trim();
+    const category = document.getElementById('pCategory').value;
+    const stock    = Number(document.getElementById('pStock').value || 0);
+    const price    = Number(document.getElementById('pPrice').value || 0);
+    const oldPrice = document.getElementById('pOldPrice').value
+      ? Number(document.getElementById('pOldPrice').value)
+      : null;
+    const featured = document.getElementById('pFeatured').checked;
+    const active   = document.getElementById('pActive').checked;
+    const catName  = document.getElementById('pCategory').selectedOptions[0]?.text || '';
+
+    // Validation
+    if (!name || name.length < 3) {
+      showMsg('Jina la bidhaa liwe herufi 3+.'); return;
+    }
+    if (!desc || desc.length < 10) {
+      showMsg('Maelezo yawe herufi 10+.'); return;
+    }
+    if (!category || category === '__none__') {
+      showMsg('Tafadhali chagua kundi. Kama hakuna, ongeza kundi kwanza.'); return;
+    }
+    if (isNaN(price) || price <= 0) {
+      showMsg('Bei iwe namba zaidi ya 0.'); return;
+    }
+    if (oldPrice != null && oldPrice <= price) {
+      showMsg('Bei ya awali iwe kubwa kuliko bei ya sasa.'); return;
+    }
+    if (stock < 0) {
+      showMsg('Stoko isiwe chini ya 0.'); return;
+    }
+    if (!isDraft && state.images.length === 0) {
+      showMsg('Ongeza picha angalau moja.'); return;
+    }
+
+    state.submitting = true;
+    saveBtn.disabled = true;
+    draftBtn.disabled = true;
+    const originalText = saveBtn.textContent;
+
+    try {
+      // 1. Upload picha (kama zipo)
+      let imageUrls = [];
+      if (state.images.length > 0) {
+        saveBtn.textContent = 'Inapakia picha...';
+        try {
+          imageUrls = await uploadImages();
+        } catch (upErr) {
+          console.error('Upload error:', upErr);
+          showMsg('Imeshindikana kupakia picha. Angalia Storage Rules.', 'error');
+          state.submitting = false;
+          saveBtn.disabled = false;
+          draftBtn.disabled = false;
+          saveBtn.textContent = originalText;
+          return;
+        }
+      }
+
+      // 2. Save Firestore
+      saveBtn.textContent = 'Inahifadhi...';
+      const { collection, addDoc, serverTimestamp } = window.fs;
+
+      const product = {
+        name,
+        description: desc,
+        price,
+        oldPrice: oldPrice || null,
+        stock,
+        category,
+        categoryName: catName,
+        sizes: state.sizes,
+        colors: state.colors,
+        image: imageUrls[0] || '',
+        images: imageUrls,
+        featured,
+        active,
+        status: isDraft ? 'draft' : 'published',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      };
+
+      const ref = await addDoc(collection(window.db, 'products'), product);
+
+      showMsg('✅ Bidhaa imehifadhiwa! Tunakupeleka...', 'success');
+
+      setTimeout(() => {
+        window.location.href = '/admin/products';
+      }, 700);
+
+    } catch (err) {
+      console.error('Save error:', err);
+      showMsg('Imeshindikana kuhifadhi. Jaribu tena.', 'error');
+      state.submitting = false;
+      saveBtn.disabled = false;
+      draftBtn.disabled = false;
+      saveBtn.textContent = originalText;
+    }
+  }
+
+  // ==========================================================
+  // 7. Boot
+  // ==========================================================
+  function boot() {
+    bindUploadZone();
+    bindUrlInput();
+    bindChips();
+    bindLivePreview();
+    bindSubmit();
+    loadCategories();
+  }
+
+  if (window.fs && window.db && window.storage && window.storageFns) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
