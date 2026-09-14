@@ -1,0 +1,917 @@
+<%- include('../partials/header', { title, description }) %>
+
+<!-- ==========================================================
+     ADMIN PRODUCTS — Full Width Layout
+     Firestore: products collection (halisi)
+     ========================================================== -->
+
+<%- include('../partials/admin-sidebar') %>
+
+<main class="admin-main">
+
+  <!-- Topbar -->
+  <div class="admin-topbar">
+    <div class="topbar-left">
+      <h1>👕 Bidhaa Zote</h1>
+      <p class="topbar-sub">Simamia bidhaa zote za duka lako</p>
+    </div>
+    <div class="topbar-right">
+      <a href="/admin/products/add" class="btn btn-primary">➕ Ongeza Bidhaa</a>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="prodLoading" class="loading">
+    <div class="spinner"></div> Inapakia bidhaa...
+  </div>
+
+  <!-- Content -->
+  <div id="prodContent" style="display:none;">
+
+    <!-- ============ Filters Bar ============ -->
+    <div class="filters-bar">
+
+      <div class="filter-search">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="🔍 Tafuta bidhaa kwa jina..."
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="filter-group">
+        <select id="categoryFilter">
+          <option value="">Makundi yote</option>
+        </select>
+
+        <select id="stockFilter">
+          <option value="">Stoko yote</option>
+          <option value="in">Ipo stokini</option>
+          <option value="low">Inaisha (&lt; 5)</option>
+          <option value="out">Haipo</option>
+        </select>
+
+        <select id="featuredFilter">
+          <option value="">Zote</option>
+          <option value="featured">Featured tu</option>
+          <option value="not-featured">Isiyo Featured</option>
+        </select>
+
+        <select id="sortSelect">
+          <option value="newest">Mpya kwanza</option>
+          <option value="oldest">Zamani kwanza</option>
+          <option value="name_asc">Jina: A → Z</option>
+          <option value="name_desc">Jina: Z → A</option>
+          <option value="price_asc">Bei: Chini → Juu</option>
+          <option value="price_desc">Bei: Juu → Chini</option>
+          <option value="stock_asc">Stoko: Chini → Juu</option>
+          <option value="stock_desc">Stoko: Juu → Chini</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- ============ Bulk actions ============ -->
+    <div class="bulk-bar" id="bulkBar" style="display:none;">
+      <span class="bulk-count"><strong id="bulkCount">0</strong> zimechaguliwa</span>
+      <div class="bulk-actions">
+        <button class="btn btn-danger btn-sm" id="bulkDeleteBtn">🗑️ Futa Zote</button>
+        <button class="btn btn-outline btn-sm" id="bulkClearBtn">Ghairi</button>
+      </div>
+    </div>
+
+    <!-- ============ Table ============ -->
+    <div class="table-card">
+
+      <!-- Empty -->
+      <div id="prodEmpty" class="empty-state" style="display:none;padding:60px 20px;">
+        <h3>Hakuna bidhaa bado</h3>
+        <p>Bidhaa zitaonekana hapa zikiwekwa. Anza kuongeza bidhaa ya kwanza.</p>
+        <a href="/admin/products/add" class="btn btn-primary" style="margin-top:14px;">
+          ➕ Ongeza Bidhaa
+        </a>
+      </div>
+
+      <!-- No results -->
+      <div id="prodNoResults" class="empty-state" style="display:none;padding:60px 20px;">
+        <h3>Hakuna matokeo</h3>
+        <p>Hakuna bidhaa inayolingana na vichujio vyako.</p>
+      </div>
+
+      <!-- Table -->
+      <div id="tableWrap" style="display:none;overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="col-check">
+                <input type="checkbox" id="selectAll" />
+              </th>
+              <th class="col-img"></th>
+              <th class="col-name">Jina</th>
+              <th class="col-cat">Kundi</th>
+              <th class="col-price">Bei</th>
+              <th class="col-stock">Stoko</th>
+              <th class="col-status">Hali</th>
+              <th class="col-actions">Vitendo</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination" style="display:none;">
+        <button id="prevBtn" disabled>← Nyuma</button>
+        <span class="page-info" id="pageInfo">Ukurasa 1 wa 1</span>
+        <button id="nextBtn">Mbele →</button>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<!-- ==========================================================
+     CSS YA ADMIN PRODUCTS
+     ========================================================== -->
+<style>
+  body { background: #f4f5f7; }
+
+  .admin-main {
+    margin-left: 250px;
+    padding: 26px 30px 50px;
+    min-height: 100vh;
+    width: calc(100% - 250px);
+    box-sizing: border-box;
+  }
+
+  /* ---------- Topbar ---------- */
+  .admin-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e6e6eb;
+  }
+  .topbar-left h1 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 4px;
+  }
+  .topbar-sub { color: #777; font-size: 13px; }
+  .topbar-right { display: flex; gap: 10px; }
+
+  /* ---------- Filters bar ---------- */
+  .filters-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 16px;
+    background: #fff;
+    padding: 14px 16px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .filter-search {
+    flex: 1 1 260px;
+    min-width: 200px;
+  }
+  .filter-search input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #e0e0e5;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: #fafafc;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .filter-search input:focus {
+    border-color: #111;
+    background: #fff;
+  }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-group select {
+    padding: 10px 14px;
+    border: 1.5px solid #e0e0e5;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    background: #fff;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .filter-group select:focus { border-color: #111; }
+
+  /* ---------- Bulk bar ---------- */
+  .bulk-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    font-size: 14px;
+  }
+  .bulk-actions { display: flex; gap: 8px; }
+
+  /* ---------- Table card ---------- */
+  .table-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .data-table thead {
+    background: #f7f7f9;
+  }
+  .data-table th {
+    text-align: left;
+    padding: 14px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+  }
+  .data-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f4f4f6;
+    vertical-align: middle;
+  }
+  .data-table tbody tr:hover { background: #fafafc; }
+  .data-table tbody tr.selected { background: #fffbea; }
+
+  .col-check { width: 40px; }
+  .col-img { width: 70px; }
+  .col-actions { width: 130px; text-align: right; }
+
+  /* Product thumbnail */
+  .p-thumb {
+    width: 52px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f2f2f5;
+    flex-shrink: 0;
+  }
+  .p-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Name cell */
+  .p-name-cell {
+    min-width: 180px;
+  }
+  .p-name {
+    font-weight: 600;
+    color: #111;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-bottom: 3px;
+    font-size: 14px;
+  }
+  .p-id {
+    font-size: 11px;
+    color: #999;
+    font-family: 'SF Mono', Menlo, monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
+  }
+
+  .p-cat {
+    display: inline-block;
+    background: #f2f2f5;
+    color: #444;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  .p-price {
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+  }
+  .p-price-old {
+    display: block;
+    font-size: 11px;
+    color: #999;
+    text-decoration: line-through;
+    font-weight: 400;
+  }
+
+  .p-stock {
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .p-stock.ok    { color: #2e7d32; }
+  .p-stock.low   { color: #f57c00; }
+  .p-stock.out   { color: #c62828; }
+  .p-stock-label { display: block; font-size: 11px; color: #888; font-weight: 400; margin-top: 2px; }
+
+  /* Status badges */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .badge.in-stock    { background: #e8f5e9; color: #1b5e20; }
+  .badge.low-stock   { background: #fff3cd; color: #856404; }
+  .badge.out-of-stock{ background: #fdecea; color: #b71c1c; }
+  .badge.featured    { background: #e3f2fd; color: #0d47a1; margin-right: 4px; }
+
+  /* Actions */
+  .row-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .btn-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.15s, color 0.15s;
+    font-family: inherit;
+  }
+  .btn-view { background: #f2f2f5; color: #333; }
+  .btn-view:hover { background: #e6e6ec; }
+  .btn-edit { background: #e3f2fd; color: #0d47a1; }
+  .btn-edit:hover { background: #c9e4fb; }
+  .btn-del  { background: #fdecea; color: #c62828; }
+  .btn-del:hover { background: #f9d5d2; }
+
+  /* Buttons */
+  .btn-sm {
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #111;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: background 0.15s;
+    text-decoration: none;
+  }
+  .btn-primary:hover { background: #333; }
+
+  .btn-danger {
+    background: #dc3545;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: background 0.15s;
+  }
+  .btn-danger:hover { background: #c82333; }
+
+  .btn-outline {
+    background: #fff;
+    color: #333;
+    border: 1.5px solid #e0e0e5;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: background 0.15s;
+  }
+  .btn-outline:hover { background: #f2f2f5; }
+
+  /* ---------- Pagination ---------- */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-top: 1px solid #f0f0f3;
+    flex-wrap: wrap;
+  }
+  .pagination button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: #fff;
+    border: 1.5px solid #e0e0e5;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .pagination button:hover:not(:disabled) { background: #f2f2f5; }
+  .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .page-info { color: #777; font-size: 13px; }
+
+  /* Checkbox */
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #111;
+  }
+
+  /* Empty states */
+  .empty-state {
+    text-align: center;
+    color: #888;
+  }
+  .empty-state h3 { color: #333; margin-bottom: 6px; font-size: 16px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .admin-main {
+      margin-left: 0;
+      width: 100%;
+      padding: 70px 14px 40px;
+    }
+    .filter-search { flex: 1 1 100%; }
+    .filter-group { width: 100%; }
+    .filter-group select { flex: 1; min-width: 130px; }
+  }
+
+  @media (max-width: 700px) {
+    .col-img, .col-cat { display: none; }
+    .p-thumb { width: 44px; height: 50px; }
+    .data-table th, .data-table td { padding: 10px 8px; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA ADMIN PRODUCTS — Firestore halisi
+     ========================================================== -->
+<script type="module">
+
+  const PAGE_SIZE = 12;
+  const fallbackImg = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2260%22><rect fill=%22%23eee%22 width=%2252%22 height=%2260%22/></svg>';
+
+  // State
+  const state = {
+    allProducts: [],
+    filtered: [],
+    page: 1,
+    selected: new Set(),
+    filters: {
+      search: '',
+      category: '',
+      stock: '',
+      featured: '',
+      sort: 'newest'
+    }
+  };
+
+  // ==========================================================
+  // 1. Pakia products + categories
+  // ==========================================================
+  async function loadData() {
+    const loading = document.getElementById('prodLoading');
+    const content = document.getElementById('prodContent');
+
+    try {
+      const { collection, getDocs } = window.fs;
+
+      const [prodSnap, catSnap] = await Promise.all([
+        getDocs(collection(window.db, 'products')),
+        getDocs(collection(window.db, 'categories')).catch(() => ({ docs: [] }))
+      ]);
+
+      state.allProducts = prodSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+      // Jenga category filter
+      const cats = catSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      const catFilter = document.getElementById('categoryFilter');
+      cats.forEach((c) => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name || c.id;
+        catFilter.appendChild(opt);
+      });
+
+      loading.style.display = 'none';
+      content.style.display = 'block';
+
+      // Kama hakuna products kabisa
+      if (state.allProducts.length === 0) {
+        document.getElementById('prodEmpty').style.display = 'block';
+        document.getElementById('tableWrap').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('tableWrap').style.display = 'block';
+      applyFiltersAndRender();
+
+    } catch (err) {
+      console.error('Load products error:', err);
+      loading.style.display = 'none';
+      content.style.display = 'block';
+      document.getElementById('prodEmpty').style.display = 'block';
+    }
+  }
+
+  // ==========================================================
+  // 2. Filters + Sort
+  // ==========================================================
+  function applyFiltersAndRender() {
+    let items = state.allProducts.slice();
+
+    // Search
+    if (state.filters.search) {
+      const s = state.filters.search.toLowerCase();
+      items = items.filter((p) =>
+        (p.name || '').toLowerCase().includes(s) ||
+        (p.id || '').toLowerCase().includes(s)
+      );
+    }
+
+    // Category
+    if (state.filters.category) {
+      items = items.filter((p) => p.category === state.filters.category);
+    }
+
+    // Stock
+    if (state.filters.stock) {
+      items = items.filter((p) => {
+        const s = Number(p.stock || 0);
+        if (state.filters.stock === 'in')  return s >= 5;
+        if (state.filters.stock === 'low') return s > 0 && s < 5;
+        if (state.filters.stock === 'out') return s === 0;
+        return true;
+      });
+    }
+
+    // Featured
+    if (state.filters.featured) {
+      items = items.filter((p) => {
+        if (state.filters.featured === 'featured')     return p.featured === true;
+        if (state.filters.featured === 'not-featured') return p.featured !== true;
+        return true;
+      });
+    }
+
+    // Sort
+    const sort = state.filters.sort;
+    items.sort((a, b) => {
+      const ta = a.createdAt?.seconds || 0;
+      const tb = b.createdAt?.seconds || 0;
+      switch (sort) {
+        case 'newest':     return tb - ta;
+        case 'oldest':     return ta - tb;
+        case 'name_asc':   return (a.name || '').localeCompare(b.name || '');
+        case 'name_desc':  return (b.name || '').localeCompare(a.name || '');
+        case 'price_asc':  return Number(a.price || 0) - Number(b.price || 0);
+        case 'price_desc': return Number(b.price || 0) - Number(a.price || 0);
+        case 'stock_asc':  return Number(a.stock || 0) - Number(b.stock || 0);
+        case 'stock_desc': return Number(b.stock || 0) - Number(a.stock || 0);
+        default: return 0;
+      }
+    });
+
+    state.filtered = items;
+    state.page = 1;
+    renderTable();
+  }
+
+  // ==========================================================
+  // 3. Render table
+  // ==========================================================
+  function renderTable() {
+    const empty = document.getElementById('prodEmpty');
+    const noResults = document.getElementById('prodNoResults');
+    const wrap = document.getElementById('tableWrap');
+    const tbody = document.getElementById('tableBody');
+    const pagination = document.getElementById('pagination');
+
+    if (state.filtered.length === 0) {
+      wrap.style.display = 'none';
+      pagination.style.display = 'none';
+      if (state.allProducts.length === 0) {
+        empty.style.display = 'block';
+        noResults.style.display = 'none';
+      } else {
+        empty.style.display = 'none';
+        noResults.style.display = 'block';
+      }
+      updateBulkBar();
+      return;
+    }
+
+    empty.style.display = 'none';
+    noResults.style.display = 'none';
+    wrap.style.display = 'block';
+
+    const totalPages = Math.ceil(state.filtered.length / PAGE_SIZE);
+    if (state.page > totalPages) state.page = totalPages;
+
+    const start = (state.page - 1) * PAGE_SIZE;
+    const visible = state.filtered.slice(start, start + PAGE_SIZE);
+
+    tbody.innerHTML = visible.map((p) => {
+      const img = p.image || (p.images && p.images[0]) || fallbackImg;
+      const stock = Number(p.stock || 0);
+      const stockCls = stock === 0 ? 'out' : stock < 5 ? 'low' : 'ok';
+      const stockBadge =
+        stock === 0 ? '<span class="badge out-of-stock">Haipo</span>' :
+        stock < 5   ? '<span class="badge low-stock">Inaisha</span>' :
+                      '<span class="badge in-stock">Ipo</span>';
+      const featuredBadge = p.featured ? '<span class="badge featured">⭐</span>' : '';
+      const oldPrice = p.oldPrice && Number(p.oldPrice) > Number(p.price)
+        ? `<span class="p-price-old">TSh ${Number(p.oldPrice).toLocaleString()}</span>`
+        : '';
+      const isSel = state.selected.has(p.id);
+
+      return `
+        <tr data-id="${p.id}" class="${isSel ? 'selected' : ''}">
+          <td class="col-check">
+            <input type="checkbox" class="row-check" data-id="${p.id}" ${isSel ? 'checked' : ''} />
+          </td>
+          <td class="col-img">
+            <div class="p-thumb">
+              <img src="${img}" alt="" loading="lazy" />
+            </div>
+          </td>
+          <td class="p-name-cell">
+            <div class="p-name">${escapeHtml(p.name || 'Bila jina')}</div>
+            <div class="p-id">${escapeHtml(p.id)}</div>
+          </td>
+          <td class="col-cat">
+            <span class="p-cat">${escapeHtml(p.categoryName || p.category || '—')}</span>
+          </td>
+          <td>
+            <span class="p-price">TSh ${Number(p.price || 0).toLocaleString()}</span>
+            ${oldPrice}
+          </td>
+          <td>
+            <span class="p-stock ${stockCls}">${stock}</span>
+            <span class="p-stock-label">imebaki</span>
+          </td>
+          <td>${featuredBadge}${stockBadge}</td>
+          <td class="col-actions">
+            <div class="row-actions">
+              <a href="/product/${p.id}" target="_blank" class="btn-icon btn-view" title="Ona">👁️</a>
+              <a href="/admin/products/edit/${p.id}" class="btn-icon btn-edit" title="Badili">✏️</a>
+              <button class="btn-icon btn-del" data-del="${p.id}" title="Futa">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // Pagination
+    if (totalPages > 1) {
+      pagination.style.display = 'flex';
+      document.getElementById('pageInfo').textContent =
+        `Ukurasa ${state.page} wa ${totalPages} • Bidhaa ${state.filtered.length}`;
+      document.getElementById('prevBtn').disabled = state.page <= 1;
+      document.getElementById('nextBtn').disabled = state.page >= totalPages;
+    } else {
+      pagination.style.display = 'flex';
+      document.getElementById('pageInfo').textContent =
+        `Bidhaa ${state.filtered.length}`;
+      document.getElementById('prevBtn').disabled = true;
+      document.getElementById('nextBtn').disabled = true;
+    }
+
+    bindRowEvents();
+    updateBulkBar();
+  }
+
+  // ==========================================================
+  // 4. Bind row events
+  // ==========================================================
+  function bindRowEvents() {
+    // Checkboxes
+    document.querySelectorAll('.row-check').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        const id = cb.dataset.id;
+        if (cb.checked) state.selected.add(id);
+        else state.selected.delete(id);
+        const row = cb.closest('tr');
+        row.classList.toggle('selected', cb.checked);
+        updateBulkBar();
+      });
+    });
+
+    // Delete buttons
+    document.querySelectorAll('[data-del]').forEach((btn) => {
+      btn.addEventListener('click', () => deleteProduct(btn.dataset.del));
+    });
+  }
+
+  // ==========================================================
+  // 5. Delete product — Firestore
+  // ==========================================================
+  async function deleteProduct(id) {
+    const p = state.allProducts.find((x) => x.id === id);
+    const name = p?.name || id;
+    if (!confirm(`Una uhakika unataka kufuta "${name}"?`)) return;
+
+    try {
+      const { doc, deleteDoc } = window.fs;
+      await deleteDoc(doc(window.db, 'products', id));
+      state.allProducts = state.allProducts.filter((x) => x.id !== id);
+      state.selected.delete(id);
+      applyFiltersAndRender();
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Imeshindikana kufuta. Jaribu tena.');
+    }
+  }
+
+  // ==========================================================
+  // 6. Bulk actions
+  // ==========================================================
+  function updateBulkBar() {
+    const bar = document.getElementById('bulkBar');
+    const cnt = document.getElementById('bulkCount');
+    const total = state.selected.size;
+
+    if (total > 0) {
+      bar.style.display = 'flex';
+      cnt.textContent = total;
+    } else {
+      bar.style.display = 'none';
+    }
+
+    // Select-all checkbox
+    const visibleIds = state.filtered
+      .slice((state.page - 1) * PAGE_SIZE, state.page * PAGE_SIZE)
+      .map((p) => p.id);
+    const allSelected = visibleIds.length > 0 &&
+      visibleIds.every((id) => state.selected.has(id));
+    const selectAll = document.getElementById('selectAll');
+    if (selectAll) {
+      selectAll.checked = allSelected;
+      selectAll.indeterminate = !allSelected && visibleIds.some((id) => state.selected.has(id));
+    }
+  }
+
+  async function bulkDelete() {
+    const count = state.selected.size;
+    if (count === 0) return;
+    if (!confirm(`Una uhakika unataka kufuta bidhaa ${count}?`)) return;
+
+    try {
+      const { doc, deleteDoc } = window.fs;
+      const ids = Array.from(state.selected);
+      await Promise.all(ids.map((id) => deleteDoc(doc(window.db, 'products', id))));
+      state.allProducts = state.allProducts.filter((p) => !state.selected.has(p.id));
+      state.selected.clear();
+      applyFiltersAndRender();
+    } catch (err) {
+      console.error('Bulk delete error:', err);
+      alert('Imeshindikana kufuta baadhi. Jaribu tena.');
+    }
+  }
+
+  // ==========================================================
+  // 7. Helpers
+  // ==========================================================
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ==========================================================
+  // 8. Bind filters
+  // ==========================================================
+  function bindFilters() {
+    // Search (debounced)
+    let timer;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        state.filters.search = e.target.value.trim();
+        applyFiltersAndRender();
+      }, 250);
+    });
+
+    // Selects
+    document.getElementById('categoryFilter').addEventListener('change', (e) => {
+      state.filters.category = e.target.value;
+      applyFiltersAndRender();
+    });
+    document.getElementById('stockFilter').addEventListener('change', (e) => {
+      state.filters.stock = e.target.value;
+      applyFiltersAndRender();
+    });
+    document.getElementById('featuredFilter').addEventListener('change', (e) => {
+      state.filters.featured = e.target.value;
+      applyFiltersAndRender();
+    });
+    document.getElementById('sortSelect').addEventListener('change', (e) => {
+      state.filters.sort = e.target.value;
+      applyFiltersAndRender();
+    });
+  }
+
+  function bindBulkAndPagination() {
+    // Select-all
+    document.getElementById('selectAll').addEventListener('change', (e) => {
+      const visibleIds = state.filtered
+        .slice((state.page - 1) * PAGE_SIZE, state.page * PAGE_SIZE)
+        .map((p) => p.id);
+
+      if (e.target.checked) {
+        visibleIds.forEach((id) => state.selected.add(id));
+      } else {
+        visibleIds.forEach((id) => state.selected.delete(id));
+      }
+      renderTable();
+    });
+
+    // Bulk buttons
+    document.getElementById('bulkDeleteBtn').addEventListener('click', bulkDelete);
+    document.getElementById('bulkClearBtn').addEventListener('click', () => {
+      state.selected.clear();
+      renderTable();
+    });
+
+    // Pagination
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (state.page > 1) { state.page--; renderTable(); }
+    });
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      const totalPages = Math.ceil(state.filtered.length / PAGE_SIZE);
+      if (state.page < totalPages) { state.page++; renderTable(); }
+    });
+  }
+
+  // ==========================================================
+  // 9. Boot
+  // ==========================================================
+  function boot() {
+    bindFilters();
+    bindBulkAndPagination();
+
+    // Subiri sidebar iwe tayari
+    const checkReady = setInterval(() => {
+      const sidebar = document.getElementById('adminSidebar');
+      if (sidebar && sidebar.style.visibility !== 'hidden') {
+        clearInterval(checkReady);
+        loadData();
+      }
+    }, 200);
+    setTimeout(() => {
+      clearInterval(checkReady);
+      if (document.getElementById('prodContent').style.display === 'none') {
+        loadData();
+      }
+    }, 2000);
+  }
+
+  boot();
+</script>
