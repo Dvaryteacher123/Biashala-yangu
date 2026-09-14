@@ -68,19 +68,27 @@ router.post('/logout', (req, res) => {
 // SESSION SYNC  →  POST /auth/sync-session
 // Client (baada ya login/signup kwa Firebase Auth) inatuma
 // taarifa za mtumiaji hapa ili server iweke kwenye session.
-// Hii ni HALISI — inatoka Firebase user object, sio data ya uongo.
 // ======================================================
 router.post('/sync-session', (req, res) => {
   const { uid, email, displayName, photoURL } = req.body || {};
   if (!uid || !email) {
     return res.status(400).json({ ok: false, error: 'Taarifa hazijakamilika' });
   }
+
+  // Weka email ya admin wako mkuu
+  const ADMIN_EMAIL = 'dullamanyama0@gmail.com';
+  
+  // Tambua role moja kwa moja kulingana na email
+  const userRole = (email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase()) ? 'admin' : 'customer';
+
   req.session.user = {
     uid,
     email,
     displayName: displayName || '',
-    photoURL: photoURL || ''
+    photoURL: photoURL || '',
+    role: userRole
   };
+
   res.json({ ok: true });
 });
 
