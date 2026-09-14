@@ -1,0 +1,776 @@
+<%- include('../partials/header', { title, description }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     PROFILE PAGE — Firestore users/{uid} (data halisi)
+     Mtumiaji LAZIMA awe ameingia
+     ========================================================== -->
+
+<main class="profile-page">
+  <div class="container">
+
+    <!-- Loading -->
+    <div id="profLoading" class="loading">
+      <div class="spinner"></div> Inapakia wasifu...
+    </div>
+
+    <!-- Login required -->
+    <div id="profLogin" class="empty-state" style="display:none;">
+      <h3>Ingia ili kuona wasifu wako</h3>
+      <p>Wasifu unahifadhiwa kwenye akaunti yako.</p>
+      <a id="profLoginLink" href="/auth/login" class="btn btn-primary" style="margin-top:14px;">
+        Ingia / Jiunge
+      </a>
+    </div>
+
+    <!-- Content -->
+    <div id="profContent" style="display:none;">
+
+      <div class="profile-head">
+        <h1>👤 Wasifu Wangu</h1>
+      </div>
+
+      <div class="profile-layout">
+
+        <!-- ============ Sidebar ============ -->
+        <aside class="profile-aside">
+
+          <!-- Avatar card -->
+          <div class="aside-card">
+            <div class="avatar-wrap">
+              <div class="avatar" id="avatarBox">?</div>
+            </div>
+            <h3 class="aside-name" id="asideName">—</h3>
+            <p class="aside-email" id="asideEmail">—</p>
+            <span class="role-badge" id="asideRole">mteja</span>
+
+            <div class="aside-stats">
+              <div class="stat">
+                <span class="stat-num" id="statOrders">0</span>
+                <span class="stat-label">Oda</span>
+              </div>
+              <div class="stat">
+                <span class="stat-num" id="statWish">0</span>
+                <span class="stat-label">Wishlist</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu ya akaunti -->
+          <nav class="aside-nav">
+            <a href="/account/profile" class="aside-link active">👤 Wasifu</a>
+            <a href="/account/orders" class="aside-link">📦 Oda Zangu</a>
+            <a href="/account/addresses" class="aside-link">📍 Anwani Zangu</a>
+            <a href="/wishlist" class="aside-link">❤️ Wishlist</a>
+            <button class="aside-link danger" id="logoutBtn">🚪 Toka</button>
+          </nav>
+        </aside>
+
+        <!-- ============ Main ============ -->
+        <section class="profile-main">
+
+          <!-- ============ Taarifa za Msingi ============ -->
+          <div class="p-card">
+            <div class="p-card-head">
+              <h3>Taarifa za Msingi</h3>
+            </div>
+
+            <form id="profileForm" class="p-form">
+
+              <div class="field">
+                <label for="fName">Jina Kamili</label>
+                <input type="text" id="fName" placeholder="Jina lako" />
+              </div>
+
+              <div class="field">
+                <label for="fEmail">Email</label>
+                <input type="email" id="fEmail" disabled />
+                <small class="field-hint">Email haiwezi kubadilishwa hapa.</small>
+              </div>
+
+              <div class="field">
+                <label for="fPhone">Namba ya Simu</label>
+                <input type="tel" id="fPhone" placeholder="+255 7XX XXX XXX" />
+              </div>
+
+              <div class="field">
+                <label for="fPhoto">Photo URL (si lazima)</label>
+                <input type="url" id="fPhoto" placeholder="https://..." />
+                <small class="field-hint">Weka link ya picha yako (kutoka https).</small>
+              </div>
+
+              <p id="profileMsg" class="alert" style="display:none;"></p>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+                  💾 Hifadhi Mabadiliko
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- ============ Kubadilisha Password ============ -->
+          <div class="p-card">
+            <div class="p-card-head">
+              <h3>Kubadilisha Password</h3>
+            </div>
+
+            <form id="pwForm" class="p-form">
+
+              <div class="field">
+                <label for="pwCurrent">Password ya Sasa *</label>
+                <div class="pw-wrap">
+                  <input type="password" id="pwCurrent" autocomplete="current-password" required />
+                  <button type="button" class="pw-toggle" data-target="pwCurrent">👁️</button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="pwNew">Password Mpya *</label>
+                <div class="pw-wrap">
+                  <input type="password" id="pwNew" autocomplete="new-password" required />
+                  <button type="button" class="pw-toggle" data-target="pwNew">👁️</button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="pwConfirm">Rudia Password Mpya *</label>
+                <div class="pw-wrap">
+                  <input type="password" id="pwConfirm" autocomplete="new-password" required />
+                  <button type="button" class="pw-toggle" data-target="pwConfirm">👁️</button>
+                </div>
+              </div>
+
+              <p id="pwMsg" class="alert" style="display:none;"></p>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="savePwBtn">
+                  🔒 Badilisha Password
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- ============ Danger zone ============ -->
+          <div class="p-card danger-card">
+            <div class="p-card-head">
+              <h3 style="color:#c62828;">Eneo la Hatari</h3>
+            </div>
+            <p class="danger-text">
+              Ukifuta akaunti, taarifa zako zote zitaondolewa kabisa na haziwezi kurudishwa.
+            </p>
+            <button class="btn btn-danger" id="deleteAccountBtn" style="display:none;">
+              🗑️ Futa Akaunti
+            </button>
+            <p class="danger-hint">
+              Ili kufuta akaunti, tafadhali wasiliana nasi kwa
+              <a href="/contact">ukurasa wa mawasiliano</a>.
+            </p>
+          </div>
+
+        </section>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA PROFILE PAGE
+     ========================================================== -->
+<style>
+  .profile-page { padding: 30px 0 60px; min-height: 60vh; }
+
+  .profile-head {
+    margin-bottom: 24px;
+  }
+  .profile-head h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #111;
+  }
+
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .profile-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .aside-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .avatar-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #111 0%, #333 100%);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 34px;
+    background-size: cover;
+    background-position: center;
+    border: 4px solid #f2f2f5;
+  }
+
+  .aside-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .aside-email {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 10px;
+    word-break: break-all;
+  }
+  .role-badge {
+    display: inline-block;
+    background: #111;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .aside-stats {
+    display: flex;
+    border-top: 1px solid #f0f0f3;
+    padding-top: 14px;
+  }
+  .stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .stat + .stat { border-left: 1px solid #f0f0f3; }
+  .stat-num {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Nav */
+  .aside-nav {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .aside-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    text-align: left;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .aside-link:hover { background: #f2f2f5; }
+  .aside-link.active {
+    background: #111;
+    color: #fff;
+    font-weight: 600;
+  }
+  .aside-link.danger { color: #dc3545; }
+  .aside-link.danger:hover { background: #fdecea; }
+
+  /* ============ MAIN ============ */
+  .profile-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .p-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 24px;
+  }
+  .p-card-head {
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f0f0f3;
+    margin-bottom: 20px;
+  }
+  .p-card-head h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .p-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  .field input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #e0e0e5;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: #fafafc;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .field input:focus {
+    border-color: #111;
+    background: #fff;
+  }
+  .field input:disabled {
+    background: #f2f2f5;
+    color: #888;
+    cursor: not-allowed;
+  }
+  .field-hint {
+    display: block;
+    color: #888;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  /* Password toggle */
+  .pw-wrap { position: relative; }
+  .pw-wrap input { padding-right: 46px; }
+  .pw-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    font-size: 16px;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    color: #888;
+    transition: background 0.15s;
+  }
+  .pw-toggle:hover { background: #f2f2f5; }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 6px;
+  }
+  .form-actions .btn { padding: 11px 22px; font-size: 14px; }
+
+  /* Danger card */
+  .danger-card {
+    border: 1.5px dashed #f7c8cd;
+  }
+  .danger-text {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .danger-hint {
+    color: #888;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  .danger-hint a { color: #e63946; font-weight: 600; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .profile-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA PROFILE — Firestore + Firebase Auth halisi
+     ========================================================== -->
+<script type="module">
+
+  // State
+  const state = {
+    user: null,
+    profile: null
+  };
+
+  // ==========================================================
+  // Helpers
+  // ==========================================================
+  function setAvatar(el, name, photoURL) {
+    if (photoURL) {
+      el.textContent = '';
+      el.style.backgroundImage = `url("${photoURL}")`;
+    } else {
+      el.style.backgroundImage = '';
+      const initial = (name || '?').charAt(0).toUpperCase();
+      el.textContent = initial;
+    }
+  }
+
+  function showMsg(el, text, type = 'error') {
+    el.textContent = text;
+    el.className = 'alert ' + (type === 'error' ? 'alert-error' : 'alert-success');
+    el.style.display = 'block';
+  }
+  function hideMsg(el) { el.style.display = 'none'; }
+
+  function normalizePhone(raw) {
+    if (!raw) return '';
+    let p = raw.replace(/[\s\-()]/g, '');
+    if (p.startsWith('+')) p = p.slice(1);
+    if (p.startsWith('0')) p = '255' + p.slice(1);
+    return p;
+  }
+  function isValidTzPhone(raw) {
+    const p = normalizePhone(raw);
+    return /^255\d{9}$/.test(p);
+  }
+
+  // ==========================================================
+  // 1. Pakia wasifu kutoka Firestore users/{uid}
+  //    Kama haipo, tengeneza kwa Auth data (data halisi)
+  // ==========================================================
+  async function loadProfile() {
+    const loading = document.getElementById('profLoading');
+    const login = document.getElementById('profLogin');
+    const content = document.getElementById('profContent');
+
+    loading.style.display = 'flex';
+    login.style.display = 'none';
+    content.style.display = 'none';
+
+    if (!state.user) {
+      loading.style.display = 'none';
+      login.style.display = 'block';
+      document.getElementById('profLoginLink').href =
+        '/auth/login?redirect=' + encodeURIComponent('/account/profile');
+      return;
+    }
+
+    try {
+      const { doc, getDoc, setDoc, serverTimestamp } = window.fs;
+      const ref = doc(window.db, 'users', state.user.uid);
+      const snap = await getDoc(ref);
+
+      let profile;
+      if (snap.exists()) {
+        profile = snap.data();
+      } else {
+        // Tengeneza document mpya kwa taarifa halisi kutoka Firebase Auth
+        profile = {
+          uid: state.user.uid,
+          email: state.user.email || '',
+          displayName: state.user.displayName || '',
+          photoURL: state.user.photoURL || '',
+          phone: '',
+          role: 'customer',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        };
+        await setDoc(ref, profile);
+      }
+
+      state.profile = profile;
+      renderProfile(profile);
+      loadStats();
+
+      loading.style.display = 'none';
+      content.style.display = 'block';
+
+    } catch (err) {
+      console.error('Load profile error:', err);
+      loading.style.display = 'none';
+      login.style.display = 'block';
+    }
+  }
+
+  // ==========================================================
+  // 2. Render
+  // ==========================================================
+  function renderProfile(p) {
+    const name = p.displayName || p.email?.split('@')[0] || '';
+    const email = p.email || '';
+    const photoURL = p.photoURL || '';
+
+    // Sidebar
+    setAvatar(document.getElementById('avatarBox'), name, photoURL);
+    document.getElementById('asideName').textContent = name;
+    document.getElementById('asideEmail').textContent = email;
+    document.getElementById('asideRole').textContent = p.role || 'mteja';
+
+    // Form
+    document.getElementById('fName').value = p.displayName || '';
+    document.getElementById('fEmail').value = email;
+    document.getElementById('fPhone').value = p.phone || '';
+    document.getElementById('fPhoto').value = p.photoURL || '';
+  }
+
+  // ==========================================================
+  // 3. Stats (orders, wishlist)
+  // ==========================================================
+  async function loadStats() {
+    if (!state.user) return;
+    const { collection, getDocs, query, where } = window.fs;
+
+    // Orders
+    try {
+      const snap = await getDocs(query(
+        collection(window.db, 'orders'),
+        where('userId', '==', state.user.uid)
+      ));
+      document.getElementById('statOrders').textContent = snap.size;
+    } catch (_) {
+      // kama index haipo, acha 0
+    }
+
+    // Wishlist
+    try {
+      const snap = await getDocs(collection(window.db, 'users', state.user.uid, 'wishlist'));
+      document.getElementById('statWish').textContent = snap.size;
+    } catch (_) {}
+  }
+
+  // ==========================================================
+  // 4. Save profile
+  // ==========================================================
+  function bindProfileForm() {
+    const form = document.getElementById('profileForm');
+    const btn  = document.getElementById('saveProfileBtn');
+    const msg  = document.getElementById('profileMsg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideMsg(msg);
+
+      const name  = document.getElementById('fName').value.trim();
+      const phoneRaw = document.getElementById('fPhone').value.trim();
+      const photo = document.getElementById('fPhoto').value.trim();
+
+      if (!name || name.length < 3) {
+        showMsg(msg, 'Jina lako liwe na herufi 3+');
+        return;
+      }
+      if (phoneRaw && !isValidTzPhone(phoneRaw)) {
+        showMsg(msg, 'Namba ya simu si sahihi. Tumia mfano: 0712345678.');
+        return;
+      }
+      if (photo && !/^https?:\/\//i.test(photo)) {
+        showMsg(msg, 'Photo URL lazima ianze na https://');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Inahifadhi...';
+
+      try {
+        const phone = phoneRaw ? normalizePhone(phoneRaw) : '';
+        const { doc, setDoc, serverTimestamp } = window.fs;
+
+        // 1. Firestore update (halisi)
+        await setDoc(doc(window.db, 'users', state.user.uid), {
+          displayName: name,
+          phone,
+          photoURL: photo,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+
+        // 2. Firebase Auth profile update
+        try {
+          const { updateProfile } = window.authFns;
+          await updateProfile(state.user, {
+            displayName: name,
+            photoURL: photo || null
+          });
+        } catch (err) {
+          console.warn('updateProfile:', err);
+        }
+
+        // 3. Update UI
+        state.profile = { ...state.profile, displayName: name, phone, photoURL: photo };
+        renderProfile(state.profile);
+
+        showMsg(msg, '✅ Taarifa zimehifadhiwa!', 'success');
+        setTimeout(() => hideMsg(msg), 3000);
+
+      } catch (err) {
+        console.error('Save profile error:', err);
+        showMsg(msg, 'Imeshindikana kuhifadhi. Jaribu tena.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '💾 Hifadhi Mabadiliko';
+      }
+    });
+  }
+
+  // ==========================================================
+  // 5. Password change (Firebase Auth)
+  // ==========================================================
+  function bindPwForm() {
+    const form = document.getElementById('pwForm');
+    const btn  = document.getElementById('savePwBtn');
+    const msg  = document.getElementById('pwMsg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideMsg(msg);
+
+      const current = document.getElementById('pwCurrent').value;
+      const next    = document.getElementById('pwNew').value;
+      const confirm = document.getElementById('pwConfirm').value;
+
+      if (!current || !next || !confirm) {
+        showMsg(msg, 'Tafadhali jaza sehemu zote.');
+        return;
+      }
+      if (next.length < 6) {
+        showMsg(msg, 'Password mpya iwe herufi 6+.');
+        return;
+      }
+      if (next !== confirm) {
+        showMsg(msg, 'Password hazifanani.');
+        return;
+      }
+      if (next === current) {
+        showMsg(msg, 'Password mpya isifanane na ya sasa.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Inabadilisha...';
+
+      try {
+        // Re-authenticate kwanza (usalama wa Firebase)
+        const { EmailAuthProvider, reauthenticateWithCredential, updatePassword } = await import(
+          'https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js'
+        );
+
+        const cred = EmailAuthProvider.credential(state.user.email, current);
+        await reauthenticateWithCredential(state.user, cred);
+
+        // Sasa badilisha
+        await updatePassword(state.user, next);
+
+        showMsg(msg, '✅ Password imebadilishwa!', 'success');
+        form.reset();
+        setTimeout(() => hideMsg(msg), 3000);
+
+      } catch (err) {
+        console.error('Password change error:', err);
+        const code = err.code || '';
+        if (code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+          showMsg(msg, 'Password ya sasa si sahihi.');
+        } else if (code === 'auth/weak-password') {
+          showMsg(msg, 'Password mpya ni dhaifu.');
+        } else if (code === 'auth/requires-recent-login') {
+          showMsg(msg, 'Tafadhali ingia tena kisha ujaribu.');
+        } else {
+          showMsg(msg, 'Imeshindikana kubadilisha password.');
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔒 Badilisha Password';
+      }
+    });
+  }
+
+  // ==========================================================
+  // 6. Password toggle
+  // ==========================================================
+  function bindPwToggles() {
+    document.querySelectorAll('.pw-toggle').forEach((b) => {
+      b.addEventListener('click', () => {
+        const input = document.getElementById(b.dataset.target);
+        const isPw = input.type === 'password';
+        input.type = isPw ? 'text' : 'password';
+        b.textContent = isPw ? '🙈' : '👁️';
+      });
+    });
+  }
+
+  // ==========================================================
+  // 7. Logout
+  // ==========================================================
+  function bindLogout() {
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      try { await fetch('/auth/logout', { method: 'POST' }); } catch (_) {}
+      try { await window.authFns.signOut(window.auth); } catch (_) {}
+      window.location.href = '/';
+    });
+  }
+
+  // ==========================================================
+  // 8. Boot
+  // ==========================================================
+  function initAuth() {
+    window.authFns.onAuthStateChanged(window.auth, (user) => {
+      state.user = user;
+      loadProfile();
+    });
+  }
+
+  function boot() {
+    bindProfileForm();
+    bindPwForm();
+    bindPwToggles();
+    bindLogout();
+    initAuth();
+  }
+
+  if (window.auth && window.fs) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
