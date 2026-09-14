@@ -1,0 +1,184 @@
+<%- include('../partials/header', { title: typeof title !== 'undefined' ? title : 'Ukurasa Haupatikani' }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     404 PAGE — Ukurasa haupatikani
+     Inatumika kutoka server.js kama error handler
+     ========================================================== -->
+
+<main class="nf-page">
+  <div class="container">
+    <div class="nf-box">
+
+      <!-- 404 visual -->
+      <div class="nf-code">
+        <span>4</span>
+        <span class="nf-zero">🔍</span>
+        <span>4</span>
+      </div>
+
+      <h1>Ukurasa Haupatikani</h1>
+
+      <p class="nf-message">
+        <%= typeof message !== 'undefined' && message ? message : 'Samahani, ukurasa uliouomba haupo au umeondolewa.' %>
+      </p>
+
+      <p class="nf-hint">
+        Labda ulikosea kuandika URL, au ukurasa ulihamishwa. Jaribu moja ya haya:
+      </p>
+
+      <!-- Links -->
+      <div class="nf-actions">
+        <a href="/" class="btn btn-primary">🏠 Nyumbani</a>
+        <a href="/shop" class="btn btn-outline">🛍️ Dukani</a>
+        <a href="/contact" class="btn btn-outline">📧 Wasiliana</a>
+      </div>
+
+      <!-- Popular links -->
+      <div class="nf-popular">
+        <p>Unaweza pia kutembelea:</p>
+        <div class="nf-links">
+          <a href="/shop?category=men">Wanaume</a>
+          <a href="/shop?category=women">Wanawake</a>
+          <a href="/shop?category=kids">Watoto</a>
+          <a href="/account/orders">Oda Zangu</a>
+          <a href="/faq">Maswali (FAQ)</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA 404 PAGE
+     ========================================================== -->
+<style>
+  .nf-page {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 16px;
+    background: linear-gradient(135deg, #f7f7f9 0%, #ececf0 100%);
+  }
+
+  .nf-box {
+    max-width: 620px;
+    width: 100%;
+    text-align: center;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    padding: 50px 36px;
+  }
+
+  /* ---------- 404 visual ---------- */
+  .nf-code {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    font-size: 76px;
+    font-weight: 900;
+    color: #111;
+    line-height: 1;
+    margin-bottom: 20px;
+    letter-spacing: -2px;
+    user-select: none;
+  }
+  .nf-zero {
+    font-size: 62px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e63946 0%, #c53030 100%);
+    color: #fff;
+    animation: bounce 2.4s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+
+  /* ---------- Text ---------- */
+  .nf-box h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+
+  .nf-message {
+    color: #555;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .nf-hint {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 26px;
+  }
+
+  /* ---------- Actions ---------- */
+  .nf-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .nf-actions .btn {
+    padding: 12px 22px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+
+  /* ---------- Popular links ---------- */
+  .nf-popular {
+    padding-top: 26px;
+    border-top: 1px solid #f0f0f3;
+  }
+  .nf-popular p {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .nf-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  .nf-links a {
+    background: #f2f2f5;
+    color: #444;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nf-links a:hover {
+    background: #111;
+    color: #fff;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 480px) {
+    .nf-box { padding: 36px 22px; }
+    .nf-code { font-size: 56px; }
+    .nf-zero { width: 70px; height: 70px; font-size: 48px; }
+    .nf-box h1 { font-size: 22px; }
+    .nf-actions { flex-direction: column; }
+    .nf-actions .btn { width: 100%; }
+  }
+</style>
