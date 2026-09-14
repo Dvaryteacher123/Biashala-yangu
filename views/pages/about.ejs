@@ -1,0 +1,510 @@
+<%- include('../partials/header', { title, description }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     ABOUT PAGE — Firestore: pages/about + settings/site
+     ========================================================== -->
+
+<main class="about-page">
+
+  <!-- ============ Hero ============ -->
+  <section class="about-hero">
+    <div class="container">
+      <div class="hero-inner">
+        <span class="hero-badge">ℹ️ Kuhusu Sisi</span>
+        <h1 id="aboutTitle">Kuhusu ClothingStore</h1>
+        <p id="aboutIntro" class="hero-sub">Inapakia...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Loading ============ -->
+  <div id="aboutLoading" class="container" style="padding:40px 0;">
+    <div class="loading">
+      <div class="spinner"></div> Inapakia maudhui...
+    </div>
+  </div>
+
+  <!-- ============ Empty ============ -->
+  <div id="aboutEmpty" class="container" style="display:none;padding:40px 0;">
+    <div class="empty-state">
+      <h3>Maudhui yataonekana hapa</h3>
+      <p>Maudhui ya ukurasa huu bado hayajawekwa. Msimamizi anaweza kuyaweka kupitia admin panel (Firestore collection <code>pages/about</code>).</p>
+      <a href="/contact" class="btn btn-primary" style="margin-top:14px;">Wasiliana Nasi</a>
+    </div>
+  </div>
+
+  <!-- ============ Content ============ -->
+  <div id="aboutContent" style="display:none;">
+
+    <!-- Stats -->
+    <section class="stats-section" id="statsSection" style="display:none;">
+      <div class="container">
+        <div class="stats-grid" id="statsGrid"></div>
+      </div>
+    </section>
+
+    <!-- Mission + Vision -->
+    <section class="mv-section" id="mvSection" style="display:none;">
+      <div class="container">
+        <div class="mv-grid">
+          <div class="mv-card" id="missionCard" style="display:none;">
+            <div class="mv-icon">🎯</div>
+            <h3>Dhamira Yetu</h3>
+            <p id="missionText">—</p>
+          </div>
+          <div class="mv-card" id="visionCard" style="display:none;">
+            <div class="mv-icon">🔭</div>
+            <h3>Maono Yetu</h3>
+            <p id="visionText">—</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Story (long text) -->
+    <section class="story-section" id="storySection" style="display:none;">
+      <div class="container narrow">
+        <h2>Historia Yetu</h2>
+        <div class="story-text" id="storyText"></div>
+      </div>
+    </section>
+
+    <!-- Values -->
+    <section class="values-section" id="valuesSection" style="display:none;">
+      <div class="container">
+        <h2 class="section-title">Maadili Yetu</h2>
+        <div class="values-grid" id="valuesGrid"></div>
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section class="team-section" id="teamSection" style="display:none;">
+      <div class="container">
+        <h2 class="section-title">Timu Yetu</h2>
+        <div class="team-grid" id="teamGrid"></div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Uko tayari kununua?</h2>
+          <p>Tembelea duka letu uone bidhaa bora kwa bei nafuu.</p>
+          <div class="cta-actions">
+            <a href="/shop" class="btn btn-primary">Nenda Dukani</a>
+            <a href="/contact" class="btn btn-outline">Wasiliana Nasi</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA ABOUT PAGE
+     ========================================================== -->
+<style>
+  .about-page { padding-bottom: 40px; }
+
+  /* ---------- Hero ---------- */
+  .about-hero {
+    background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+  }
+  .hero-inner { max-width: 720px; margin: 0 auto; }
+  .hero-badge {
+    display: inline-block;
+    background: #e63946;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .about-hero h1 {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .hero-sub {
+    color: #ccc;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ---------- Stats ---------- */
+  .stats-section {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 30px 0;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 30px;
+    font-weight: 800;
+    color: #e63946;
+    display: block;
+    line-height: 1.1;
+  }
+  .stat-label {
+    display: block;
+    color: #777;
+    font-size: 13px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  /* ---------- Sections base ---------- */
+  .mv-section,
+  .story-section,
+  .values-section,
+  .team-section {
+    padding: 50px 0;
+  }
+  .container.narrow { max-width: 760px; }
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  /* ---------- Mission + Vision ---------- */
+  .mv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .mv-card {
+    background: #fff;
+    padding: 30px 26px;
+    border-radius: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .mv-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+  .mv-card h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 10px;
+  }
+  .mv-card p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* ---------- Story ---------- */
+  .story-text {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.8;
+    white-space: pre-line;
+  }
+  .story-text p { margin-bottom: 14px; }
+
+  /* ---------- Values ---------- */
+  .values-section {
+    background: #f7f7f9;
+  }
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+  }
+  .value-card {
+    background: #fff;
+    padding: 22px 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    text-align: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .value-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+  .value-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  .value-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 6px;
+  }
+  .value-card p {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* ---------- Team ---------- */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+  }
+  .team-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    text-align: center;
+  }
+  .team-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    background: #111;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 28px;
+    background-size: cover;
+    background-position: center;
+  }
+  .team-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 3px;
+  }
+  .team-role {
+    color: #888;
+    font-size: 13px;
+  }
+
+  /* ---------- CTA ---------- */
+  .cta-section { padding: 50px 0 20px; }
+  .cta-box {
+    background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+    color: #fff;
+    text-align: center;
+    padding: 44px 24px;
+    border-radius: 16px;
+  }
+  .cta-box h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .cta-box p {
+    color: #ccc;
+    font-size: 15px;
+    margin-bottom: 22px;
+  }
+  .cta-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .cta-actions .btn-primary { background: #e63946; }
+  .cta-actions .btn-primary:hover { background: #c53030; }
+  .cta-actions .btn-outline {
+    border-color: #fff;
+    color: #fff;
+  }
+  .cta-actions .btn-outline:hover {
+    background: #fff;
+    color: #111;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 700px) {
+    .about-hero h1 { font-size: 26px; }
+    .mv-grid { grid-template-columns: 1fr; }
+    .stat-num { font-size: 24px; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA ABOUT — Firestore: pages/about + settings/site
+     ========================================================== -->
+<script type="module">
+
+  // ==========================================================
+  // 1. Pakia pages/about kutoka Firestore
+  //    Structure ya document inayotarajiwa:
+  //      title, intro, mission, vision, story,
+  //      values: [{ icon, title, text }],
+  //      team:   [{ name, role, photo }]
+  //    Yote ni hiari — yasiyopo hayataonyeshwa.
+  // ==========================================================
+  async function loadAbout() {
+    const loading = document.getElementById('aboutLoading');
+    const empty   = document.getElementById('aboutEmpty');
+    const content = document.getElementById('aboutContent');
+
+    try {
+      const { doc, getDoc } = window.fs;
+      const snap = await getDoc(doc(window.db, 'pages', 'about'));
+
+      loading.style.display = 'none';
+
+      if (!snap.exists()) {
+        // Hakuna maudhui — hakuna data ya uongo
+        empty.style.display = 'block';
+        return;
+      }
+
+      const data = snap.data();
+      renderAbout(data);
+      content.style.display = 'block';
+
+    } catch (err) {
+      console.error('About error:', err);
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+    }
+  }
+
+  // ==========================================================
+  // 2. Render
+  // ==========================================================
+  function renderAbout(data) {
+    // Title + intro (default kama haipo — sio data ya uongo, ni maandishi ya jumla)
+    if (data.title) document.getElementById('aboutTitle').textContent = data.title;
+    if (data.intro) document.getElementById('aboutIntro').textContent = data.intro;
+    else document.getElementById('aboutIntro').style.display = 'none';
+
+    // Mission + Vision
+    const hasMission = !!data.mission;
+    const hasVision  = !!data.vision;
+    if (hasMission || hasVision) {
+      document.getElementById('mvSection').style.display = 'block';
+      if (hasMission) {
+        document.getElementById('missionText').textContent = data.mission;
+        document.getElementById('missionCard').style.display = 'block';
+      }
+      if (hasVision) {
+        document.getElementById('visionText').textContent = data.vision;
+        document.getElementById('visionCard').style.display = 'block';
+      }
+    }
+
+    // Story
+    if (data.story) {
+      document.getElementById('storySection').style.display = 'block';
+      // Ruhusu newlines kuwa paragraphs
+      document.getElementById('storyText').innerHTML = data.story
+        .split('\n\n')
+        .map((p) => `<p>${escapeHtml(p)}</p>`)
+        .join('');
+    }
+
+    // Values
+    if (Array.isArray(data.values) && data.values.length) {
+      document.getElementById('valuesSection').style.display = 'block';
+      document.getElementById('valuesGrid').innerHTML = data.values.map((v) => `
+        <div class="value-card">
+          ${v.icon ? `<div class="value-icon">${v.icon}</div>` : ''}
+          <h4>${escapeHtml(v.title || '')}</h4>
+          <p>${escapeHtml(v.text || '')}</p>
+        </div>
+      `).join('');
+    }
+
+    // Team
+    if (Array.isArray(data.team) && data.team.length) {
+      document.getElementById('teamSection').style.display = 'block';
+      document.getElementById('teamGrid').innerHTML = data.team.map((m) => {
+        const initial = (m.name || '?').charAt(0).toUpperCase();
+        const style = m.photo
+          ? `style="background-image:url('${m.photo}')"`
+          : '';
+        return `
+          <div class="team-card">
+            <div class="team-avatar" ${style}>${m.photo ? '' : initial}</div>
+            <div class="team-name">${escapeHtml(m.name || '')}</div>
+            <div class="team-role">${escapeHtml(m.role || '')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  // ==========================================================
+  // 3. Stats kutoka settings/site (hiari)
+  //    Muundo unaotarajiwa:
+  //      stats: { years, customers, products, cities }
+  // ==========================================================
+  async function loadStats() {
+    try {
+      const { doc, getDoc } = window.fs;
+      const snap = await getDoc(doc(window.db, 'settings', 'site'));
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      const s = data.stats || {};
+      const items = [];
+
+      if (s.years)     items.push({ num: `${s.years}+`,    label: 'Miaka' });
+      if (s.customers) items.push({ num: `${s.customers}+`, label: 'Wateja' });
+      if (s.products)  items.push({ num: `${s.products}+`,  label: 'Bidhaa' });
+      if (s.cities)    items.push({ num: `${s.cities}+`,    label: 'Miji' });
+
+      if (items.length === 0) return;
+
+      document.getElementById('statsSection').style.display = 'block';
+      document.getElementById('statsGrid').innerHTML = items.map((x) => `
+        <div class="stat-item">
+          <span class="stat-num">${escapeHtml(x.num)}</span>
+          <span class="stat-label">${escapeHtml(x.label)}</span>
+        </div>
+      `).join('');
+    } catch (err) {
+      console.error('Stats error:', err);
+    }
+  }
+
+  // ==========================================================
+  // 4. Boot
+  // ==========================================================
+  function boot() {
+    loadAbout();
+    loadStats();
+  }
+
+  if (window.fs && window.db) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
