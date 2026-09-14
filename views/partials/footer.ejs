@@ -1,0 +1,405 @@
+<!-- ==========================================================
+     FOOTER — Sehemu ya chini inayoonekana kila ukurasa
+     ========================================================== -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+
+    <!-- ============ Column 1: Brand ============ -->
+    <div class="footer-col brand-col">
+      <a href="/" class="footer-logo">
+        <span class="logo-icon">👕</span>
+        <span class="logo-text">Clothing<strong>Store</strong></span>
+      </a>
+      <p class="footer-desc">
+        Duka lako la nguo bora Tanzania. Ubora wa juu, bei nafuu,
+        na huduma ya haraka kwa wateja wote.
+      </p>
+      <div class="social-links">
+        <a href="#" class="social-btn" aria-label="Facebook" data-social="facebook">📘</a>
+        <a href="#" class="social-btn" aria-label="Instagram" data-social="instagram">📸</a>
+        <a href="#" class="social-btn" aria-label="Twitter" data-social="twitter">🐦</a>
+        <a href="#" class="social-btn" aria-label="WhatsApp" data-social="whatsapp">💬</a>
+      </div>
+    </div>
+
+    <!-- ============ Column 2: Shop Links ============ -->
+    <div class="footer-col">
+      <h4>Duka</h4>
+      <ul>
+        <li><a href="/shop">Bidhaa Zote</a></li>
+        <li><a href="/shop?category=men">Wanaume</a></li>
+        <li><a href="/shop?category=women">Wanawake</a></li>
+        <li><a href="/shop?category=kids">Watoto</a></li>
+        <li><a href="/shop?category=accessories">Vifaa</a></li>
+      </ul>
+    </div>
+
+    <!-- ============ Column 3: Company ============ -->
+    <div class="footer-col">
+      <h4>Kampuni</h4>
+      <ul>
+        <li><a href="/about">Kuhusu Sisi</a></li>
+        <li><a href="/contact">Mawasiliano</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/faq">Maswali (FAQ)</a></li>
+      </ul>
+    </div>
+
+    <!-- ============ Column 4: Policies ============ -->
+    <div class="footer-col">
+      <h4>Sera</h4>
+      <ul>
+        <li><a href="/privacy">Faragha</a></li>
+        <li><a href="/terms">Masharti</a></li>
+        <li><a href="/returns">Kurudisha Bidhaa</a></li>
+        <li><a href="/shipping">Usafirishaji</a></li>
+      </ul>
+    </div>
+
+    <!-- ============ Column 5: Newsletter + Contact ============ -->
+    <div class="footer-col newsletter-col">
+      <h4>Pata Habari</h4>
+      <p class="newsletter-desc">
+        Jiunge nasi upate punguzo na bidhaa mpya kwa email.
+      </p>
+
+      <form id="newsletterForm" class="newsletter-form">
+        <input
+          type="email"
+          id="newsletterEmail"
+          placeholder="barua@mfano.com"
+          required
+        />
+        <button type="submit">Jiunge</button>
+      </form>
+      <p id="newsletterMsg" class="newsletter-msg"></p>
+
+      <!-- Contact info (inasomwa kutoka Firestore settings/site) -->
+      <div class="footer-contact" id="footerContact">
+        <p data-field="phone">📞 <span>—</span></p>
+        <p data-field="email">✉️ <span>—</span></p>
+        <p data-field="address">📍 <span>—</span></p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ Bottom Bar ============ -->
+  <div class="footer-bottom">
+    <div class="container bottom-wrap">
+      <p>
+        © <span id="footerYear"></span> ClothingStore. Haki zote zimehifadhiwa.
+      </p>
+      <p class="made-with">
+        Imefanywa kwa ❤️ Tanzania
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ==========================================================
+     CSS YA FOOTER
+     ========================================================== -->
+<style>
+  .site-footer {
+    background: #111;
+    color: #ccc;
+    margin-top: 60px;
+    padding-top: 50px;
+    font-size: 14px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+    gap: 30px;
+    padding-bottom: 40px;
+  }
+
+  .footer-col h4 {
+    color: #fff;
+    font-size: 15px;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+
+  .footer-col ul {
+    list-style: none;
+  }
+
+  .footer-col ul li {
+    margin-bottom: 8px;
+  }
+
+  .footer-col ul li a {
+    color: #bbb;
+    transition: color 0.2s;
+  }
+
+  .footer-col ul li a:hover {
+    color: #fff;
+  }
+
+  /* ---------- Brand column ---------- */
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .footer-logo .logo-text strong {
+    color: #e63946;
+  }
+  .footer-desc {
+    color: #aaa;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  /* ---------- Social ---------- */
+  .social-links {
+    display: flex;
+    gap: 10px;
+  }
+  .social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #222;
+    font-size: 16px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .social-btn:hover {
+    background: #e63946;
+    transform: translateY(-2px);
+  }
+
+  /* ---------- Newsletter ---------- */
+  .newsletter-desc {
+    color: #aaa;
+    margin-bottom: 12px;
+  }
+  .newsletter-form {
+    display: flex;
+    background: #222;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .newsletter-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 10px 14px;
+    color: #fff;
+    font-size: 14px;
+  }
+  .newsletter-form input::placeholder {
+    color: #777;
+  }
+  .newsletter-form button {
+    padding: 0 18px;
+    background: #e63946;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    transition: background 0.2s;
+  }
+  .newsletter-form button:hover {
+    background: #c53030;
+  }
+  .newsletter-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .newsletter-msg {
+    font-size: 13px;
+    min-height: 18px;
+    margin-bottom: 12px;
+  }
+  .newsletter-msg.ok { color: #4ade80; }
+  .newsletter-msg.err { color: #f87171; }
+
+  /* ---------- Contact ---------- */
+  .footer-contact p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #bbb;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .footer-contact p span {
+    color: #ddd;
+  }
+
+  /* ---------- Bottom bar ---------- */
+  .footer-bottom {
+    background: #0a0a0a;
+    border-top: 1px solid #222;
+    padding: 16px 0;
+  }
+  .bottom-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .bottom-wrap p {
+    color: #888;
+    font-size: 13px;
+  }
+  .made-with { color: #e63946 !important; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1000px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .brand-col { grid-column: 1 / -1; }
+    .newsletter-col { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 600px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .brand-col,
+    .newsletter-col {
+      grid-column: 1 / -1;
+    }
+    .bottom-wrap {
+      justify-content: center;
+      text-align: center;
+    }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA FOOTER
+     - Mwaka wa sasa (dynamic)
+     - Newsletter → Firestore collection "subscribers" (data halisi)
+     - Contact info → Firestore settings/site (kama ipo)
+     ========================================================== -->
+<script type="module">
+
+  // ---------- 1. Mwaka wa sasa ----------
+  const yearEl = document.getElementById('footerYear');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  // ==========================================================
+  // 2. Newsletter → Firestore (subscribers collection)
+  //    Hakuna data ya uongo. Kila email inasave kama document halisi.
+  // ==========================================================
+  async function initNewsletter() {
+    const form = document.getElementById('newsletterForm');
+    const msg = document.getElementById('newsletterMsg');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById('newsletterEmail');
+      const email = emailInput.value.trim().toLowerCase();
+      msg.className = 'newsletter-msg';
+      msg.textContent = '';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        msg.classList.add('err');
+        msg.textContent = 'Tafadhali weka email sahihi.';
+        return;
+      }
+
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+      btn.textContent = 'Inatuma...';
+
+      try {
+        const { collection, doc, getDoc, setDoc, serverTimestamp } = window.fs;
+        const db = window.db;
+
+        // Tumia email kama document ID ili kuzuia duplicates
+        const safeId = email.replace(/[^a-z0-9]/g, '_');
+        const ref = doc(db, 'subscribers', safeId);
+        const existing = await getDoc(ref);
+
+        if (existing.exists()) {
+          msg.classList.add('err');
+          msg.textContent = 'Email hii tayari imejiunga.';
+        } else {
+          await setDoc(ref, {
+            email,
+            subscribedAt: serverTimestamp(),
+            source: 'footer'
+          });
+          msg.classList.add('ok');
+          msg.textContent = 'Asante! Umejiunga kikamilifu. ✅';
+          emailInput.value = '';
+        }
+      } catch (err) {
+        console.error('Newsletter error:', err);
+        msg.classList.add('err');
+        msg.textContent = 'Kuna tatizo. Jaribu tena baadaye.';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Jiunge';
+      }
+    });
+  }
+
+  // ==========================================================
+  // 3. Contact info kutoka Firestore: settings/site
+  //    Kama document haipo, inaacha "—" (hakuna data ya uongo)
+  // ==========================================================
+  async function initFooterContact() {
+    const box = document.getElementById('footerContact');
+    if (!box) return;
+    try {
+      const { doc, getDoc } = window.fs;
+      const ref = doc(window.db, 'settings', 'site');
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return; // hakuna settings, acha "—"
+
+      const data = snap.data();
+      const setVal = (field, value) => {
+        const el = box.querySelector(`[data-field="${field}"] span`);
+        if (el && value) el.textContent = value;
+      };
+      setVal('phone', data.phone);
+      setVal('email', data.email);
+      setVal('address', data.address);
+
+      // Social links pia (kama zipo)
+      if (data.social) {
+        document.querySelectorAll('.social-btn').forEach((a) => {
+          const key = a.dataset.social;
+          if (data.social[key]) a.href = data.social[key];
+        });
+      }
+    } catch (err) {
+      console.error('Footer settings error:', err);
+    }
+  }
+
+  // ==========================================================
+  // 4. Anzisha — subiri Firebase iwe tayari
+  // ==========================================================
+  function bootFooter() {
+    initNewsletter();
+    initFooterContact();
+  }
+
+  if (window.fs && window.db) {
+    bootFooter();
+  } else {
+    window.addEventListener('firebase-ready', bootFooter, { once: true });
+  }
+</script>
