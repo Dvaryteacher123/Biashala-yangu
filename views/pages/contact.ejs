@@ -1,0 +1,674 @@
+<%- include('../partials/header', { title, description }) %>
+<%- include('../partials/navbar') %>
+
+<!-- ==========================================================
+     CONTACT PAGE — Firestore: messages (inasave) + settings/site
+     ========================================================== -->
+
+<main class="contact-page">
+
+  <!-- ============ Hero ============ -->
+  <section class="contact-hero">
+    <div class="container">
+      <div class="hero-inner">
+        <span class="hero-badge">📧 Mawasiliano</span>
+        <h1>Wasiliana Nasi</h1>
+        <p class="hero-sub">
+          Una swali, maoni, au tatizo? Tuma ujumbe na tutakujibu haraka iwezekanavyo.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Layout ============ -->
+  <section class="contact-body">
+    <div class="container">
+      <div class="contact-layout">
+
+        <!-- ============ Kushoto: Form ============ -->
+        <div class="contact-form-wrap">
+          <h2>📝 Tuma Ujumbe</h2>
+
+          <form id="contactForm" class="contact-form" novalidate>
+
+            <div class="field-grid">
+              <div class="field">
+                <label for="cName">Jina Lako *</label>
+                <input type="text" id="cName" placeholder="Jina kamili" required />
+              </div>
+              <div class="field">
+                <label for="cPhone">Namba ya Simu</label>
+                <input type="tel" id="cPhone" placeholder="+255 7XX XXX XXX" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="cEmail">Email Yako *</label>
+              <input type="email" id="cEmail" placeholder="barua@mfano.com" required />
+            </div>
+
+            <div class="field">
+              <label for="cSubject">Mada *</label>
+              <select id="cSubject" required>
+                <option value="">— Chagua Mada —</option>
+                <option value="general">Swali la Jumla</option>
+                <option value="order">Kuhusu Oda Yangu</option>
+                <option value="product">Kuhusu Bidhaa</option>
+                <option value="return">Kurudisha Bidhaa</option>
+                <option value="payment">Malipo</option>
+                <option value="complaint">Malalamiko</option>
+                <option value="suggestion">Maoni / Mapendekezo</option>
+                <option value="other">Nyingine</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="cMessage">Ujumbe Wako *</label>
+              <textarea id="cMessage" rows="6" placeholder="Andika ujumbe wako hapa..." required></textarea>
+            </div>
+
+            <p id="contactMsg" class="alert" style="display:none;"></p>
+
+            <button type="submit" class="btn btn-primary btn-full btn-lg" id="sendBtn">
+              📩 Tuma Ujumbe
+            </button>
+
+          </form>
+
+          <!-- Success (inaonekana baada ya kutuma) -->
+          <div id="contactSuccess" class="contact-success" style="display:none;">
+            <div class="success-icon">✅</div>
+            <h3>Ujumbe Umepokelewa!</h3>
+            <p>
+              Asante kwa kuwasiliana nasi. Tutakujibu kwenye email yako
+              <strong id="successEmail">—</strong> ndani ya saa 24.
+            </p>
+            <button class="btn btn-outline" id="sendAnotherBtn" style="margin-top:14px;">
+              📝 Tuma Ujumbe Mwingine
+            </button>
+          </div>
+        </div>
+
+        <!-- ============ Kulia: Info ============ -->
+        <aside class="contact-info">
+
+          <div class="info-card">
+            <h3>📞 Taarifa za Mawasiliano</h3>
+
+            <div class="info-list" id="infoList">
+              <div class="info-item">
+                <span class="info-icon">📞</span>
+                <div>
+                  <span class="info-label">Simu</span>
+                  <a href="tel:" class="info-value" data-field="phone">—</a>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <span class="info-icon">✉️</span>
+                <div>
+                  <span class="info-label">Email</span>
+                  <a href="mailto:" class="info-value" data-field="email">—</a>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <span class="info-icon">📍</span>
+                <div>
+                  <span class="info-label">Anwani</span>
+                  <span class="info-value" data-field="address">—</span>
+                </div>
+              </div>
+
+              <div class="info-item" id="hoursItem" style="display:none;">
+                <span class="info-icon">🕐</span>
+                <div>
+                  <span class="info-label">Saa za Kazi</span>
+                  <span class="info-value" data-field="hours">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div class="info-card" id="socialCard" style="display:none;">
+            <h3>🌐 Tufuate</h3>
+            <div class="social-list" id="socialList"></div>
+          </div>
+
+          <!-- Map -->
+          <div class="info-card" id="mapCard" style="display:none;">
+            <h3>🗺️ Tupate Hapa</h3>
+            <div class="map-wrap">
+              <iframe
+                id="mapIframe"
+                src=""
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ Link ============ -->
+  <section class="contact-faq">
+    <div class="container">
+      <div class="faq-box">
+        <h3>Una swali la haraka?</h3>
+        <p>Angalia maswali yanayoulizwa mara kwa mara — labda jibu lako lipo hapo.</p>
+        <a href="/faq" class="btn btn-primary">Nenda kwenye FAQ</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<%- include('../partials/footer') %>
+
+<!-- ==========================================================
+     CSS YA CONTACT PAGE
+     ========================================================== -->
+<style>
+  .contact-page { padding-bottom: 40px; }
+
+  /* ---------- Hero ---------- */
+  .contact-hero {
+    background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+    color: #fff;
+    padding: 55px 0;
+    text-align: center;
+  }
+  .hero-inner { max-width: 680px; margin: 0 auto; }
+  .hero-badge {
+    display: inline-block;
+    background: #e63946;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .contact-hero h1 {
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+  .hero-sub {
+    color: #ccc;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ---------- Body ---------- */
+  .contact-body { padding: 50px 0; }
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 26px;
+    align-items: start;
+  }
+
+  /* ---------- Form ---------- */
+  .contact-form-wrap {
+    background: #fff;
+    border-radius: 14px;
+    padding: 30px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  }
+  .contact-form-wrap h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 20px;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e0e0e5;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: #fafafc;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: #111;
+    background: #fff;
+  }
+  .field textarea { resize: vertical; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .btn-lg {
+    padding: 13px 20px;
+    font-size: 15px;
+    border-radius: 8px;
+    margin-top: 4px;
+  }
+
+  /* ---------- Success box ---------- */
+  .contact-success {
+    text-align: center;
+    padding: 30px 10px 10px;
+    animation: fadeIn 0.35s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .success-icon {
+    font-size: 52px;
+    margin-bottom: 12px;
+  }
+  .contact-success h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 10px;
+  }
+  .contact-success p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .contact-success strong {
+    color: #111;
+    word-break: break-all;
+  }
+
+  /* ---------- Info sidebar ---------- */
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: sticky;
+    top: 90px;
+  }
+
+  .info-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  }
+  .info-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 16px;
+  }
+
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .info-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .info-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #f2f2f5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .info-label {
+    display: block;
+    color: #888;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .info-value {
+    color: #111;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    word-break: break-word;
+  }
+  a.info-value:hover { color: #e63946; }
+
+  /* ---------- Social ---------- */
+  .social-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #f2f2f5;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .social-btn:hover {
+    background: #e6e6ec;
+    transform: translateY(-2px);
+  }
+
+  /* ---------- Map ---------- */
+  .map-wrap {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f2f2f5;
+  }
+  .map-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /* ---------- FAQ ---------- */
+  .contact-faq { padding: 30px 0 10px; }
+  .faq-box {
+    background: linear-gradient(135deg, #e63946 0%, #c53030 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+  }
+  .faq-box h3 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .faq-box p {
+    color: #ffe5e7;
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+  .faq-box .btn-primary {
+    background: #fff;
+    color: #e63946;
+  }
+  .faq-box .btn-primary:hover {
+    background: #ffe5e7;
+    color: #111;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .contact-layout { grid-template-columns: 1fr; }
+    .contact-info { position: static; }
+  }
+  @media (max-width: 600px) {
+    .contact-hero h1 { font-size: 26px; }
+    .contact-form-wrap { padding: 22px 18px; }
+    .field-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<!-- ==========================================================
+     JAVASCRIPT YA CONTACT — Firestore: messages + settings/site
+     ========================================================== -->
+<script type="module">
+
+  // ==========================================================
+  // 1. Submit message → Firestore: messages
+  //    Document structure:
+  //      { name, email, phone, subject, message, status: "new", createdAt }
+  // ==========================================================
+  function bindForm() {
+    const form     = document.getElementById('contactForm');
+    const btn      = document.getElementById('sendBtn');
+    const msg      = document.getElementById('contactMsg');
+    const success  = document.getElementById('contactSuccess');
+    const emailEl  = document.getElementById('cEmail');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.style.display = 'none';
+
+      const name    = document.getElementById('cName').value.trim();
+      const email   = emailEl.value.trim().toLowerCase();
+      const phoneRaw = document.getElementById('cPhone').value.trim();
+      const subject = document.getElementById('cSubject').value;
+      const message = document.getElementById('cMessage').value.trim();
+
+      // Validation
+      if (!name || name.length < 3) {
+        showMsg('Tafadhali weka jina lako (herufi 3+).');
+        return;
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showMsg('Tafadhali weka email sahihi.');
+        return;
+      }
+      if (phoneRaw && !isValidTzPhone(phoneRaw)) {
+        showMsg('Namba ya simu si sahihi. Tumia mfano: 0712345678 au +255712345678.');
+        return;
+      }
+      if (!subject) {
+        showMsg('Tafadhali chagua mada.');
+        return;
+      }
+      if (!message || message.length < 10) {
+        showMsg('Ujumbe wako uwe herufi 10 au zaidi.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Inatuma...';
+
+      try {
+        const { collection, addDoc, serverTimestamp } = window.fs;
+
+        await addDoc(collection(window.db, 'messages'), {
+          name,
+          email,
+          phone: phoneRaw ? normalizePhone(phoneRaw) : '',
+          subject,
+          message,
+          status: 'new',          // new | read | replied | closed
+          userId: window.auth?.currentUser?.uid || null,
+          createdAt: serverTimestamp(),
+          userAgent: navigator.userAgent || ''
+        });
+
+        // Success — ficha form, onyesha success box
+        document.getElementById('successEmail').textContent = email;
+        form.style.display = 'none';
+        success.style.display = 'block';
+
+      } catch (err) {
+        console.error('Send message error:', err);
+        showMsg('Imeshindikana kutuma ujumbe. Jaribu tena baadaye.');
+        btn.disabled = false;
+        btn.textContent = '📩 Tuma Ujumbe';
+      }
+    });
+
+    function showMsg(text) {
+      msg.textContent = text;
+      msg.className = 'alert alert-error';
+      msg.style.display = 'block';
+      msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  // ==========================================================
+  // 2. Tuma mwingine
+  // ==========================================================
+  function bindSendAnother() {
+    document.getElementById('sendAnotherBtn').addEventListener('click', () => {
+      const form = document.getElementById('contactForm');
+      const success = document.getElementById('contactSuccess');
+      const btn = document.getElementById('sendBtn');
+
+      form.reset();
+      form.style.display = 'flex';
+      success.style.display = 'none';
+      btn.disabled = false;
+      btn.textContent = '📩 Tuma Ujumbe';
+      document.getElementById('contactMsg').style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // ==========================================================
+  // 3. Helpers
+  // ==========================================================
+  function normalizePhone(raw) {
+    if (!raw) return '';
+    let p = raw.replace(/[\s\-()]/g, '');
+    if (p.startsWith('+')) p = p.slice(1);
+    if (p.startsWith('0')) p = '255' + p.slice(1);
+    return p;
+  }
+  function isValidTzPhone(raw) {
+    const p = normalizePhone(raw);
+    return /^255\d{9}$/.test(p);
+  }
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ==========================================================
+  // 4. Pakia settings/site — contact info halisi
+  //    Structure inayotarajiwa:
+  //      phone, email, address, hours,
+  //      social: { facebook, instagram, twitter, whatsapp },
+  //      location: { lat, lng }  au  mapEmbed: "https://..."
+  // ==========================================================
+  async function loadSettings() {
+    try {
+      const { doc, getDoc } = window.fs;
+      const snap = await getDoc(doc(window.db, 'settings', 'site'));
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+
+      // Phone
+      if (data.phone) {
+        const el = document.querySelector('[data-field="phone"]');
+        el.textContent = data.phone;
+        el.href = 'tel:' + data.phone.replace(/\s/g, '');
+      }
+
+      // Email
+      if (data.email) {
+        const el = document.querySelector('[data-field="email"]');
+        el.textContent = data.email;
+        el.href = 'mailto:' + data.email;
+      }
+
+      // Address
+      if (data.address) {
+        document.querySelector('[data-field="address"]').textContent = data.address;
+      }
+
+      // Hours
+      if (data.hours) {
+        document.getElementById('hoursItem').style.display = 'flex';
+        document.querySelector('[data-field="hours"]').textContent = data.hours;
+      }
+
+      // Social
+      if (data.social && typeof data.social === 'object') {
+        const socials = [
+          { key: 'facebook',  icon: '📘', label: 'Facebook' },
+          { key: 'instagram', icon: '📸', label: 'Instagram' },
+          { key: 'twitter',   icon: '🐦', label: 'Twitter' },
+          { key: 'whatsapp',  icon: '💬', label: 'WhatsApp' },
+          { key: 'tiktok',    icon: '🎵', label: 'TikTok' }
+        ];
+        const items = socials
+          .filter((s) => data.social[s.key])
+          .map((s) => `
+            <a href="${escapeHtml(data.social[s.key])}" target="_blank" rel="noopener" class="social-btn">
+              <span>${s.icon}</span> ${s.label}
+            </a>
+          `);
+        if (items.length) {
+          document.getElementById('socialCard').style.display = 'block';
+          document.getElementById('socialList').innerHTML = items.join('');
+        }
+      }
+
+      // Map (kama mapEmbed ipo, au lat/lng)
+      let mapSrc = '';
+      if (data.mapEmbed) {
+        mapSrc = data.mapEmbed;
+      } else if (data.location && data.location.lat && data.location.lng) {
+        const { lat, lng } = data.location;
+        mapSrc = `https://www.google.com/maps?q=${lat},${lng}&hl=sw&z=15&output=embed`;
+      }
+
+      if (mapSrc) {
+        document.getElementById('mapCard').style.display = 'block';
+        document.getElementById('mapIframe').src = mapSrc;
+      }
+
+    } catch (err) {
+      console.error('Load settings error:', err);
+    }
+  }
+
+  // ==========================================================
+  // 5. Boot
+  // ==========================================================
+  function boot() {
+    bindForm();
+    bindSendAnother();
+    loadSettings();
+  }
+
+  if (window.fs && window.db) {
+    boot();
+  } else {
+    window.addEventListener('firebase-ready', boot, { once: true });
+  }
+</script>
